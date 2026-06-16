@@ -1,0 +1,106 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   SPARIVIER — Design Tokens
+   Brand: Spa Rivier / Boutique Rivier — Official Colour Identity Guide
+   Palette: ONLY 4 approved brand colours. No others permitted.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand Colours (strict — these 4 only) ── */
+  --color-blue:         #2E3350;   /* Primary dark — navbars, headers, dark bg */
+  --color-pink:         #E9B0B9;   /* Primary accent — CTAs, logo "Spa", dividers */
+  --color-cream:        #F4ECDF;   /* Warm background — alternate sections */
+  --color-white:        #F6F5ED;   /* Page background — main sections */
+
+  /* ── Tints (derived from palette only) ── */
+  --color-blue-95:      rgba(46, 51, 80, 0.95);
+  --color-blue-90:      rgba(46, 51, 80, 0.90);
+  --color-blue-70:      rgba(46, 51, 80, 0.70);
+  --color-blue-55:      rgba(46, 51, 80, 0.55);
+  --color-blue-20:      rgba(46, 51, 80, 0.20);
+  --color-blue-12:      rgba(46, 51, 80, 0.12);
+  --color-blue-08:      rgba(46, 51, 80, 0.08);
+  --color-pink-80:      rgba(233, 176, 185, 0.80);
+  --color-pink-40:      rgba(233, 176, 185, 0.40);
+  --color-pink-30:      rgba(233, 176, 185, 0.30);
+  --color-pink-15:      rgba(233, 176, 185, 0.15);
+  --color-pink-10:      rgba(233, 176, 185, 0.10);
+  --color-white-85:     rgba(246, 245, 237, 0.85);
+  --color-white-65:     rgba(246, 245, 237, 0.65);
+  --color-white-40:     rgba(246, 245, 237, 0.40);
+
+  /* ── Semantic assignments ── */
+  --bg-page:            var(--color-white);
+  --bg-section-alt:     var(--color-cream);
+  --bg-dark:            var(--color-blue);
+  --bg-card:            #FFFFFF;
+  --text-primary:       var(--color-blue);
+  --text-on-dark:       var(--color-white);
+  --text-accent:        var(--color-pink);
+  --text-muted:         var(--color-blue-55);
+  --border-color:       var(--color-pink-40);
+  --divider:            var(--color-pink);
+  --cta-bg:             var(--color-pink);
+  --cta-text:           var(--color-blue);
+  --cta-hover-bg:       var(--color-blue);
+  --cta-hover-text:     var(--color-white);
+  --nav-bg-scrolled:    var(--color-blue-90);
+  --shadow:             var(--color-blue-08);
+  --shadow-strong:      var(--color-blue-20);
+
+  /* ── Legacy alias map (keeps old variable names working during migration) ── */
+  --lavelle-plum-deep:    var(--color-blue);
+  --lavelle-plum-mid:     var(--color-blue);
+  --lavelle-plum-soft:    var(--color-blue-55);
+  --lavelle-plum-whisper: var(--color-cream);
+  --lavelle-gold-champagne: var(--color-pink);
+  --lavelle-gold-bright:  var(--color-pink-80);
+  --lavelle-gold-deep:    var(--color-blue);
+  --lavelle-gold-shimmer: var(--color-cream);
+  --lavelle-ivory:        var(--color-white);
+  --lavelle-cream:        var(--color-cream);
+  --lavelle-blush:        var(--bg-card);
+  --lavelle-charcoal:     var(--color-blue);
+  --lavelle-gray-mid:     var(--color-blue-55);
+  --lavelle-white:        #FFFFFF;
+  --lavelle-success:      #2E7D5E;
+  --lavelle-alert:        var(--color-blue);
+  --lavelle-blue-soft:    var(--color-pink-40);
+  --lavelle-sage:         var(--color-blue-55);
+  --lavelle-pink-soft:    var(--color-pink);
+
+  /* ── Typography — Poppins (Google Fonts) ── */
+  --font-primary:   'Poppins', sans-serif;
+  --font-display:   'Poppins', sans-serif;
+  --font-body:      'Poppins', sans-serif;
+  --font-script:    'Poppins', sans-serif; /* replaces Great Vibes */
+
+  /* ── Type Scale ── */
+  --text-hero:  clamp(2.8rem, 6vw, 4.8rem);   /* weight 200, uppercase */
+  --text-h1:    clamp(1.8rem, 4vw, 3rem);      /* weight 200, uppercase */
+  --text-h2:    clamp(1.4rem, 2.5vw, 2rem);    /* weight 600, uppercase */
+  --text-h3:    1.2rem;                         /* weight 600, uppercase */
+  --text-body:  1rem;                           /* weight 300–400 */
+  --text-small: 0.875rem;                       /* weight 400 */
+  --text-micro: 0.72rem;                        /* weight 600, uppercase, ls 0.12em */
+
+  /* ── Spacing ── */
+  --space-xs: 4px;  --space-sm: 8px;   --space-md: 16px;
+  --space-lg: 24px; --space-xl: 40px;  --space-2xl: 64px;
+  --space-3xl: 96px; --space-4xl: 128px;
+
+  /* ── Shadows — blue base ── */
+  --shadow-card:   0 4px 24px var(--color-blue-08);
+  --shadow-hover:  0 16px 48px var(--color-blue-20);
+  --shadow-lifted: 0 20px 60px var(--color-blue-20);
+  --shadow-nav:    0 2px 20px var(--color-blue-12);
+  --shadow-modal:  0 24px 80px var(--color-blue-20);
+
+  /* ── Border Radius ── */
+  --radius-sm: 6px; --radius-md: 12px; --radius-lg: 16px;
+  --radius-xl: 24px; --radius-full: 9999px;
+
+  /* ── Transitions ── */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
