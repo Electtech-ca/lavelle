@@ -55,15 +55,6 @@ export default function AdminLogin() {
             Sign in to your Sparivier admin account
           </p>
 
-          {/* Dev mode notice */}
-          {!supabase && (
-            <div style={{ background: 'rgba(228,62,45,0.1)', border: '1px solid rgba(228,62,45,0.3)', borderRadius: 'var(--radius-md)', padding: 'var(--space-md)', marginBottom: 'var(--space-lg)' }}>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: '#b83020', lineHeight: 1.6 }}>
-                <strong>Development Mode</strong> — Supabase not yet connected. Use the dev admin credentials below.
-              </p>
-            </div>
-          )}
-
           {error && (
             <div style={{ background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.25)', borderRadius: 'var(--radius-md)', padding: 'var(--space-md)', marginBottom: 'var(--space-lg)' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#c0392b' }}>{error}</p>

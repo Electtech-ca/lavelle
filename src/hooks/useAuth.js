@@ -2,75 +2,55 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 /* ─────────────────────────────────────────────────────────
-   Dev bypass credentials (active ONLY when Supabase is not
-   yet configured). Once VITE_SUPABASE_URL and
-   VITE_SUPABASE_ANON_KEY are filled in .env, Supabase auth
-   takes over and these are ignored automatically.
+   Authentication hook — Supabase only.
 
-   Dev admin login:
-     Email:    admin@sparivier.ca
-     Password: LaVelle@2025!
+   There is NO hardcoded credential fallback. Admin accounts
+   are created in the Supabase dashboard and gated by a
+   `role: 'admin'` claim in user_metadata (and enforced
+   server-side via Row Level Security — see notes).
+
+   If Supabase is not configured, auth simply fails closed:
+   no user, no admin access. This is intentional.
 ──────────────────────────────────────────────────────────── */
-
-const DEV_ADMIN_EMAIL    = 'admin@sparivier.ca'
-const DEV_ADMIN_PASSWORD = 'LaVelle@2025!'
-const DEV_SESSION_KEY    = '__lavelle_dev_admin__'
-
-const DEV_USER = {
-  email: DEV_ADMIN_EMAIL,
-  user_metadata: { role: 'admin', full_name: 'Sparivier Admin' },
-  id: 'dev-admin-001',
-}
 
 export function useAuth() {
   const [user, setUser]       = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    /* ── Live Supabase auth ── */
-    if (supabase) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null)
-        setLoading(false)
-      })
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(session?.user ?? null)
-      })
-      return () => subscription.unsubscribe()
+    if (!supabase) {
+      // Fail closed: without a configured backend, nobody is signed in.
+      setLoading(false)
+      return
     }
 
-    /* ── Dev bypass (no Supabase configured) ── */
-    const stored = sessionStorage.getItem(DEV_SESSION_KEY)
-    if (stored === 'true') setUser(DEV_USER)
-    setLoading(false)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => setUser(session?.user ?? null)
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
   async function signIn(email, password) {
-    /* Live Supabase */
-    if (supabase) return supabase.auth.signInWithPassword({ email, password })
-
-    /* Dev bypass */
-    if (
-      email.trim().toLowerCase() === DEV_ADMIN_EMAIL &&
-      password === DEV_ADMIN_PASSWORD
-    ) {
-      sessionStorage.setItem(DEV_SESSION_KEY, 'true')
-      setUser(DEV_USER)
-      return { data: { user: DEV_USER }, error: null }
+    if (!supabase) {
+      return { data: null, error: { message: 'Authentication is not configured.' } }
     }
-    return { data: null, error: { message: 'Invalid email or password.' } }
+    return supabase.auth.signInWithPassword({ email, password })
   }
 
   async function signOut() {
-    if (supabase) { await supabase.auth.signOut(); return }
-    sessionStorage.removeItem(DEV_SESSION_KEY)
+    if (supabase) await supabase.auth.signOut()
     setUser(null)
   }
 
-  const isAdmin =
-    user?.user_metadata?.role === 'admin' ||
-    user?.email === 'solomon2@electtech.ca' ||
-    user?.email === DEV_ADMIN_EMAIL
+  // Admin status comes ONLY from a trusted role claim set in Supabase.
+  // No email allowlists baked into client code.
+  const isAdmin = user?.user_metadata?.role === 'admin'
 
   return { user, loading, signIn, signOut, isAdmin }
 }
