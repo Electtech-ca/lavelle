@@ -1,0 +1,67 @@
+export const medispaFrench = {
+  banner: {
+    oxygeneo: { title: 'Technologie faciale OxyGeneo®', sub: "La première technologie OxyPod au monde — oxygéner, exfolier et infuser en un seul soin transformateur." },
+    peels: { title: 'Peelings Cliniques', sub: 'Des peelings chimiques fondés sur la science pour des améliorations visibles et durables — adaptés à chaque type de peau et à chaque préoccupation.' },
+    laser: { title: 'Traitements Laser SharpLight™', sub: 'Technologie laser approuvée par la FDA pour la réduction des poils, le rajeunissement cutané, les soins vasculaires et plus encore.' },
+    needling: { title: 'Micro-Aiguillage', sub: 'Stimulez le collagène, resurfaçez la peau et restaurez sa densité — grâce aux technologies DermaRoller et Xcellaris Pro.' },
+    tattoo: { title: 'Tatouage Cosmétique', sub: 'Réveillez-vous parfaite chaque jour. Un art semi-permanent expert qui rehausse votre beauté naturelle.' },
+    removal: { title: 'Élimination des Tatouages EliminInk™', sub: 'Élimination laser avancée des tatouages — efficace, précise et sûre pour tous les types de peau.' },
+    freezpen: { title: 'FreezPen® & CryoProbe XP', sub: 'Cryothérapie de précision pour retirer efficacement et en toute sécurité les lésions cutanées bénignes — sans chirurgie ni cicatrice.' },
+  },
+  oxygeneo: {
+    pricing: 'Tarifs des Soins', what: 'Qu’est-ce qu’OxyGeneo ?',
+    explanation: 'OxyGeneo® utilise la technologie brevetée OxyPod pour exfolier la couche supérieure de la peau, rétablir son équilibre de pH et stimuler son oxygénation de l’intérieur. Associée aux énergies RF Tripollar et aux ultrasons, cette technologie raffermit, illumine et rajeunit la peau en une seule séance.',
+    book: 'Réserver un Soin OxyGeneo',
+    features: ['Exfoliation & Renouvellement', 'Oxygénation de l’intérieur', 'Infusion d’hydratation profonde', 'Raffermissement par radiofréquence', 'Aucune éviction sociale'],
+    priceRows: ['Soin du Visage OxyGeneo — 60 min', 'Analyse de la Peau & Consultation OxyGeneo', 'OxyGeneo + Booster Complémentaire', 'Forfait de 3 Séances', 'Forfait de 6 Séances'],
+  },
+  peels: {
+    pricing: 'Tarifs des Peelings', optionsLabel: 'Options de Peeling', consult: 'Une consultation cutanée gratuite est requise avant votre premier peeling. Les résultats sont progressifs — une cure de 3 à 6 séances est recommandée pour des résultats optimaux.',
+    priceRows: ['Séance de Peeling Clinique', 'Forfait de 6 Séances', 'Consultation & Analyse de la Peau'],
+    options: [
+      ['Le Perfect Derma Peel', 'Peeling médical tout-en-un. Illumine, raffermit et réduit la pigmentation.'],
+      ['Peeling au Rétinol', 'Stimule le renouvellement cellulaire. Idéal pour les ridules, le grain irrégulier et le teint terne.'],
+      ['Peeling Éclaircissant', 'Cible l’hyperpigmentation, le mélasma et les dommages du soleil grâce à un complexe de vitamine C.'],
+      ['Peeling Anti-Acné', 'Formule à base d’acide salicylique qui désobstrue les pores et prévient les imperfections.'],
+      ['Peeling Peau Sensible', 'Mélange doux d’acide lactique — adapté aux peaux réactives et sujettes à la rosacée.'],
+    ],
+  },
+  laser: {
+    skin: 'Soins de la Peau', women: 'Réduction Laser des Poils — Femmes', men: 'Réduction Laser des Poils — Hommes',
+    consult: 'Une consultation et un test cutané gratuits sont requis avant votre première séance laser. Les forfaits n’expirent jamais et peuvent être partagés avec un membre de la famille.',
+    skinNames: ['Rajeunissement Cutané', 'Traitement Vasculaire', 'Rosacée', 'Taches Solaires & Taches de Vieillesse'],
+    womenAreas: ['Lèvre Supérieure', 'Menton', 'Visage Complet', 'Aisselles', 'Demi-Jambe', 'Jambe Complète', 'Ligne du Maillot', 'Brésilienne', 'Jambe Complète + Brésilienne', 'Avant-Bras', 'Bras Complet', 'Ventre', 'Dos Complet'],
+    menAreas: ['Ligne de Barbe', 'Cou', 'Torse', 'Dos Complet', 'Épaules', 'Jambe Complète'],
+  },
+  needling: {
+    pricing: 'Tarifs', treats: 'Traite', consult: 'Une consultation est incluse avec votre premier soin de micro-aiguillage. Une série de 3 séances est recommandée pour de meilleurs résultats. Un anesthésiant topique est appliqué 30 minutes avant — inconfort minimal.',
+    names: ['DermaRoller — Visage', 'DermaRoller — Visage + Cou', 'Xcellaris Pro — Visage', 'Xcellaris Pro — Visage + Cou', 'Rajeunissement des Cheveux & du Cuir Chevelu'],
+    descriptions: ['Micro-aiguillage classique pour stimuler le collagène et affiner le grain de peau.', 'Soin prolongé pour le visage et le cou.', 'Micro-aiguillage avancé par radiofréquence pour raffermir et resurfaçer.', 'Micro-aiguillage RF combiné du visage et du cou.', 'Stimule la circulation du cuir chevelu pour améliorer densité et épaisseur des cheveux.'],
+    treated: ['Ridules & Rides', 'Cicatrices d’Acné', 'Grain de Peau Irrégulier', 'Pores Dilatés', 'Chute de Cheveux & Affinement du Cuir Chevelu', 'Vergetures'],
+  },
+  tattoo: {
+    important: 'Important :', note: 'Une consultation gratuite est requise avant tout rendez-vous de tatouage cosmétique. Les retouches de couleur sont recommandées tous les 12 à 18 mois pour préserver un résultat vibrant et durable.',
+    services: ['Microblading — Sourcils Poil à Poil', 'Sourcils Ombrés / Poudrés', 'Sourcils Combinés', 'Eyeliner — Ligne Supérieure', 'Eyeliner — Haut & Bas', 'Blush des Lèvres', 'Couleur Complète des Lèvres', 'Rafraîchissement / Retouche de Couleur'],
+    descriptions: ['Technique de poil à poil naturelle pour des sourcils définis et réalistes.', 'Fini poudré délicat — idéal pour un regard soigné et rempli.', 'Poils + ombrage pour plus de profondeur et de définition.', 'Une définition subtile à soutenue qui encadre parfaitement le regard.', 'Définition complète du regard, en haut et en bas.', 'Rehausse la couleur et la forme naturelles des lèvres avec un fini doux.', 'Une couleur riche et durable pour des lèvres magnifiquement définies.', 'Recommandé tous les 12 à 18 mois pour maintenir l’intensité.'],
+  },
+  removal: {
+    pricing: 'Tarifs', about: 'À propos d’EliminInk™',
+    priceRows: [
+      ['Élimination de Tatouage — À l’Heure', '$300 / h'],
+      ['Consultation & Test Cutané', 'Offert'],
+      ['Petit Tatouage (moins de 5 cm²)', 'À partir de 150 $'],
+      ['Tatouage Moyen (5 à 25 cm²)', 'À partir de 300 $'],
+      ['Grand Tatouage (25 cm² et plus)', 'Appelez pour un devis'],
+    ],
+    explanation: 'EliminInk™ utilise des impulsions laser haute énergie pour fragmenter l’encre du tatouage en microparticules naturellement absorbées par le corps. Convient à toutes les couleurs d’encre et à tous les types de peau. Le nombre de séances varie selon la taille, l’ancienneté et la saturation du tatouage — votre spécialiste procédera à une évaluation complète.',
+    consult: 'Une consultation et un test cutané gratuits sont requis avant le traitement. Les séances sont espacées de 6 à 8 semaines pour une guérison optimale.',
+    features: ['Toutes les couleurs d’encre traitées', 'Sûr pour tous les types de peau', 'Risque minimal de cicatrice', 'Anesthésiant topique disponible', 'Espacement flexible des séances'],
+  },
+  freezpen: {
+    treats: 'Ce que le soin traite', pricing: 'Tarifs', why: 'Pourquoi FreezPen ?',
+    priceRows: ['Consultation & Évaluation', 'Lésion Unique (petite)', 'Lésion Unique (moyenne)', 'Lésions Multiples — 15 min', 'Lésions Multiples — 30 min'],
+    items: ['Acrochordons', 'Kératose séborrhéique', 'Taches de vieillesse & taches solaires', 'Verrues', 'Milia', 'Angiomes rubis (taches de sang)', 'Dermatofibromes', 'Lésions cutanées bénignes'],
+    explanation: 'La cryothérapie FreezPen® utilise du N₂O de qualité médicale pour geler et éliminer les lésions bénignes en quelques secondes. La plupart des traitements ne nécessitent qu’une seule séance. La guérison prend de 1 à 2 semaines.',
+    whyText: 'FreezPen® délivre un microjet précis de protoxyde d’azote (N₂O) à –89 °C directement sur la lésion, sans endommager la peau environnante. Le soin est rapide, très efficace et pratiquement indolore; aucun anesthésiant n’est nécessaire dans la plupart des cas.',
+  },
+}
