@@ -24,16 +24,40 @@ const TAB_IMAGES = {
   6: '/images/spa/aromatherapy-diffuser.jpg', // faq
 }
 
-/* ── Tab banner ── */
+/* ── Tab banner — same proportions and overlay as MediSpa ── */
 function TabBanner({ tab, title, sub }) {
   return (
-    <div style={{ position: 'relative', width: '100%', height: '340px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 'var(--space-2xl)' }}>
+    <div style={{ position: 'relative', width: '100%', height: '320px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 'var(--space-2xl)' }}>
       <img src={TAB_IMAGES[tab]} alt={title} loading="lazy"
         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.80) 0%, rgba(46,51,80,0.30) 60%, transparent 100%)' }} />
-      <div style={{ position: 'absolute', top: '50%', left: 'var(--space-2xl)', transform: 'translateY(-50%)', maxWidth: '480px' }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 300, color: '#F6F5ED', lineHeight: 1.2, marginBottom: 'var(--space-sm)' }}>{title}</h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(255,255,255,0.8)', lineHeight: 1.7 }}>{sub}</p>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.85) 0%, rgba(46,51,80,0.4) 55%, transparent 100%)' }} />
+      <div style={{ position: 'absolute', top: '50%', left: 'var(--space-2xl)', transform: 'translateY(-50%)', maxWidth: '500px' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem,3vw,2.2rem)', fontWeight: 200, color: '#F6F5ED', lineHeight: 1.2, marginBottom: 'var(--space-sm)' }}>{title}</h2>
+        {sub && <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.82)', lineHeight: 1.65, fontWeight: 300 }}>{sub}</p>}
+      </div>
+    </div>
+  )
+}
+
+/* ── Right-hand column, as on MediSpa: a photo, then the department's own
+   description (the client's wording from WEB PRICING.xlsx). ── */
+const SIDE_IMAGES = {
+  0: '/images/salon/maria-nila-heal.jpg',                                                      // hair
+  1: '/images/salon/joico-youthlock.jpg',                                                      // colour
+  2: '/images/spa/aromatherapy-diffuser.jpg',                                                  // waxing
+  3: 'https://images.unsplash.com/photo-1583001931096-959e9a1a6223?w=800&h=600&fit=crop&q=80', // enhancements
+  4: '/images/salon/nails-glitter.jpg',                                                        // nails
+  5: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&h=600&fit=crop&q=80', // foot care
+}
+
+function SidePanel({ tab, alt, text }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+      <img src={SIDE_IMAGES[tab]} alt={alt} loading="lazy"
+        style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
+      <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
+        <p style={{ color: '#E9B0B9', fontWeight: 700, fontSize: '0.8rem', marginBottom: 'var(--space-sm)' }}>✦</p>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.82)', lineHeight: 1.8, fontWeight: 300 }}>{text}</p>
       </div>
     </div>
   )
@@ -61,7 +85,7 @@ function PriceList({ title, items, translations, headers }) {
 /* ── Pricing disclaimer / menu note ── */
 function MenuNote({ text }) {
   return (
-    <div style={{ padding: 'var(--space-lg)', background: '#F4ECDF', borderRadius: 'var(--radius-lg)', borderLeft: '3px solid #E9B0B9', marginBottom: 'var(--space-xl)' }}>
+    <div style={{ padding: 'var(--space-lg)', background: 'var(--color-cream)', borderRadius: 'var(--radius-lg)', borderLeft: '3px solid var(--color-pink)', marginTop: 'var(--space-xl)' }}>
       <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#2E3350', lineHeight: 1.8, fontWeight: 300 }}>{text}</p>
     </div>
   )
@@ -81,10 +105,9 @@ export default function Spa() {
     t('spa.tabs.faq'),
   ]
 
-  const LIST_COLUMN = { maxWidth: '760px', margin: '0 auto var(--space-xl)' }
+  const TWO_COL = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }
   const listHeaders = [t('spa.col.service'), t('spa.col.price')]
   const fr = table => (isFrench ? table : null)
-  const CENTER_BUTTON_STYLE = { display: 'flex', margin: '0 auto' }
 
   return (
     <>
@@ -103,12 +126,12 @@ export default function Spa() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ background: '#F6F5ED', borderBottom: '1px solid #F4ECDF', position: 'sticky', top: '72px', zIndex: 100, overflowX: 'auto' }}>
-        <div className="container balanced-tab-container" style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ background: '#F6F5ED', borderBottom: '1px solid var(--color-cream)', position: 'sticky', top: '72px', zIndex: 100, overflowX: 'auto' }}>
+        <div className="container balanced-tab-container" style={{ display: 'flex' }}>
           {tabs.map((label, i) => (
             <button className="balanced-tab" key={label} onClick={() => setTab(i)} style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 500,
-              letterSpacing: '0.08em', textTransform: 'uppercase', padding: '18px 24px',
+              fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 600,
+              letterSpacing: '0.1em', textTransform: 'uppercase', padding: '18px 18px',
               border: 'none', borderBottom: tab === i ? '2px solid #E9B0B9' : '2px solid transparent',
               background: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
               color: tab === i ? '#2E3350' : 'rgba(46,51,80,0.50)',
@@ -119,18 +142,23 @@ export default function Spa() {
       </div>
 
       {/* Tab content */}
-      <div style={{ background: '#F6F5ED', padding: 'var(--space-xl) var(--space-xl) var(--space-lg)', minHeight: '60vh' }}>
+      <div style={{ background: '#F6F5ED', padding: 'var(--space-lg) var(--space-xl) var(--space-lg)', minHeight: '60vh' }}>
         <div className="container">
 
           {/* ── Hair Cuts & Styling ── */}
           {tab === 0 && (
             <>
               <TabBanner tab={0} title={t('salon.hair.title')} sub={t('salon.hair.sub')} />
-              <div style={LIST_COLUMN}>
-                <PriceList headers={listHeaders} title={t('salon.hair.listTitle')} items={cutsStyles} translations={fr(cutsStylesTranslations)} />
-                <MenuNote text={t('salon.hair.note')} />
+              <div style={TWO_COL}>
+                <div>
+                  <PriceList headers={listHeaders} title={t('salon.hair.listTitle')} items={cutsStyles} translations={fr(cutsStylesTranslations)} />
+                  <MenuNote text={t('salon.hair.note')} />
+                  <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
+                    <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.hair.bookBtn')}</button>
+                  </div>
+                </div>
+                <SidePanel tab={0} alt={t('salon.hair.title')} text={t('spa.about.hair')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.hair.bookBtn')}</button>
             </>
           )}
 
@@ -138,13 +166,18 @@ export default function Spa() {
           {tab === 1 && (
             <>
               <TabBanner tab={1} title={t('salon.colour.title')} sub={t('salon.colour.sub')} />
-              <div style={LIST_COLUMN}>
-                <PriceList headers={listHeaders} title={t('salon.colour.listTitle')} items={colourServices} translations={fr(colourTranslations)} />
-                <PriceList headers={listHeaders} title={t('salon.perms.permsTitle')} items={permsAndTreatments.perms} translations={fr(permTranslations)} />
-                <PriceList headers={listHeaders} title={t('salon.perms.treatTitle')} items={permsAndTreatments.treatments} translations={fr(treatmentTranslations)} />
-                <MenuNote text={t('salon.hair.note')} />
+              <div style={TWO_COL}>
+                <div>
+                  <PriceList headers={listHeaders} title={t('salon.colour.listTitle')} items={colourServices} translations={fr(colourTranslations)} />
+                  <PriceList headers={listHeaders} title={t('salon.perms.permsTitle')} items={permsAndTreatments.perms} translations={fr(permTranslations)} />
+                  <PriceList headers={listHeaders} title={t('salon.perms.treatTitle')} items={permsAndTreatments.treatments} translations={fr(treatmentTranslations)} />
+                  <MenuNote text={t('salon.hair.note')} />
+                  <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
+                    <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.colour.bookBtn')}</button>
+                  </div>
+                </div>
+                <SidePanel tab={1} alt={t('salon.colour.title')} text={t('spa.about.colour')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.colour.bookBtn')}</button>
             </>
           )}
 
@@ -152,11 +185,16 @@ export default function Spa() {
           {tab === 2 && (
             <>
               <TabBanner tab={2} title={t('spa.waxing.title')} sub={t('spa.waxing.sub')} />
-              <div style={LIST_COLUMN}>
-                <PriceList headers={listHeaders} title={t('spa.tabs.waxing')} items={waxingServices} translations={fr(waxingTranslations)} />
-                <MenuNote text={t('spa.waxing.note')} />
+              <div style={TWO_COL}>
+                <div>
+                  <PriceList headers={listHeaders} title={t('spa.tabs.waxing')} items={waxingServices} translations={fr(waxingTranslations)} />
+                  <MenuNote text={t('spa.waxing.note')} />
+                  <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
+                    <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('spa.waxing.bookBtn')}</button>
+                  </div>
+                </div>
+                <SidePanel tab={2} alt={t('spa.waxing.title')} text={t('spa.about.waxing')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('spa.waxing.bookBtn')}</button>
             </>
           )}
 
@@ -164,12 +202,17 @@ export default function Spa() {
           {tab === 3 && (
             <>
               <TabBanner tab={3} title={t('salon.lash.title')} sub={t('salon.lash.sub')} />
-              <div style={LIST_COLUMN}>
-                <PriceList headers={listHeaders} title={t('salon.lash.lashTitle')} items={lashBrow.lashExtensions} translations={fr(lashExtensionsTranslations)} />
-                <PriceList headers={listHeaders} title={t('salon.lash.browTitle')} items={lashBrow.brows} translations={fr(browsTranslations)} />
-                <PriceList headers={listHeaders} title={t('salon.lash.enhanceTitle')} items={lashBrow.enhancements} translations={fr(enhancementsTranslations)} />
+              <div style={TWO_COL}>
+                <div>
+                  <PriceList headers={listHeaders} title={t('salon.lash.lashTitle')} items={lashBrow.lashExtensions} translations={fr(lashExtensionsTranslations)} />
+                  <PriceList headers={listHeaders} title={t('salon.lash.browTitle')} items={lashBrow.brows} translations={fr(browsTranslations)} />
+                  <PriceList headers={listHeaders} title={t('salon.lash.enhanceTitle')} items={lashBrow.enhancements} translations={fr(enhancementsTranslations)} />
+                  <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
+                    <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.lash.bookBtn')}</button>
+                  </div>
+                </div>
+                <SidePanel tab={3} alt={t('salon.lash.title')} text={t('spa.about.lash')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.lash.bookBtn')}</button>
             </>
           )}
 
@@ -177,12 +220,17 @@ export default function Spa() {
           {tab === 4 && (
             <>
               <TabBanner tab={4} title={t('salon.nails.title')} sub={t('salon.nails.sub')} />
-              <div style={LIST_COLUMN}>
-                <PriceList headers={listHeaders} title={t('salon.nails.maniTitle')} items={nailBar.hand} translations={fr(nailHandTranslations)} />
-                <PriceList headers={listHeaders} title={t('salon.nails.extensionsTitle')} items={nailBar.extensions} translations={fr(nailExtensionsTranslations)} />
-                <MenuNote text={t('salon.nails.artNote')} />
+              <div style={TWO_COL}>
+                <div>
+                  <PriceList headers={listHeaders} title={t('salon.nails.maniTitle')} items={nailBar.hand} translations={fr(nailHandTranslations)} />
+                  <PriceList headers={listHeaders} title={t('salon.nails.extensionsTitle')} items={nailBar.extensions} translations={fr(nailExtensionsTranslations)} />
+                  <MenuNote text={t('salon.nails.artNote')} />
+                  <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
+                    <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.nails.bookBtn')}</button>
+                  </div>
+                </div>
+                <SidePanel tab={4} alt={t('salon.nails.title')} text={t('spa.about.nails')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.nails.bookBtn')}</button>
             </>
           )}
 
@@ -190,11 +238,15 @@ export default function Spa() {
           {tab === 5 && (
             <>
               <TabBanner tab={5} title={t('spa.foot.title')} sub={t('spa.foot.sub')} />
-              <div style={LIST_COLUMN}>
-                <PriceList headers={listHeaders} title={t('spa.foot.listTitle')} items={nailBar.foot} translations={fr(nailFootTranslations)} />
-                <MenuNote text={t('spa.foot.note')} />
+              <div style={TWO_COL}>
+                <div>
+                  <PriceList headers={listHeaders} title={t('spa.foot.listTitle')} items={nailBar.foot} translations={fr(nailFootTranslations)} />
+                  <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
+                    <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('spa.foot.bookBtn')}</button>
+                  </div>
+                </div>
+                <SidePanel tab={5} alt={t('spa.foot.title')} text={t('spa.about.foot')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('spa.foot.bookBtn')}</button>
             </>
           )}
 
@@ -202,7 +254,7 @@ export default function Spa() {
           {tab === 6 && (
             <>
               <TabBanner tab={6} title={t('spa.faq.title')} sub={t('spa.faq.sub')} />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div style={{ maxWidth: '720px' }}>
                   <FAQAccordion items={faqItems} />
                 </div>

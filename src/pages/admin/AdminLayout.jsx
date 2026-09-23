@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import {
   LayoutDashboard, CalendarDays, Scissors, Gift,
-  Tag, Users, Mail, Inbox, CreditCard, LogOut, ExternalLink, ShoppingBag
+  Tag, Users, Mail, Inbox, CreditCard, LogOut, ExternalLink, ShoppingBag, Shirt
 } from 'lucide-react'
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/admin/bookings',    label: 'Bookings',          Icon: CalendarDays },
   { to: '/admin/payments',    label: 'Payments & Orders', Icon: CreditCard },
   { to: '/admin/products',    label: 'Products',          Icon: ShoppingBag },
+  { to: '/admin/boutique',    label: 'Boutique Brands',   Icon: Shirt },
   { to: '/admin/services',    label: 'Services',          Icon: Scissors },
   { to: '/admin/gifts',       label: 'Gifts & Hampers',   Icon: Gift },
   { to: '/admin/promotions',  label: 'Promotions',        Icon: Tag },

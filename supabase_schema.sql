@@ -493,6 +493,44 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.gift_orders;
 
 
 -- =============================================================================
+-- 11. BOUTIQUE BRAND TAGS  (clothing-type filter on the Boutique page)
+--     One row per brand in src/data/boutiqueBrands.js, keyed by its slug.
+--     `types` decides which filters the brand appears under; admins edit it
+--     in Admin ▸ Boutique Brands. Outerwear is not stored: it is jackets +
+--     cardigans. Brand names, write-ups and photos stay in the site code.
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS public.boutique_brand_tags (
+  slug        text        PRIMARY KEY,
+  types       text[]      NOT NULL DEFAULT '{}',
+  updated_at  timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT boutique_brand_tags_types_valid
+    CHECK (types <@ ARRAY['tops','bottoms','jackets','cardigans','dresses','pjs']::text[])
+);
+
+ALTER TABLE public.boutique_brand_tags ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "boutique_brand_tags: public read" ON public.boutique_brand_tags;
+DROP POLICY IF EXISTS "boutique_brand_tags: admins all"  ON public.boutique_brand_tags;
+CREATE POLICY "boutique_brand_tags: public read" ON public.boutique_brand_tags FOR SELECT USING (true);
+CREATE POLICY "boutique_brand_tags: admins all"  ON public.boutique_brand_tags FOR ALL
+  USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Starting tags, inferred from the brand write-ups; the boutique confirms them.
+INSERT INTO public.boutique_brand_tags (slug, types) VALUES
+  ('fdj',            ARRAY['tops','bottoms','jackets','cardigans']),
+  ('liverpool',      ARRAY['tops','bottoms','jackets']),
+  ('joseph-ribkoff', ARRAY['tops','bottoms','jackets','dresses']),
+  ('renuar',         ARRAY['tops','cardigans']),
+  ('sorella',        ARRAY['tops','bottoms','jackets','dresses']),
+  ('julia-divina',   ARRAY['tops','bottoms','dresses']),
+  ('wit-wisdom',     ARRAY['tops','bottoms']),
+  ('papa',           ARRAY['tops','jackets','cardigans','dresses']),
+  ('wanakome',       ARRAY['tops']),
+  ('irish-merino',   ARRAY['tops'])
+ON CONFLICT (slug) DO NOTHING;
+
+
+-- =============================================================================
 -- ADMIN USER SETUP
 --    After running this script, create the admin user in the Supabase Auth
 --    Dashboard (Authentication → Users → Add user, with Auto Confirm ticked).

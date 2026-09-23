@@ -138,7 +138,7 @@ export default function MediSpa() {
               <TabBanner tab={0} title={french?.banner.facials.title || 'Facials & Skin Health'}
                 sub={french?.banner.facials.sub || 'Professional expertise, advanced technology, and results-driven treatments for ageing, pigmentation, redness, acne, and overall skin health.'} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={facialPricing} names={french?.facials.names} />
@@ -171,7 +171,7 @@ export default function MediSpa() {
               <TabBanner tab={1} title={french?.banner.oxygeneo.title || 'OxyGeneo® Facial Technology'}
                 sub={french?.banner.oxygeneo.sub || "The world's first OxyPod technology — oxygenate, exfoliate, and infuse in one transformative treatment."} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={oxygeneoPricing} names={french?.oxygeneo.names} />
@@ -213,7 +213,7 @@ export default function MediSpa() {
               <TabBanner tab={2} title={french?.banner.peels.title || 'Clinical Facials'}
                 sub={french?.banner.peels.sub || 'Science-backed clinical treatments delivering visible, lasting improvements — tailored to every skin type and concern.'} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={clinicalFacialPricing} names={french?.peels.names} />
@@ -265,7 +265,7 @@ export default function MediSpa() {
               <TabBanner tab={3} title={french?.banner.needling.title || 'Micro-Needling'}
                 sub={french?.banner.needling.sub || 'Stimulate collagen, resurface skin, and restore youthful density.'} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={microNeedlingPricing} names={french?.needling.names} />
@@ -304,7 +304,7 @@ export default function MediSpa() {
               <TabBanner tab={4} title={french?.banner.skinRejuv.title || 'Skin Rejuvenation'}
                 sub={french?.banner.skinRejuv.sub || 'Photo facial light therapy that evens tone, softens pigmentation, and restores a healthy glow.'} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={skinRejuvenationPricing} names={french?.skinRejuv.names} />
@@ -343,7 +343,7 @@ export default function MediSpa() {
               <TabBanner tab={5} title={french?.banner.trilipo.title || 'TriLipo® Body Contouring'}
                 sub={french?.banner.trilipo.sub || 'Small changes. Real results. Non-invasive body shaping and skin tightening, session by session.'} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={trilipoPricing} names={french?.trilipo.names} />
@@ -379,7 +379,7 @@ export default function MediSpa() {
               <TabBanner tab={6} title={french?.banner.freezpen.title || 'Cryotherapy — FreezPen® & CryoProbe XP'}
                 sub={french?.banner.freezpen.sub || 'Precision cryotherapy for the safe, effective removal of benign skin lesions — no surgery, no scarring.'} />
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
                   <SeriesTable headers={seriesHeaders} rows={cryotherapyPricing} names={french?.freezpen.names} />
@@ -439,7 +439,7 @@ export default function MediSpa() {
                 <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-lg)' }}>
                   {french?.laser.skin || 'Skin Treatments'}
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
                   {laserSkinPricing.map((item, index) => (
                     <div key={item.treatment} style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: 'var(--space-lg)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid #E9B0B9' }}>
                       <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350', marginBottom: 'var(--space-sm)' }}>{french?.laser.skinNames[index] || item.treatment}</h4>
@@ -452,7 +452,7 @@ export default function MediSpa() {
               {/* Hair Removal Tables */}
               <h3 style={laserHeading}>{french?.laser.hair || 'Laser Hair Removal'}</h3>
               <SeriesBadge text={seriesBadge} />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 'var(--space-2xl)', marginBottom: 'var(--space-2xl)', alignItems: 'start' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(440px, 100%), 1fr))', gap: 'var(--space-2xl)', marginBottom: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <h3 style={laserHeading}>{french?.laser.face || 'Face'}</h3>
                   <SeriesTable headers={laserHeaders} rows={laserFacePricing} names={french?.laser.faceNames} />

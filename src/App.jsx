@@ -29,6 +29,7 @@ import AdminMembers    from './pages/admin/AdminMembers'
 import AdminNewsletter from './pages/admin/AdminNewsletter'
 import AdminPayments   from './pages/admin/AdminPayments'
 import AdminProducts   from './pages/admin/AdminProducts'
+import AdminBoutique   from './pages/admin/AdminBoutique'
 import AdminWebmail    from './pages/admin/AdminWebmail'
 
 function ProtectedRoute({ children }) {
@@ -107,6 +108,7 @@ export default function App() {
           <Route path="/admin/webmail" element={<AdminRoute><AdminWebmail /></AdminRoute>} />
           <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
           <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
+          <Route path="/admin/boutique" element={<AdminRoute><AdminBoutique /></AdminRoute>} />
 
           {/* 404 */}
           <Route path="*" element={
