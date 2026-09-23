@@ -44,7 +44,7 @@ export default function AdminLayout({ children, title }) {
         <div style={{ padding: 'var(--space-lg)', borderBottom: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
           <img
             src="/logo.png"
-            alt="Sparivier"
+            alt="Spa Rivier"
             style={{ height: '66px', width: 'auto', display: 'block', margin: '0 auto 6px' }}
           />
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(233,176,185,0.65)' }}>Admin</p>

@@ -10,7 +10,7 @@ export const boutiqueProducts = [
     id: 1, name: 'The Plum Silk Midi Dress',
     price: '$582', priceInCents: 58200, stock: 4,
     image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=500&fit=crop&q=85',
-    description: '100% pure silk, bias-cut with adjustable straps. Our Sparivier house signature. Available in plum, ivory, and champagne.',
+    description: '100% pure silk, bias-cut with adjustable straps. Our Spa Rivier house signature. Available in plum, ivory, and champagne.',
   },
   {
     id: 2, name: 'Velvet Evening Gown',
@@ -51,10 +51,10 @@ export const boutiqueProducts = [
 
   // ── Separates — Tops & Blouses ────────────────────────────────────────────
   {
-    id: 8, name: 'Sparivier Floral Blouse',
+    id: 8, name: 'Balloon-Sleeve Georgette Blouse',
     price: '$234', priceInCents: 23400, stock: 8,
-    image: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d253?w=400&h=500&fit=crop&q=85',
-    description: 'Deadstock French floral print on georgette. Flutter sleeves. Effortlessly romantic.',
+    image: '/images/boutique/olive-blouse.jpg',
+    description: 'Softly draped georgette with balloon sleeves and a covered placket. In olive, ivory, and black.',
   },
   {
     id: 9, name: 'Crystal-Embellished Organza Blouse',
@@ -69,10 +69,10 @@ export const boutiqueProducts = [
     description: 'Ivory 16mm silk charmeuse with a marabou feather hem. Reserved for moments that deserve grandeur.',
   },
   {
-    id: 11, name: 'Cashmere Fine-Knit Turtleneck',
+    id: 11, name: 'Aran Cable-Knit Sweater',
     price: '$276', priceInCents: 27600, stock: 7,
-    image: 'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&h=500&fit=crop&q=85',
-    description: '100% Grade-A cashmere, slim-fit, ribbed cuffs and hem. In camel, oatmeal, and deep plum.',
+    image: '/images/boutique/cable-knit-sweater.jpg',
+    description: 'Hand-framed Aran cables in undyed merino. Relaxed through the body, ribbed at the cuff.',
   },
 
   // ── Separates — Skirts ────────────────────────────────────────────────────
@@ -109,10 +109,10 @@ export const boutiqueProducts = [
     description: 'Single-button, nipped-waist blazer. Fully silk-lined. Power dressing — redefined.',
   },
   {
-    id: 17, name: 'Gold-Button Bouclé Jacket',
+    id: 17, name: 'Monochrome Tweed Jacket',
     price: '$612', priceInCents: 61200, stock: 3,
-    image: 'https://images.unsplash.com/photo-1550614000-4895a10e1bfd?w=400&h=500&fit=crop&q=85',
-    description: 'Ivory bouclé with gilt brass double-row buttons. An unmistakable nod to classic French couture.',
+    image: '/images/boutique/tweed-jacket.jpg',
+    description: 'Black-and-ivory bouclé tweed, dropped shoulder, patch pockets. An unmistakable nod to classic French couture.',
   },
   {
     id: 18, name: 'Cropped Linen Blazer',
@@ -143,7 +143,7 @@ export const boutiqueProducts = [
 
   // ── Outerwear ─────────────────────────────────────────────────────────────
   {
-    id: 22, name: 'The Sparivier Trench',
+    id: 22, name: 'The Spa Rivier Trench',
     price: '$750', priceInCents: 75000, stock: 3,
     image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=500&fit=crop&q=85',
     description: 'Double-breasted, belted, water-resistant gabardine. The forever coat you have been searching for.',
@@ -157,9 +157,9 @@ export const boutiqueProducts = [
 
   // ── Knitwear ──────────────────────────────────────────────────────────────
   {
-    id: 24, name: 'Cashmere Wrap Cardigan',
+    id: 24, name: 'Cable-Knit Button Cardigan',
     price: '$384', priceInCents: 38400, stock: 5,
-    image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=500&fit=crop&q=85',
-    description: 'Grade-A Scottish cashmere. Oversized wrap silhouette with satin self-belt. In camel, plum, and oatmeal.',
+    image: '/images/boutique/grey-cardigan.jpg',
+    description: 'Soft grey cable knit with mother-of-pearl buttons and ribbed cuffs. It layers over everything.',
   },
 ]

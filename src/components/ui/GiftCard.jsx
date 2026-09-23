@@ -1,39 +1,17 @@
 import { useState } from 'react'
 import { Heart } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useCart } from '../../context/CartContext'
-import { formatMoney } from '../../lib/tax'
-import QuantitySelector from './QuantitySelector'
 import { giftTranslations } from '../../data/giftTranslations'
 
 export default function GiftCard({ gift }) {
   const { t, i18n } = useTranslation()
   const [hovered,    setHovered]    = useState(false)
   const [wishlisted, setWishlisted] = useState(false)
-  const [qty,        setQty]        = useState(1)
-  const [added,      setAdded]      = useState(false)
-  const { addItem } = useCart()
 
   const outOfStock = (gift.stock ?? 99) === 0
-  const lineTotal  = gift.priceInCents ? formatMoney(gift.priceInCents * qty) : null
   const translation = i18n.language.startsWith('fr') ? giftTranslations[gift.id] : null
   const displayName = translation?.[0] || gift.name
   const displayDescription = translation?.[1] || gift.description
-
-  function handleAdd() {
-    if (outOfStock || !gift.priceInCents) return
-    addItem({
-      id:       gift.id,
-      name:     displayName,
-      price:    gift.priceInCents,
-      image:    gift.image,
-      category: 'gifts',
-      qty,
-      maxQty:   gift.stock ?? 99,
-    })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2200)
-  }
 
   return (
     <div
@@ -76,37 +54,19 @@ export default function GiftCard({ gift }) {
           {displayDescription}
         </p>
 
-        {/* Price */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-md)' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 600, color: 'var(--lavelle-plum-mid)' }}>
-            {gift.priceInCents ? formatMoney(gift.priceInCents) : gift.price}
-          </span>
-          {qty > 1 && lineTotal && (
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)' }}>
-              {qty} × = {lineTotal}
-            </span>
+        {/* Merch is sold in store only — no price or cart online */}
+        <a href="tel:+12509928084" style={{
+          display: 'block', textAlign: 'center', textDecoration: 'none',
+          fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 600,
+          letterSpacing: '0.12em', textTransform: 'uppercase', padding: '9px 12px',
+          borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-deep)',
+          color: outOfStock ? 'var(--lavelle-gray-mid)' : 'var(--lavelle-plum-deep)',
+        }}>
+          {outOfStock ? t('product.soldOut') : t('product.inStore')}
+          {!outOfStock && (
+            <span style={{ display: 'block', fontWeight: 400, letterSpacing: '0.06em', marginTop: '2px' }}>250-992-8084</span>
           )}
-        </div>
-
-        {/* Qty + Add */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
-          <QuantitySelector size="sm" value={qty} max={gift.stock ?? 99} disabled={outOfStock} onChange={setQty} />
-          <button
-            onClick={handleAdd}
-            disabled={outOfStock}
-            aria-live="polite"
-            style={{
-              flex: 1, fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 600,
-              letterSpacing: '0.12em', textTransform: 'uppercase', padding: '9px 12px',
-              borderRadius: 'var(--radius-full)', cursor: outOfStock ? 'not-allowed' : 'pointer',
-              border: added ? '1px solid #2E7D5E' : '1px solid var(--lavelle-plum-deep)',
-              background: added ? 'rgba(46,125,94,0.1)' : outOfStock ? 'var(--lavelle-cream)' : 'var(--lavelle-plum-deep)',
-              color: added ? '#2E7D5E' : outOfStock ? 'var(--lavelle-gray-mid)' : 'var(--lavelle-white)',
-              transition: 'all 0.25s ease',
-            }}>
-            {outOfStock ? t('product.soldOut') : added ? t('product.added') : t('product.addToCart')}
-          </button>
-        </div>
+        </a>
       </div>
     </div>
   )

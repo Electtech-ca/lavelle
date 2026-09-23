@@ -1,10 +1,20 @@
+/* ──────────────────────────────────────────────────────────────
+   Gift certificates, as a section of the Giftware page.
+
+   These used to live on their own /gift-certificates page. The
+   certificates are part of the Giftware offering, so the page was
+   folded in and this section carries the whole flow: the four
+   explanatory steps, the tier cards, the custom-amount block, and
+   the purchase modal.
+   ────────────────────────────────────────────────────────────── */
+
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import SectionHeader    from '../components/ui/SectionHeader'
-import GoldDivider      from '../components/ui/GoldDivider'
-import NewsletterSignup from '../components/sections/NewsletterSignup'
-import { supabase }     from '../lib/supabase'
-import { giftCertificates } from '../data/giftsData'
+import SectionHeader from '../ui/SectionHeader'
+import { supabase }  from '../../lib/supabase'
+import { certificatePaymentUrl, hasCertificatePaymentLink,
+         customCertificatePaymentUrl, hasCustomCertificateLink } from '../../lib/stripe'
+import { giftCertificates } from '../../data/giftsData'
 
 /* ── Certificate voucher component ── */
 function CertificateCard({ cert, onPurchase }) {
@@ -62,7 +72,7 @@ function CertificateCard({ cert, onPurchase }) {
               {t('giftCert.card.label')}
             </p>
             <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 400, color: cert.textColor, lineHeight: 1.2, fontStyle: 'italic' }}>
-              Sparivier {cert.label}
+              {cert.label.startsWith('Spa Rivier') ? cert.label : `Spa Rivier ${cert.label}`}
             </p>
           </div>
           {/* Wax seal simulation */}
@@ -154,11 +164,16 @@ function CertificateCard({ cert, onPurchase }) {
 }
 
 /* ── Purchase modal ── */
+const PENDING_KEY = 'sparivier.pendingCertificate'
+
 function PurchaseModal({ cert, onClose }) {
   const { t } = useTranslation()
-  const [form, setForm] = useState({ recipientName: '', recipientEmail: '', senderName: '', message: '', delivery: 'email' })
+  // The code is emailed to the recipient; the buyer gets the printable certificate.
+  const [form, setForm] = useState({ recipientName: '', recipientEmail: '', senderName: '', senderEmail: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
+  const isCustom  = Boolean(cert?.custom)
+  const payOnline = isCustom ? hasCustomCertificateLink() : hasCertificatePaymentLink(cert?.amount)
 
   if (!cert) return null
 
@@ -169,22 +184,46 @@ function PurchaseModal({ cert, onClose }) {
     setSaving(true)
     // Generate a unique certificate code
     const certCode = `LV-${cert.amount.toString().padStart(4, '0')}-${Math.floor(Math.random() * 9000 + 1000)}`
+    const payUrl = !payOnline ? null
+      : isCustom ? customCertificatePaymentUrl({ certCode, email: form.senderEmail })
+      : certificatePaymentUrl(cert.amount, { certCode, email: form.senderEmail })
     if (supabase) {
-      await supabase.from('gift_orders').insert([{
-        type:            'certificate',
-        cert_code:       certCode,
-        cert_amount:     cert.amount * 100,     // store in cents
-        cert_label:      cert.label,
-        amount:          cert.amount * 100,
-        sender_name:     form.senderName,
-        sender_email:    form.senderName,       // filled at payment step; placeholder for now
-        recipient_name:  form.recipientName,
-        recipient_email: form.recipientEmail || '',
-        message:         form.message,
-        delivery:        form.delivery,
-        status:          'pending',             // becomes 'active' once payment confirmed
-      }]).catch(err => console.error('[GiftCertificates] insert failed:', err))
+      // A failed insert must never block the payment — Stripe carries certCode
+      // as client_reference_id, so staff can reconcile the order either way.
+      // Note the builder is a thenable without .catch, hence try/await/error.
+      try {
+        const { error } = await supabase.from('gift_orders').insert([{
+          type:            'certificate',
+          cert_code:       certCode,
+          cert_amount:     cert.amount * 100,     // store in cents
+          cert_label:      cert.label,
+          amount:          cert.amount * 100,
+          sender_name:     form.senderName,
+          sender_email:    form.senderEmail,      // the certificate is emailed here
+          recipient_name:  form.recipientName,
+          recipient_email: form.recipientEmail,   // the code is emailed here
+          message:         form.message,
+          delivery:        'email',
+          status:          'pending',             // becomes 'active' once payment confirmed
+        }])
+        if (error) console.error('[GiftCertificateSection] insert failed:', error)
+      } catch (err) {
+        console.error('[GiftCertificateSection] insert failed:', err)
+      }
     }
+    if (payUrl) {
+      // Carried across the redirect so the return page can show the guest
+      // a printable certificate next to the Stripe token.
+      try {
+        sessionStorage.setItem(PENDING_KEY, JSON.stringify({
+          certCode, amount: cert.amount, label: cert.label,
+          recipientName: form.recipientName, senderName: form.senderName, message: form.message,
+        }))
+      } catch { /* private browsing — the Stripe token alone still works */ }
+      window.location.assign(payUrl)
+      return
+    }
+
     setSaving(false)
     setSubmitted(true)
   }
@@ -197,7 +236,9 @@ function PurchaseModal({ cert, onClose }) {
         <div style={{ background: 'linear-gradient(135deg, var(--lavelle-plum-deep), var(--lavelle-plum-mid))', padding: 'var(--space-xl)', borderRadius: 'var(--radius-xl) var(--radius-xl) 0 0', position: 'relative' }}>
           <button onClick={onClose} style={{ position: 'absolute', top: 'var(--space-md)', right: 'var(--space-md)', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontSize: '1rem' }}>✕</button>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-sm)' }}>{t('giftCert.modal.heading')}</p>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 300, color: 'var(--lavelle-white)' }}>${cert.amount} · {cert.label}</p>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 300, color: 'var(--lavelle-white)' }}>
+            {isCustom ? t('giftCert.custom.heading') : `$${cert.amount} · ${cert.label}`}
+          </p>
         </div>
 
         <div style={{ padding: 'var(--space-xl)' }}>
@@ -218,8 +259,9 @@ function PurchaseModal({ cert, onClose }) {
 
               {[
                 { name: 'recipientName',  label: t('giftCert.modal.recipient'),      type: 'text',  required: true },
-                { name: 'recipientEmail', label: t('giftCert.modal.recipientEmail'),  type: 'email', required: false },
-                { name: 'senderName',     label: t('giftCert.modal.yourName'),        type: 'text',  required: true },
+                { name: 'recipientEmail', label: t('giftCert.modal.recipientEmail'), type: 'email', required: true },
+                { name: 'senderName',     label: t('giftCert.modal.yourName'),       type: 'text',  required: true },
+                { name: 'senderEmail',    label: t('giftCert.modal.yourEmail'),      type: 'email', required: true },
               ].map(f => (
                 <div key={f.name} style={{ marginBottom: 'var(--space-md)' }}>
                   <label style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)', display: 'block', marginBottom: '6px' }}>
@@ -239,28 +281,18 @@ function PurchaseModal({ cert, onClose }) {
                   style={{ width: '100%', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', padding: '10px 14px', border: '1px solid var(--lavelle-cream)', borderRadius: 'var(--radius-md)', background: 'var(--lavelle-ivory)', color: 'var(--lavelle-charcoal)', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
               </div>
 
-              <div style={{ marginBottom: 'var(--space-xl)' }}>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)', marginBottom: '10px' }}>{t('giftCert.modal.delivery')}</p>
-                {[
-                  { val: 'email',    label: t('giftCert.modal.digital') },
-                  { val: 'physical', label: t('giftCert.modal.physical') },
-                ].map(d => (
-                  <label key={d.val} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-charcoal)', cursor: 'pointer', marginBottom: '8px' }}>
-                    <input type="radio" name="delivery" value={d.val} checked={form.delivery === d.val} onChange={handle} style={{ accentColor: 'var(--lavelle-plum-deep)' }} />
-                    {d.label}
-                  </label>
-                ))}
-              </div>
-
-              {/* Payment note */}
+              {/* Delivery + payment note */}
               <div style={{ background: 'var(--lavelle-plum-whisper)', borderRadius: 'var(--radius-md)', padding: 'var(--space-md)', marginBottom: 'var(--space-lg)', border: '1px solid rgba(49,58,77,0.1)' }}>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7, marginBottom: '6px' }}>
+                  {t('giftCert.modal.delivery')}
+                </p>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7 }}>
-                  {t('giftCert.modal.note')}
+                  {payOnline ? t('giftCert.modal.note') : t('giftCert.modal.noteLink')}
                 </p>
               </div>
 
               <button type="submit" className="btn-primary" style={{ width: '100%', opacity: saving ? 0.7 : 1 }} disabled={saving}>
-                {saving ? '…' : t('giftCert.modal.cta')}
+                {saving ? '…' : payOnline ? t('giftCert.modal.ctaPay') : t('giftCert.modal.cta')}
               </button>
             </form>
           )}
@@ -270,39 +302,12 @@ function PurchaseModal({ cert, onClose }) {
   )
 }
 
-export default function GiftCertificates() {
+export default function GiftCertificateSection() {
   const { t } = useTranslation()
   const [selected, setSelected] = useState(null)
 
   return (
     <>
-      {/* ── Page hero ── */}
-      <div style={{ position: 'relative', height: '68vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <img
-          src="/branding/Gifts.svg"
-          alt="Sparivier Gift Certificates — elegant wrapped gifts with ribbon" loading="eager"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-        />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(15,20,35,0.82) 0%, rgba(49,58,77,0.6) 60%, rgba(15,20,35,0.78) 100%)' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,0.55), transparent)' }} />
-
-        {/* Animated decorative rings */}
-        <div style={{ position: 'absolute', top: '15%', left: '8%', width: '120px', height: '120px', borderRadius: '50%', border: '1px solid rgba(228,62,45,0.15)', animation: 'float 7s ease-in-out infinite' }} />
-        <div style={{ position: 'absolute', bottom: '20%', right: '12%', width: '80px', height: '80px', borderRadius: '50%', border: '1px solid rgba(228,62,45,0.2)', animation: 'float 5s ease-in-out infinite reverse' }} />
-
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '720px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
-          <p className="slide-in-up-1" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>
-            ✦ {t('giftCert.hero.eyebrow')}
-          </p>
-          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 30px rgba(0,0,0,0.5)', whiteSpace: 'pre-line' }}>
-            {t('giftCert.hero.headline')}
-          </h1>
-          <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.15rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.8 }}>
-            {t('giftCert.hero.sub')}
-          </p>
-        </div>
-      </div>
-
       {/* ── How it works ── */}
       <div style={{ background: 'var(--lavelle-plum-deep)', padding: 'var(--space-2xl) var(--space-xl)' }}>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-xl)', textAlign: 'center' }}>
@@ -328,7 +333,7 @@ export default function GiftCertificates() {
       </div>
 
       {/* ── Certificate cards ── */}
-      <section style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl)' }}>
+      <section id="certificates" style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl)', scrollMarginTop: '80px' }}>
         <div className="container">
           <SectionHeader
             eyebrow={t('giftCert.section.eyebrow')}
@@ -360,14 +365,20 @@ export default function GiftCertificates() {
               {t('giftCert.custom.body')}
             </p>
             <div className="cta-center">
-              <a href="tel:+12509928084" className="btn-secondary">{t('giftCert.custom.cta')}</a>
+              {/* Buy online once the "customer chooses the amount" link is set;
+                  until then the block still works, by phone. */}
+              {hasCustomCertificateLink() ? (
+                <button className="btn-secondary"
+                  onClick={() => setSelected({ amount: 0, label: 'Custom', custom: true })}>
+                  {t('giftCert.custom.ctaOnline')}
+                </button>
+              ) : (
+                <a href="tel:+12509928084" className="btn-secondary">{t('giftCert.custom.cta')}</a>
+              )}
             </div>
           </div>
         </div>
       </section>
-
-      <GoldDivider />
-      <NewsletterSignup />
 
       {/* Purchase modal */}
       {selected && <PurchaseModal cert={selected} onClose={() => setSelected(null)} />}

@@ -2,7 +2,7 @@ import { createContext, useContext, useReducer, useEffect, useCallback } from 'r
 import { calcTax } from '../lib/tax'
 
 /* ─────────────────────────────────────────────────────────────
-   Sparivier Shopping Cart — Global State
+   Spa Rivier Shopping Cart — Global State
    Cart items are persisted to localStorage so they survive
    page refreshes. All prices are in CENTS (integers).
 

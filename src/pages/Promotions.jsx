@@ -25,13 +25,13 @@ export default function Promotions() {
       {/* Page hero with real photo */}
       <div style={{ position: 'relative', height: '65vh', minHeight: '460px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=1920&h=1080&fit=crop&q=85"
-          alt="Sparivier promotions and rewards" loading="eager"
+          alt="Spa Rivier promotions and rewards" loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(30,5,55,0.68)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '660px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>✦ Current Offers</p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>Promotions & Rewards</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75 }}>Exclusive offers for our guests, plus our Sparivier Loyalty Programme — because the finest clients deserve the most beautiful rewards.</p>
+          <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75 }}>Exclusive offers for our guests, plus our Spa Rivier Loyalty Programme — because the finest clients deserve the most beautiful rewards.</p>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export default function Promotions() {
       {/* Loyalty Programme */}
       <section style={{ background: 'var(--lavelle-plum-deep)', padding: 'var(--space-3xl) var(--space-xl)' }}>
         <div className="container">
-          <SectionHeader eyebrow="Sparivier Rewards" headline="The Loyalty Programme" subtext="Earn points on every visit. Redeem for services, products, and exclusive experiences." light align="center" />
+          <SectionHeader eyebrow="Spa Rivier Rewards" headline="The Loyalty Programme" subtext="Earn points on every visit. Redeem for services, products, and exclusive experiences." light align="center" />
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
             {loyaltyTiers.map((tier, i) => (
@@ -111,7 +111,7 @@ export default function Promotions() {
           {/* Join CTA strip */}
           <div style={{ position: 'relative', borderRadius: 'var(--radius-xl)', overflow: 'hidden', textAlign: 'center' }}>
             <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1400&h=360&fit=crop&q=80"
-              alt="Join the Sparivier loyalty programme" loading="lazy"
+              alt="Join the Spa Rivier loyalty programme" loading="lazy"
               style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(49,58,77,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-lg)', padding: 'var(--space-xl)' }}>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem,2.5vw,1.8rem)', fontStyle: 'italic', color: 'var(--lavelle-gold-champagne)' }}>

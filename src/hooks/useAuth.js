@@ -15,6 +15,7 @@ import { supabase } from '../lib/supabase'
 
 export function useAuth() {
   const [user, setUser]       = useState(null)
+  const [role, setRole]       = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -26,15 +27,48 @@ export function useAuth() {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      setLoading(false)
+      // With a session we stay loading until the role resolves below.
+      if (!session?.user) setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => setUser(session?.user ?? null)
+      (_event, session) => {
+        setUser(session?.user ?? null)
+        if (!session?.user) { setRole(null); setLoading(false) }
+      }
     )
 
     return () => subscription.unsubscribe()
   }, [])
+
+  // Admin status comes ONLY from a trusted role claim stored server-side.
+  // No email allowlists baked into client code.
+  //
+  // `loading` must stay true until this resolves: a guarded route that renders
+  // while the role is still in flight sees isAdmin === false and redirects away
+  // before the answer arrives.
+  const userId = user?.id
+
+  useEffect(() => {
+    if (!supabase || !userId) { setRole(null); return }
+
+    let cancelled = false
+    setLoading(true)
+
+    supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return
+        if (error) console.error('[useAuth] role lookup failed:', error.message)
+        setRole(data?.role ?? null)
+        setLoading(false)
+      })
+
+    return () => { cancelled = true }
+  }, [userId])
 
   async function signIn(email, password) {
     if (!supabase) {
@@ -46,11 +80,10 @@ export function useAuth() {
   async function signOut() {
     if (supabase) await supabase.auth.signOut()
     setUser(null)
+    setRole(null)
   }
 
-  // Admin status comes ONLY from a trusted role claim set in Supabase.
-  // No email allowlists baked into client code.
-  const isAdmin = user?.user_metadata?.role === 'admin'
+  const isAdmin = role === 'admin'
 
   return { user, loading, signIn, signOut, isAdmin }
 }

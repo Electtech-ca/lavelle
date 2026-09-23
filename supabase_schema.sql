@@ -40,7 +40,14 @@ CREATE TRIGGER trg_profiles_updated_at
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.handle_profile_updated_at();
 
--- Auto-create a profile row whenever a new user signs up via Supabase Auth
+-- Auto-create a profile row whenever a new user signs up via Supabase Auth.
+--
+-- SECURITY: `role` is hardcoded to 'member' and must stay that way.
+-- raw_user_meta_data is whatever the CLIENT passed to signUp(), so reading the
+-- role from it let anyone self-register as an admin with
+--   signUp({ ..., options: { data: { role: 'admin' } } })
+-- Promote admins with the UPDATE path instead, which trg_prevent_role_escalation
+-- guards (see below).
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 BEGIN
@@ -49,7 +56,7 @@ BEGIN
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'member')
+    'member'
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
@@ -59,6 +66,36 @@ DROP TRIGGER IF EXISTS trg_on_auth_user_created ON auth.users;
 CREATE TRIGGER trg_on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
+-- Only an existing admin may change a role once the row exists. This lives in
+-- the database so it holds for the SQL editor and the service_role key too, not
+-- just the app.
+--
+-- NOTE: this is BEFORE UPDATE only and compares OLD.role, so it does NOT cover
+-- the INSERT that handle_new_user() performs — that is why the role is
+-- hardcoded there rather than defended here.
+--
+-- Bootstrapping the first admin has to bypass it, since by definition no admin
+-- exists yet to authorise the change:
+--   ALTER TABLE public.profiles DISABLE TRIGGER trg_prevent_role_escalation;
+--   UPDATE public.profiles SET role = 'admin' WHERE email = 'admin@sparivier.ca';
+--   ALTER TABLE public.profiles ENABLE TRIGGER trg_prevent_role_escalation;
+CREATE OR REPLACE FUNCTION public.prevent_role_self_escalation()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF NEW.role IS DISTINCT FROM OLD.role THEN
+    IF NOT public.is_admin() THEN
+      RAISE EXCEPTION 'Only admins can change role';
+    END IF;
+  END IF;
+  RETURN NEW;
+END; $$;
+
+DROP TRIGGER IF EXISTS trg_prevent_role_escalation ON public.profiles;
+CREATE TRIGGER trg_prevent_role_escalation
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.prevent_role_self_escalation();
 
 
 -- =============================================================================
@@ -303,7 +340,6 @@ INSERT INTO public.promotions (title, description, value, expiry, sort_order) VA
   ('Refer a Friend',             'When a friend books their first visit using your referral code, you both receive $60 credit.',     '$60 credit each',   'Ongoing',        3),
   ('Wednesday Women''s Luncheon','Every Wednesday, a 3-course prix fixe lunch for the La Velle Woman. Reserve by Tuesday.',         '$66 fixed menu',    'Weekly',         4),
   ('Spa & Salon Bundle',         'Book a signature facial + hair service in one visit and save $72 off the combined price.',         'Save $72',          'Monthly',        5),
-  ('The Quarterly La Velle Box', 'Curated box of 6 full-size luxury products. Delivered quarterly to members.',                     '$264 for $192',     'Subscribe',      6),
   ('Bridal Inner Circle Package','Complete bridal preparation: bridal shower high tea, pre-wedding spa day, wedding hair & makeup.', 'Bespoke pricing',   'Year-round',     7)
 ON CONFLICT DO NOTHING;
 
@@ -458,13 +494,20 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.gift_orders;
 
 -- =============================================================================
 -- ADMIN USER SETUP
---    After running this script, create the admin user in Supabase Auth Dashboard
---    (Authentication → Users → Invite User) using:
---        Email:    admin@lavelle.ca
---        Password: LaVelle@2025!
+--    After running this script, create the admin user in the Supabase Auth
+--    Dashboard (Authentication → Users → Add user, with Auto Confirm ticked).
+--    Do not write the password down here.
 --
---    Then run this to grant admin role (replace the UUID with the real one):
---    UPDATE public.profiles SET role = 'admin' WHERE email = 'admin@lavelle.ca';
+--    handle_new_user() then creates the profile row as 'member'. Promoting the
+--    FIRST admin has to step around trg_prevent_role_escalation, because that
+--    trigger requires an existing admin to authorise the change:
 --
---    OR use the Supabase Dashboard → Table Editor → profiles → edit the row.
+--      DO $$
+--      BEGIN
+--        ALTER TABLE public.profiles DISABLE TRIGGER trg_prevent_role_escalation;
+--        UPDATE public.profiles SET role = 'admin' WHERE email = 'you@example.ca';
+--        ALTER TABLE public.profiles ENABLE TRIGGER trg_prevent_role_escalation;
+--      END $$;
+--
+--    Every admin after the first is granted normally by an existing admin.
 -- =============================================================================

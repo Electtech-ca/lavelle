@@ -18,7 +18,7 @@ function EmptyCart() {
       </p>
       <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', justifyContent: 'center' }}>
         <a href="/boutique" className="btn-primary">{t('cart.empty.cta1')}</a>
-        <a href="/gifts" className="btn-secondary">{t('cart.empty.cta2')}</a>
+        <a href="/giftware" className="btn-secondary">{t('cart.empty.cta2')}</a>
       </div>
     </div>
   )

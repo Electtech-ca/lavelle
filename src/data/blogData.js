@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   SPARIVIER — Blog Posts
+   SPA RIVIER — Blog Posts
    ═══════════════════════════════════════════════════════════════ */
 
 export const blogPosts = [
@@ -10,10 +10,10 @@ export const blogPosts = [
     tag: 'medispa',
     date: 'May 20, 2026',
     readTime: '4 min read',
-    author: 'The Sparivier MediSpa Team',
+    author: 'The Spa Rivier MediSpa Team',
     title: 'The Science Behind OxyGeneo® — Why Your Skin Needs Oxygen',
-    excerpt: 'Discover how Sparivier\'s signature OxyGeneo treatment uses patented OxyPod technology to exfoliate, oxygenate, and infuse your skin in a single luxurious session.',
-    image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=900&h=560&fit=crop&q=85',
+    excerpt: 'Discover how Spa Rivier\'s signature OxyGeneo treatment uses patented OxyPod technology to exfoliate, oxygenate, and infuse your skin in a single luxurious session.',
+    image: '/images/medispa/oxygeneo-treatment.jpg',
     featured: true,
     body: [
       {
@@ -22,7 +22,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'That\'s the problem OxyGeneo® was designed to solve. Available exclusively at our Sparivier MediSpa, OxyGeneo® is the world\'s first OxyPod technology — a three-in-one treatment that simultaneously exfoliates the uppermost skin layer, stimulates oxygenation from within, and infuses active ingredients at the optimal moment of cellular receptivity.',
+        text: 'That\'s the problem OxyGeneo® was designed to solve. Available exclusively at our Spa Rivier MediSpa, OxyGeneo® is the world\'s first OxyPod technology — a three-in-one treatment that simultaneously exfoliates the uppermost skin layer, stimulates oxygenation from within, and infuses active ingredients at the optimal moment of cellular receptivity.',
       },
       {
         type: 'heading',
@@ -46,7 +46,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'There is zero downtime. You can return to your day immediately — and we find most clients arrive for their treatment on a lunch break. Our Sparivier MediSpa specialists will recommend the right OxyPod formula for your skin type and concern during your complimentary consultation.',
+        text: 'There is zero downtime. You can return to your day immediately — and we find most clients arrive for their treatment on a lunch break. Our Spa Rivier MediSpa specialists will recommend the right OxyPod formula for your skin type and concern during your complimentary consultation.',
       },
       {
         type: 'cta',
@@ -62,15 +62,15 @@ export const blogPosts = [
     tag: 'skincare',
     date: 'May 12, 2026',
     readTime: '5 min read',
-    author: 'Sparivier Spa Team',
+    author: 'Spa Rivier Spa Team',
     title: 'Spring Skincare Reset: The 5 Treatments Your Skin Needs Right Now',
-    excerpt: 'Winter takes a toll. As the season shifts, here are the Sparivier spa and MediSpa treatments that will restore radiance, hydration, and evenness to your complexion.',
-    image: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=900&h=560&fit=crop&q=85',
+    excerpt: 'Winter takes a toll. As the season shifts, here are the Spa Rivier spa and MediSpa treatments that will restore radiance, hydration, and evenness to your complexion.',
+    image: '/images/medispa/eminence-strawberry-rhubarb.jpg',
     featured: false,
     body: [
       {
         type: 'paragraph',
-        text: 'After months of cold air, indoor heating, and reduced UV protection, your skin in spring is often dull, dehydrated, and uneven. This is the season to reset — and there\'s no better place to do it than at Sparivier.',
+        text: 'After months of cold air, indoor heating, and reduced UV protection, your skin in spring is often dull, dehydrated, and uneven. This is the season to reset — and there\'s no better place to do it than at Spa Rivier.',
       },
       {
         type: 'heading',
@@ -110,7 +110,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'Spring is the season of low-maintenance glamour. A lash lift and brow lamination at Sparivier takes 90 minutes and gives you six weeks of effortless, wide-awake beauty — no mascara required.',
+        text: 'Spring is the season of low-maintenance glamour. A lash lift and brow lamination at Spa Rivier takes 90 minutes and gives you six weeks of effortless, wide-awake beauty — no mascara required.',
       },
       {
         type: 'cta',
@@ -126,10 +126,10 @@ export const blogPosts = [
     tag: 'wellness',
     date: 'April 28, 2026',
     readTime: '3 min read',
-    author: 'Sparivier Guest Relations',
-    title: 'First-Time Guest? Your Complete Guide to Spa Etiquette at Sparivier',
+    author: 'Spa Rivier Guest Relations',
+    title: 'First-Time Guest? Your Complete Guide to Spa Etiquette at Spa Rivier',
     excerpt: 'Everything you need to know before your first visit — from arrival time and what to wear, to tipping, silence, and how to make the absolute most of your experience.',
-    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=900&h=560&fit=crop&q=85',
+    image: '/images/spa/bath-ritual.jpg',
     featured: false,
     body: [
       {
@@ -166,7 +166,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'Sparivier maintains a tranquil environment throughout the spa. Phone calls should be taken outside, and voices kept low. This courtesy extends to other guests who are in states of deep relaxation.',
+        text: 'Spa Rivier maintains a tranquil environment throughout the spa. Phone calls should be taken outside, and voices kept low. This courtesy extends to other guests who are in states of deep relaxation.',
       },
       {
         type: 'heading',
@@ -190,15 +190,15 @@ export const blogPosts = [
     tag: 'medispa',
     date: 'April 14, 2026',
     readTime: '6 min read',
-    author: 'The Sparivier MediSpa Team',
+    author: 'The Spa Rivier MediSpa Team',
     title: 'Micro-Needling Explained: What It Is, What It Does, and Who It\'s For',
     excerpt: 'One of our most requested MediSpa treatments — micro-needling stimulates your skin\'s own repair mechanisms to address scars, fine lines, enlarged pores, and more.',
-    image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=900&h=560&fit=crop&q=85',
+    image: '/images/medispa/micro-needling-before-after.jpg',
     featured: false,
     body: [
       {
         type: 'paragraph',
-        text: 'Micro-needling is one of the most evidence-backed, results-driven treatments in modern aesthetics. At Sparivier MediSpa, we offer two technologies — DermaRoller and the advanced Xcellaris Pro — tailored to different skin needs and treatment goals.',
+        text: 'Micro-needling is one of the most evidence-backed, results-driven treatments in modern aesthetics. At Spa Rivier MediSpa, we offer two technologies — DermaRoller and the advanced Xcellaris Pro — tailored to different skin needs and treatment goals.',
       },
       {
         type: 'heading',
@@ -250,10 +250,10 @@ export const blogPosts = [
     tag: 'gourmet',
     date: 'March 30, 2026',
     readTime: '3 min read',
-    author: 'Sparivier Gourmet',
-    title: 'Champagne Afternoon Tea: A Sparivier Tradition Worth Savouring',
-    excerpt: 'Every Thursday through Sunday, Sparivier\'s Gourmet transforms into the finest afternoon tea destination in Northern BC. Here\'s what makes it so extraordinary.',
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&h=560&fit=crop&q=85',
+    author: 'Spa Rivier Gourmet',
+    title: 'Champagne Afternoon Tea: A Spa Rivier Tradition Worth Savouring',
+    excerpt: 'Every Thursday through Saturday, Spa Rivier\'s Gourmet transforms into the finest afternoon tea destination in Northern BC. Here\'s what makes it so extraordinary.',
+    image: '/images/gifts/candle-diffuser-tray.jpg',
     featured: false,
     body: [
       {
@@ -262,7 +262,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'At Sparivier Gourmet, we have built our afternoon tea service around that philosophy. Served Thursday through Sunday from 2:00 to 5:00 PM, it is one of the most beloved traditions we offer — and one of the most frequently gifted experiences in our certificate collection.',
+        text: 'At Spa Rivier Gourmet, we have built our afternoon tea service around that philosophy. Served Thursday through Saturday from 2:00 to 5:00 PM, it is one of the most beloved traditions we offer — and one of the most frequently gifted experiences in our certificate collection.',
       },
       {
         type: 'heading',
@@ -270,7 +270,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'Our head chef curates the menu seasonally, but the architecture is constant: a first tier of finger sandwiches crafted from locally sourced ingredients, a second tier of house-baked scones served warm with clotted cream and Sparivier house jam, and a third tier of petit fours, macarons, and seasonal pastries.',
+        text: 'Our head chef curates the menu seasonally, but the architecture is constant: a first tier of finger sandwiches crafted from locally sourced ingredients, a second tier of house-baked scones served warm with clotted cream and Spa Rivier house jam, and a third tier of petit fours, macarons, and seasonal pastries.',
       },
       {
         type: 'paragraph',
@@ -282,7 +282,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'Afternoon tea at Sparivier has become the go-to celebration for birthdays, bridal showers, mother-daughter outings, and promotion lunches. Minimum two guests, advance reservation required. We recommend booking at least 48 hours ahead, especially on weekends.',
+        text: 'Afternoon tea at Spa Rivier has become the go-to celebration for birthdays, bridal showers, mother-daughter outings, and promotion lunches. Minimum two guests, advance reservation required. We recommend booking at least 48 hours ahead, especially on weekends.',
       },
       {
         type: 'cta',
@@ -298,10 +298,10 @@ export const blogPosts = [
     tag: 'gifts',
     date: 'March 18, 2026',
     readTime: '4 min read',
-    author: 'Sparivier Gifting Concierge',
-    title: 'The Art of the Perfect Gift: How to Order a Bespoke Sparivier Hamper',
-    excerpt: 'A Sparivier hamper is the most thoughtful gift you can give. Here\'s how our gifting concierge team builds them — and how you can commission one for someone you love.',
-    image: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=900&h=560&fit=crop&q=85',
+    author: 'The Spa Rivier Gifting Team',
+    title: 'The Art of the Perfect Gift: Choosing from the Spa Rivier Collection',
+    excerpt: 'The hard part of gifting is not the wrapping — it is knowing what to choose. Here is how our collection is organised, and how to find the right thing in it.',
+    image: '/images/gifts/gift-assortment.jpg',
     featured: false,
     body: [
       {
@@ -310,19 +310,19 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'That\'s what a Sparivier bespoke hamper is. Not a generic basket grabbed from a shelf, but a curated experience built around one specific person by our gifting concierge team.',
+        text: 'That is why our gift collection is not a shelf of assorted baskets. Every piece in it was chosen the way you would choose it — because someone would be genuinely glad to receive it.',
       },
       {
         type: 'heading',
-        text: 'How the Process Works',
+        text: 'Start with the Category, Not the Price',
       },
       {
         type: 'paragraph',
-        text: 'It begins with a conversation — either in store or by phone. We ask about the recipient: their skin type, fragrance preferences, whether they love fashion or lean toward wellness, what they\'d never buy for themselves but secretly wish someone would. We ask about the occasion and your budget.',
+        text: 'The collection is grouped into five categories, and the quickest way to narrow it down is to pick the one that sounds like the person rather than the one that matches your budget. Hampers & Sets for the recipient who is hard to read. Skincare & Beauty for the one who has a routine and is particular about it. Lifestyle for the home-maker. Jewellery & Accessories for the person who notices detail. Gourmet for the host.',
       },
       {
         type: 'paragraph',
-        text: 'From there, our team handpicks every item. This might include Eminence Organics skincare from our spa dispensary, a silk Boutique Rivier robe or scarf, artisan chocolates and macarons from our Gourmet kitchen, a gift certificate for a spa treatment, and a personal calligraphy note hand-lettered by our team.',
+        text: 'Inside those you will find silk robes and cashmere, hand-poured candles and fragrance, the skincare we use in our own treatment rooms, and — newly added — our Champagne Afternoon Tea, the brunch charcuterie board, and Gimber ginger concentrate for anyone who would rather toast with something other than wine.',
       },
       {
         type: 'heading',
@@ -330,20 +330,20 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'Every Sparivier hamper is finished with gold tissue, our signature wax seal, and champagne ribbon. The presentation is part of the gift. We offer same-day collection in store and local delivery within Quesnel.',
+        text: 'Whatever you choose is finished with gold tissue, our signature wax seal and champagne ribbon, and we will hand-letter the note. The presentation is part of the gift. Same-day collection in store, and local delivery within Quesnel.',
       },
       {
         type: 'heading',
-        text: 'Pricing',
+        text: 'When You Genuinely Cannot Decide',
       },
       {
         type: 'paragraph',
-        text: 'Bespoke hampers start at $150 with no upper limit. Corporate gifting orders (10 units minimum) receive priority handling and can be arranged with custom branded elements.',
+        text: 'Then do not. A gift certificate is not the lazy choice when it hands the recipient their own — ours run from $50 to $1,000 across seven tiers, they are redeemable against everything we offer, and they sit on the same page as the collection.',
       },
       {
         type: 'cta',
-        text: 'Commission a Bespoke Hamper',
-        href: '/gifts',
+        text: 'Browse the Gift Collection',
+        href: '/giftware',
       },
     ],
   },

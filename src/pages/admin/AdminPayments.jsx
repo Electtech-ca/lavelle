@@ -240,7 +240,7 @@ export default function AdminPayments() {
                 </button>
               )}
               {selected.customer_email && (
-                <a href={`mailto:${selected.customer_email}?subject=Your Sparivier Order ${selected.reference}`}
+                <a href={`mailto:${selected.customer_email}?subject=Your Spa Rivier Order ${selected.reference}`}
                   style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', padding: '12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-cream)', background: 'var(--lavelle-ivory)', color: 'var(--lavelle-charcoal)', cursor: 'pointer', textAlign: 'center', display: 'block', textDecoration: 'none' }}>
                   ✉ Email Customer
                 </a>

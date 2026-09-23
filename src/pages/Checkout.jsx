@@ -5,11 +5,13 @@ import { useCart } from '../context/CartContext'
 import { formatMoney, PST_RATE, GST_RATE } from '../lib/tax'
 import { supabase } from '../lib/supabase'
 import QuantitySelector from '../components/ui/QuantitySelector'
-import { Lock, CreditCard, Store, FileText, ChevronRight } from 'lucide-react'
+import { Lock, Store, FileText, ChevronRight } from 'lucide-react'
 
-/* ── Stripe stub — replace with real loadStripe() once keys are added ── */
-const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
-const stripeReady = STRIPE_KEY && !STRIPE_KEY.includes('your-key')
+/* ── No card payment here by design ────────────────────────────────────────
+   Card payment is limited to gift certificates, which go through Stripe
+   Payment Links (see src/lib/stripe.js). Cart orders are reserved online
+   and settled in store or by invoice, so this page never touches card
+   details and loads no Stripe code. ──────────────────────────────────── */
 
 /* ── Step indicator ── */
 function Steps({ current, labels }) {
@@ -106,7 +108,7 @@ export default function Checkout() {
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '',
-    paymentMethod: 'card',
+    paymentMethod: 'in_store',
     notes: '',
   })
 
@@ -236,7 +238,6 @@ export default function Checkout() {
                 {/* Method cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
                   {[
-                    { val: 'card',     Icon: CreditCard, label: t('checkout.payment.card'),    sub: t('checkout.payment.cardSub') },
                     { val: 'in_store', Icon: Store,       label: t('checkout.payment.instore'), sub: t('checkout.payment.instoreSub') },
                     { val: 'invoice',  Icon: FileText,    label: t('checkout.payment.invoice'), sub: t('checkout.payment.invoiceSub') },
                   ].map(({ val, Icon, label, sub }) => (
@@ -248,29 +249,6 @@ export default function Checkout() {
                     </button>
                   ))}
                 </div>
-
-                {/* Stripe card area */}
-                {form.paymentMethod === 'card' && (
-                  <div style={{ background: 'var(--lavelle-ivory)', border: '1px solid var(--lavelle-cream)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-xl)', marginBottom: 'var(--space-xl)' }}>
-                    {stripeReady ? (
-                      <div style={{ minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--lavelle-cream)', borderRadius: 'var(--radius-md)', padding: 'var(--space-lg)', color: 'var(--lavelle-gray-mid)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', flexDirection: 'column', gap: '8px' }}>
-                        <Lock size={16} color="var(--lavelle-plum-soft)" />
-                        {/* Mount Stripe Element here once backend PaymentIntent is ready */}
-                        <p style={{ fontStyle: 'italic' }}>{t('checkout.stripe.placeholder')}</p>
-                      </div>
-                    ) : (
-                      <div style={{ background: 'rgba(228,62,45,0.08)', border: '1px solid rgba(228,62,45,0.3)', borderRadius: 'var(--radius-md)', padding: 'var(--space-lg)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#b83020' }} />
-                          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#b83020' }}>{t('checkout.stripe.badge')}</p>
-                        </div>
-                        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7 }}>
-                          {t('checkout.stripe.note')}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {form.paymentMethod === 'in_store' && (
                   <div style={{ background: 'var(--lavelle-plum-whisper)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-xl)', marginBottom: 'var(--space-xl)', border: '1px solid rgba(49,58,77,0.1)' }}>
@@ -315,7 +293,7 @@ export default function Checkout() {
                     [t('checkout.review.customer'), `${form.firstName} ${form.lastName}`],
                     [t('checkout.review.email'),     form.email],
                     [t('checkout.review.phone'),     form.phone],
-                    [t('checkout.review.payment'),   form.paymentMethod === 'card' ? t('checkout.payment.card') : form.paymentMethod === 'in_store' ? t('checkout.payment.instore') : t('checkout.payment.invoice')],
+                    [t('checkout.review.payment'),   form.paymentMethod === 'in_store' ? t('checkout.payment.instore') : t('checkout.payment.invoice')],
                   ].map(([k, v]) => (
                     <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 0', borderBottom: '1px solid var(--lavelle-cream)' }}>
                       <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)' }}>{k}</p>

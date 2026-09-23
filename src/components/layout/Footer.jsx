@@ -7,9 +7,8 @@ const navLinks = [
   { to: '/spa',               key: 'nav.spa' },
   { to: '/medispa',           key: 'nav.medispa' },
   { to: '/boutique',          key: 'nav.boutique' },
-  { to: '/gourmet',           key: 'nav.gourmet' },
-  { to: '/gifts',             key: 'nav.gifts' },
-  { to: '/gift-certificates', key: 'nav.giftCertificates' },
+  /* Gourmet is hidden for now — restore this line to bring it back. */
+  { to: '/giftware',          key: 'nav.giftware' },
   { to: '/blog',              key: 'nav.blog' },
 ]
 
@@ -17,10 +16,8 @@ export default function Footer() {
   const { t } = useTranslation()
 
   const hours = [
-    { days: t('footer.hours.monWed'), time: t('footer.hours.time1') },
-    { days: t('footer.hours.thuFri'), time: t('footer.hours.time2') },
-    { days: t('footer.hours.sat'),    time: t('footer.hours.time3') },
-    { days: t('footer.hours.sun'),    time: t('footer.hours.time4') },
+    { days: t('footer.hours.monSat'), time: t('footer.hours.open') },
+    { days: t('footer.hours.sun'),    time: t('footer.hours.closed') },
   ]
 
   const colHead = {
@@ -43,7 +40,7 @@ export default function Footer() {
             <NavLink to="/" style={{ textDecoration: 'none', display: 'inline-block', marginBottom: 'var(--space-lg)' }}>
               <img
                 src="/logo.png"
-                alt="Sparivier"
+                alt="Spa Rivier"
                 style={{ height: '80px', width: 'auto', display: 'block' }}
               />
             </NavLink>

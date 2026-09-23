@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────
-   Sparivier Tax Calculation Utility
+   Spa Rivier Tax Calculation Utility
    All prices stored and computed in CENTS (integer) to avoid
    floating-point errors. Round only at display time.
 

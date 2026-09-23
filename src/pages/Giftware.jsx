@@ -1,29 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import SectionHeader    from '../components/ui/SectionHeader'
 import GiftCard         from '../components/ui/GiftCard'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
-import BookingModal     from '../components/ui/BookingModal'
+import GiftCertificateSection from '../components/sections/GiftCertificateSection'
 import { giftItems }    from '../data/giftsData'
 import { promotions, loyaltyTiers } from '../data/promotionsData'
 import { promotionTranslations, loyaltyTranslations } from '../data/promotionTranslations'
 
 const PROMO_IMAGES = [
-  'https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&h=360&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=360&fit=crop&q=75',
+  '/images/gifts/voluspa-holiday-set.jpg',
+  '/images/gifts/tokyomilk-honey-moon-kit.jpg',
+  '/images/gifts/candle-diffuser-kitchen.jpg',
+  '/images/gifts/lof-true-vanilla.jpg',
+  '/images/gifts/voluspa-mercury-glass.jpg',
+  '/images/gifts/voluspa-cherry-gloss.jpg',
+  '/images/gifts/candle-diffuser-tray.jpg',
 ]
 
 const LOYALTY_IMAGES = [
-  'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=700&h=460&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=700&h=460&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=700&h=460&fit=crop&q=80',
+  '/images/gifts/voluspa-pomegranate.jpg',
+  '/images/gifts/voluspa-lavender.jpg',
+  '/images/spa/bath-ritual.jpg',
 ]
 
 const categoryMap = {
@@ -33,17 +32,20 @@ const categoryMap = {
   'Jewellery & Accessories':[7, 9, 12],
 }
 
-const GALLERY = [
-  'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=800&h=500&fit=crop&q=85',
-  'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&h=500&fit=crop&q=85',
-  'https://images.unsplash.com/photo-1602178506541-9e89e06b7f6c?w=800&h=500&fit=crop&q=85',
-]
-
-export default function Gifts() {
+export default function Giftware() {
   const { t, i18n } = useTranslation()
   const isFrench = i18n.language.startsWith('fr')
   const [category, setCategory] = useState('all')
-  const [modalOpen, setModalOpen] = useState(false)
+
+  // React Router does not honour a #hash on navigation, so a link arriving
+  // from another page at /giftware#certificates would land at the top.
+  useEffect(() => {
+    if (window.location.hash !== '#certificates') return
+    const id = setTimeout(() => {
+      document.getElementById('certificates')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+    return () => clearTimeout(id)
+  }, [])
 
   const CATEGORIES = [
     { key: 'all',       label: t('gifts.cat.all') },
@@ -51,6 +53,13 @@ export default function Gifts() {
     { key: 'lifestyle', label: t('gifts.cat.lifestyle') },
     { key: 'skincare',  label: t('gifts.cat.skincare') },
     { key: 'jewellery', label: t('gifts.cat.jewellery') },
+    { key: 'gourmet',   label: t('gifts.cat.gourmet') },
+    { key: 'seasonal',  label: t('gifts.cat.seasonal') },
+    { key: 'bathBody',  label: t('gifts.cat.bathBody') },
+    { key: 'kitchen',   label: t('gifts.cat.kitchen') },
+    { key: 'candles',   label: t('gifts.cat.candles') },
+    { key: 'home',      label: t('gifts.cat.home') },
+    { key: 'kids',      label: t('gifts.cat.kids') },
   ]
 
   const categoryKeyMap = {
@@ -58,6 +67,16 @@ export default function Gifts() {
     lifestyle: [2, 3, 5, 6, 13, 14, 16, 17, 18, 19],
     skincare:  [4, 10, 11, 15],
     jewellery: [7, 9, 12],
+    gourmet:   [21, 22, 23],
+
+    /* Departments. An item can belong to several — a gift is rarely just
+       one thing — so these overlap with the categories above by design. */
+    seasonal:  [],                  // awaiting stock
+    bathBody:  [4, 5, 11, 15],
+    kitchen:   [6, 14, 22, 23],
+    candles:   [3],
+    home:      [2, 7, 13, 17],
+    kids:      [],                  // awaiting stock
   }
 
   const visible = category === 'all'
@@ -70,7 +89,7 @@ export default function Gifts() {
       <div style={{ position: 'relative', height: '68vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
           src="/branding/Gifts.svg"
-          alt="Sparivier Gifts & Hampers" loading="eager"
+          alt="Spa Rivier Gifts & Hampers" loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
         />
         {/* Multi-layer overlay for depth */}
@@ -95,8 +114,7 @@ export default function Gifts() {
             {t('gifts.hero.sub')}
           </p>
           <div className="slide-in-up-4" style={{ display: 'flex', gap: 'var(--space-md)', justifyContent: 'center', flexWrap: 'wrap', paddingBottom: 'var(--space-md)' }}>
-            <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('gifts.hero.cta1')}</button>
-            <a href="/gift-certificates" className="btn-secondary">{t('gifts.hero.cta2')}</a>
+            <a href="#certificates" className="btn-primary">{t('gifts.hero.cta2')}</a>
           </div>
         </div>
       </div>
@@ -147,55 +165,32 @@ export default function Gifts() {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--space-xl)' }}>
-            {visible.map((g, i) => (
-              <div key={g.id} className={`slide-in-up-${Math.min(i + 1, 6)}`}>
-                <GiftCard gift={g} />
-              </div>
-            ))}
-          </div>
+          {visible.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 'var(--space-3xl) var(--space-xl)', background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }}>
+              <p style={{ fontSize: '1.8rem', marginBottom: 'var(--space-md)' }} aria-hidden="true">✦</p>
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 300, color: 'var(--lavelle-plum-deep)', marginBottom: 'var(--space-sm)' }}>
+                {t('gifts.empty.heading')}
+              </p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.75, maxWidth: '420px', margin: '0 auto' }}>
+                {t('gifts.empty.sub')} <a href="tel:+12509928084" style={{ color: 'var(--lavelle-plum-soft)' }}>250-992-8084</a>.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--space-xl)' }}>
+              {visible.map((g, i) => (
+                <div key={g.id} className={`slide-in-up-${Math.min(i + 1, 6)}`}>
+                  <GiftCard gift={g} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <GoldDivider />
 
-      {/* ── Bespoke hamper section ── */}
-      <section style={{ background: 'var(--lavelle-blush)', padding: 'var(--space-xl) var(--space-xl)', overflow: 'hidden' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
-          <div style={{ maxWidth: '560px', margin: '0 auto', textAlign: 'center' }}>
-            <SectionHeader
-              eyebrow={t('gifts.bespoke.eyebrow')}
-              headline={t('gifts.bespoke.headline')}
-              subtext={t('gifts.bespoke.sub')}
-            />
-            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 var(--space-xl) 0' }}>
-              {[
-                t('gifts.bespoke.feat1'),
-                t('gifts.bespoke.feat2'),
-                t('gifts.bespoke.feat3'),
-                t('gifts.bespoke.feat4'),
-              ].map(item => (
-                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-charcoal)', lineHeight: 2.2, display: 'flex', gap: 'var(--space-sm)', alignItems: 'flex-start', justifyContent: 'center' }}>
-                  <span style={{ color: 'var(--lavelle-gold-champagne)', marginTop: '7px', fontSize: '0.45rem', flexShrink: 0 }}>✦</span> {item}
-                </li>
-              ))}
-            </ul>
-            <div className="cta-center">
-              <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('gifts.bespoke.cta')}</button>
-            </div>
-          </div>
-
-          {/* 3-photo collage */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: 'auto auto', gap: 'var(--space-md)' }}>
-            <img src={GALLERY[0]} alt="Sparivier signature gift box" loading="lazy"
-              style={{ gridColumn: '1 / -1', width: '100%', height: '200px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
-            <img src={GALLERY[1]} alt="Champagne and chocolate hamper" loading="lazy"
-              style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)' }} />
-            <img src={GALLERY[2]} alt="Artisan candle collection" loading="lazy"
-              style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)' }} />
-          </div>
-        </div>
-      </section>
+      {/* ── Gift certificates (folded in from the old /gift-certificates page) ── */}
+      <GiftCertificateSection />
 
       <GoldDivider />
 
@@ -286,8 +281,8 @@ export default function Gifts() {
 
           {/* Join CTA */}
           <div style={{ position: 'relative', borderRadius: 'var(--radius-xl)', overflow: 'hidden', textAlign: 'center' }}>
-            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1400&h=360&fit=crop&q=80"
-              alt="Join the Sparivier loyalty programme" loading="lazy"
+            <img src="/images/gifts/voluspa-mercury-glass.jpg"
+              alt="Join the Spa Rivier loyalty programme" loading="lazy"
               style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'rgba(49,58,77,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-lg)', padding: 'var(--space-sm)' }}>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem,2.5vw,1.8rem)', fontStyle: 'italic', color: 'var(--lavelle-gold-champagne)' }}>
@@ -300,7 +295,6 @@ export default function Gifts() {
       </section>
 
       <NewsletterSignup />
-      <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
     </>
   )
 }

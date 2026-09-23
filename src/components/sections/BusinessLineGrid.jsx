@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import SectionHeader from '../ui/SectionHeader'
 
 const LINE_META = [
-  { to: '/spa',               image: '/branding/Spa%20page.svg', key: 'spa' },
-  { to: '/medispa',           image: '/branding/Skincare.svg', key: 'medispa' },
-  { to: '/boutique',          image: '/branding/Fashion.svg', key: 'boutique' },
-  { to: '/gourmet',           image: '/branding/Lifestyle.svg', key: 'gourmet' },
-  { to: '/gifts',             image: '/branding/Gifts.svg', key: 'gifts' },
-  { to: '/gift-certificates', image: '/branding/Web%20page.svg', key: 'certs' },
+  { to: '/spa',               image: '/images/spa/bath-tray.jpg',                 pos: 'center 55%', key: 'spa' },
+  { to: '/medispa',           image: '/images/medispa/led-light-therapy.jpg',     pos: 'center',     key: 'medispa' },
+  { to: '/boutique',          image: '/images/boutique/boutique-interior.jpg',    pos: 'center 30%', key: 'boutique' },
+  /* Gourmet is hidden for now — restore this line to bring it back. */
+  { to: '/giftware',          image: '/images/gifts/candle-collection-linen.jpg', pos: 'center 60%', key: 'gifts' },
+  { to: '/giftware#certificates', image: '/images/gifts/voluspa-mercury-glass.jpg', pos: 'center',   key: 'certs' },
 ]
 
 export default function BusinessLineGrid() {
@@ -38,8 +38,8 @@ export default function BusinessLineGrid() {
               style={{ position: 'relative', height: '360px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-hover)', transition: 'transform 0.4s ease, box-shadow 0.4s ease' }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 32px 90px rgba(46,51,80,0.28)'; e.currentTarget.querySelector('img').style.transform = 'scale(1.05)' }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)'; e.currentTarget.querySelector('img').style.transform = 'scale(1)' }}>
-              <img src={lines[0].image} alt="Sparivier Spa" loading="lazy"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', transition: 'transform 0.7s ease' }} />
+              <img src={lines[0].image} alt="Spa Rivier Spa" loading="lazy"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: lines[0].pos || 'center', transition: 'transform 0.7s ease' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.88) 0%, rgba(46,51,80,0.4) 55%, transparent 100%)' }} />
               <div style={{ position: 'absolute', top: '50%', left: 'var(--space-3xl)', transform: 'translateY(-50%)', maxWidth: '520px' }}>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-sm)' }}>✦ {lines[0].eyebrow}</p>
@@ -53,8 +53,9 @@ export default function BusinessLineGrid() {
           </NavLink>
         </div>
 
-        {/* Remaining 5 cards */}
-        <div className="tile-grid card-grid business-line-grid" style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: 'var(--space-lg)' }}>
+        {/* Remaining cards — column count follows the list so hiding a line
+            does not leave a gap in the row. */}
+        <div className="tile-grid card-grid business-line-grid" style={{ gridTemplateColumns: `repeat(${lines.length - 1}, minmax(0, 1fr))`, gap: 'var(--space-lg)' }}>
           {lines.slice(1).map(line => (
             <NavLink key={line.to} to={line.to} style={{ textDecoration: 'none' }}>
               <div
@@ -62,7 +63,7 @@ export default function BusinessLineGrid() {
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lifted)'; e.currentTarget.querySelector('img').style.transform = 'scale(1.06)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)'; e.currentTarget.querySelector('img').style.transform = 'scale(1)' }}>
                 <img src={line.image} alt={line.title} loading="lazy"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', transition: 'transform 0.6s ease' }} />
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: line.pos || 'center', transition: 'transform 0.6s ease' }} />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(46,51,80,0.90) 0%, rgba(46,51,80,0.22) 55%, transparent 100%)' }} />
                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 'var(--space-xl)' }}>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-sm)' }}>{line.eyebrow}</p>

@@ -101,7 +101,7 @@ export default function MemberPortal() {
               <div style={cardStyle}>
                 <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontStyle: 'italic', color: 'var(--lavelle-plum-soft)', textAlign: 'center', padding: 'var(--space-xl) 0' }}>{t('member.certs.empty')}</p>
                 <div style={{ textAlign: 'center' }}>
-                  <a href="/gift-certificates" className="btn-primary">{t('member.certs.cta')}</a>
+                  <a href="/giftware#certificates" className="btn-primary">{t('member.certs.cta')}</a>
                 </div>
               </div>
             </>

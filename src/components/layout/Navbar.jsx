@@ -1,20 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Search, Menu, X, ShoppingBag } from 'lucide-react'
+import { Search, Menu, X } from 'lucide-react'
 import BookingModal from '../ui/BookingModal'
-import CartDrawer from '../ui/CartDrawer'
 import LanguageToggle from './LanguageToggle'
-import { useCart } from '../../context/CartContext'
 
 const navKeys = [
   { to: '/',                  key: 'nav.home' },
   { to: '/spa',               key: 'nav.spa' },
   { to: '/medispa',           key: 'nav.medispa' },
   { to: '/boutique',          key: 'nav.boutique' },
-  { to: '/gourmet',           key: 'nav.gourmet' },
-  { to: '/gifts',             key: 'nav.gifts' },
-  { to: '/gift-certificates', key: 'nav.giftCertificates' },
+  /* Gourmet is hidden for now — restore this line to bring it back. */
+  { to: '/giftware',          key: 'nav.giftware' },
   { to: '/blog',              key: 'nav.blog' },
 ]
 
@@ -23,12 +20,10 @@ export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
   const [menuOpen,  setMenuOpen]  = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const [cartOpen,  setCartOpen]  = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef(null)
   const navigate = useNavigate()
-  const { itemCount } = useCart()
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 80)
@@ -83,10 +78,8 @@ export default function Navbar() {
     { path: '/spa', label: t('nav.spa'), keywords: 'facial visage peel peeling waxing épilation cils sourcils nails ongles manicure manucure pedicure pédicure' },
     { path: '/medispa', label: t('nav.medispa'), keywords: 'oxygeneo laser micro needling tatouage tattoo freezpen peel peeling esthétique' },
     { path: '/boutique', label: t('nav.boutique'), keywords: 'fashion mode clothing vêtements products produits' },
-    { path: '/gourmet', label: t('nav.gourmet'), keywords: 'brunch tea thé afternoon après midi dining dîner menu food repas' },
-    { path: '/gifts', label: t('nav.gifts'), keywords: 'gift cadeau hampers coffret loyalty fidélité promotions' },
-    { path: '/gift-certificates', label: t('nav.giftCertificates'), keywords: 'gift certificate certificat cadeau voucher bon' },
-    { path: '/blog', label: t('nav.blog'), keywords: 'journal article articles skincare soins wellness bien-être inspiration' },
+    { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité promotions certificate certificat voucher bon' },
+    { path: '/blog', label: t('nav.blog'), keywords: 'featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
   ]
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase()
   const searchResults = normalizedQuery
@@ -111,11 +104,11 @@ export default function Navbar() {
       }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', height: '100%', gap: 0 }}>
 
-          {/* ── Sparivier Logo ── */}
-          <NavLink to="/" aria-label="Sparivier home" style={{ textDecoration: 'none', flexShrink: 0, marginRight: 'var(--space-xl)' }}>
+          {/* ── Spa Rivier Logo ── */}
+          <NavLink to="/" aria-label="Spa Rivier home" style={{ textDecoration: 'none', flexShrink: 0, marginRight: 'var(--space-xl)' }}>
             <img
               src="/logo.png"
-              alt="Sparivier"
+              alt="Spa Rivier"
               style={{ height: '54px', width: 'auto', display: 'block', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.18))' }}
             />
           </NavLink>
@@ -134,24 +127,6 @@ export default function Navbar() {
             <LanguageToggle />
             <button onClick={() => setSearchOpen(true)} aria-label={t('a11y.search')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(246,245,237,0.8)', display: 'flex', padding: '4px' }}>
               <Search size={18} />
-            </button>
-            {/* Cart icon */}
-            <button onClick={() => setCartOpen(true)}
-              aria-label={t('a11y.cart', { count: itemCount })}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(246,245,237,0.85)', display: 'flex', padding: '4px', position: 'relative' }}>
-              <ShoppingBag size={20} />
-              {itemCount > 0 && (
-                <span aria-hidden="true" style={{
-                  position: 'absolute', top: '-4px', right: '-6px',
-                  background: '#E9B0B9', color: '#2E3350',
-                  borderRadius: '50%', width: '18px', height: '18px',
-                  fontSize: '0.6rem', fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  lineHeight: 1,
-                }}>
-                  {itemCount > 9 ? '9+' : itemCount}
-                </span>
-              )}
             </button>
             <button className="btn-secondary" onClick={() => setModalOpen(true)}
               style={{ padding: '10px 22px', fontSize: '0.68rem' }}
@@ -221,7 +196,7 @@ export default function Navbar() {
           <div style={{ marginBottom: 'var(--space-lg)', textAlign: 'center' }}>
             <img
               src="/logo.png"
-              alt="Sparivier"
+              alt="Spa Rivier"
               style={{ height: '88px', width: 'auto', display: 'block', margin: '0 auto' }}
             />
           </div>
@@ -252,7 +227,6 @@ export default function Navbar() {
       )}
 
       <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       <style>{`
         @media (min-width: 1025px) { .hamburger { display: none !important; } }

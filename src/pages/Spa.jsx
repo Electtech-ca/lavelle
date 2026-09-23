@@ -1,95 +1,28 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import SectionHeader    from '../components/ui/SectionHeader'
 import FAQAccordion     from '../components/ui/FAQAccordion'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import BookingModal     from '../components/ui/BookingModal'
-import { spaPackages, organicFacials, clinicalPeels, waxingServices, faqItems } from '../data/spaData'
-import { spaPackageTranslations, spaFacialTranslations, spaPeelTranslations } from '../data/spaTranslations'
-import { lashBrow, nailBar, makeupBar } from '../data/salonData'
-import { lashExtensionsTranslations, glazeTranslations, browsTranslations, nailExtensionsTranslations, nailHandTranslations, nailFootTranslations, makeupBarTranslations } from '../data/salonTranslations'
+import PricingTable     from '../components/ui/PricingTable'
+import { waxingServices, faqItems } from '../data/spaData'
+import { cutsStyles, colourServices, permsAndTreatments, lashBrow, nailBar } from '../data/salonData'
+import {
+  cutsStylesTranslations, colourTranslations, permTranslations, treatmentTranslations,
+  lashExtensionsTranslations, browsTranslations, enhancementsTranslations,
+  nailExtensionsTranslations, nailHandTranslations, nailFootTranslations, waxingTranslations,
+} from '../data/salonTranslations'
 
-/* ── One unique high-quality image per tab ── */
+/* ── One unique image per tab — Spa Rivier salon & spa photography ── */
 const TAB_IMAGES = {
-  0: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=1400&h=500&fit=crop&q=85',
-  1: 'https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=1400&h=500&fit=crop&q=85',
-  2: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&h=500&fit=crop&q=85',
-  3: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=1400&h=500&fit=crop&q=85',
-  4: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1400&h=500&fit=crop&q=85',
-  5: 'https://images.unsplash.com/photo-1583001931096-959e9a1a6223?w=1400&h=500&fit=crop&q=85',
-  6: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=1400&h=500&fit=crop&q=85',
-  7: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1400&h=500&fit=crop&q=85',
-  8: 'https://images.unsplash.com/photo-1548695607-9c73430547e4?w=1400&h=500&fit=crop&q=85',
+  0: '/images/salon/moroccanoil-collection.jpg', // hair
+  1: '/images/salon/colour-care-collection.jpg', // colour
+  2: '/images/spa/bath-ritual.jpg', // waxing
+  3: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1400&h=500&fit=crop&q=85', // enhancements
+  4: '/images/salon/nails-art.jpg', // nails
+  5: '/images/spa/bath-tray.jpg', // foot care
+  6: '/images/spa/aromatherapy-diffuser.jpg', // faq
 }
-
-/* ── Facial card images ── */
-const FACIAL_IMAGES = [
-  'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&h=380&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1519824145371-296894a0daa9?w=600&h=380&fit=crop&q=80',
-]
-
-/* ── Peel card images ── */
-const PEEL_IMAGES = [
-  'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1498843053639-170ff2122f35?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1583001931096-959e9a1a6223?w=400&h=220&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=400&h=220&fit=crop&q=75',
-]
-
-/* ── Waxing card images (cycled across 14 services) ── */
-const WAXING_IMAGES = [
-  'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&h=200&fit=crop&q=75',
-]
-
-/* ── Lash & Brow card images ── */
-const LASH_EXT_IMAGES = [
-  'https://images.unsplash.com/photo-1583001931096-959e9a1a6223?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=400&h=200&fit=crop&q=75',
-]
-const LASH_GLAZE_IMAGES = [
-  'https://images.unsplash.com/photo-1583001931096-959e9a1a6223?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=200&fit=crop&q=75',
-]
-const BROW_IMAGES = [
-  'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&q=75',
-]
-
-/* ── Nail card images ── */
-const NAIL_EXT_IMAGES = [
-  'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=200&fit=crop&q=75',
-]
-const NAIL_MANI_IMAGES = [
-  'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1612817288484-6f916006741a?w=400&h=200&fit=crop&q=75',
-]
-const NAIL_PEDI_IMAGES = [
-  'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=200&fit=crop&q=75',
-  'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop&q=75',
-]
 
 /* ── Tab banner ── */
 function TabBanner({ tab, title, sub }) {
@@ -106,54 +39,30 @@ function TabBanner({ tab, title, sub }) {
   )
 }
 
-/* ── Reusable service card ── */
-function ServiceCard({ image, name, price, description, subtitle }) {
+/* ── One category as a Service | Price list, MediSpa-style.
+   `translations` is the matching French array/object, indexed like `items`. ── */
+function PriceList({ title, items, translations, headers }) {
   return (
-    <div style={{
-      background: 'white', borderRadius: 'var(--radius-lg)',
-      overflow: 'hidden', boxShadow: 'var(--shadow-card)',
-      display: 'flex', flexDirection: 'column',
-    }}>
-      {image && (
-        <div style={{ height: '160px', overflow: 'hidden', flexShrink: 0 }}>
-          <img src={image} alt={name} loading="lazy"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.06)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }} />
-        </div>
-      )}
-      <div style={{ padding: 'var(--space-lg)', borderLeft: '3px solid #E9B0B9', flex: 1 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.70rem', fontWeight: 700,
-          letterSpacing: '0.13em', textTransform: 'uppercase',
-          color: '#2E3350', marginBottom: 'var(--space-xs)',
-        }}>{name}</h3>
-        {subtitle && (
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 300, color: 'rgba(46,51,80,0.50)', marginBottom: 'var(--space-xs)' }}>{subtitle}</p>
-        )}
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '1.05rem', fontWeight: 700,
-          color: '#2E3350', marginBottom: description ? 'var(--space-xs)' : 0,
-        }}>{price}</p>
-        {description && (
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(46,51,80,0.65)', lineHeight: 1.65 }}>{description}</p>
-        )}
-      </div>
+    <div>
+      <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-lg)' }}>
+        {title}
+      </h3>
+      <PricingTable
+        headers={headers}
+        rows={items.map((item, i) => [
+          translations?.[i]?.service || item.service,
+          translations?.[i]?.price || item.price,
+        ])}
+      />
     </div>
   )
 }
 
-/* ── Section divider for sub-categories within a grid ── */
-function SectionDivider({ title }) {
+/* ── Pricing disclaimer / menu note ── */
+function MenuNote({ text }) {
   return (
-    <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: 'var(--space-md)', margin: 'var(--space-xl) 0 var(--space-sm)' }}>
-      <div style={{ width: '3px', height: '20px', background: '#E9B0B9', borderRadius: '2px', flexShrink: 0 }} />
-      <h3 style={{
-        fontFamily: 'var(--font-body)', fontSize: '0.70rem', fontWeight: 700,
-        letterSpacing: '0.18em', textTransform: 'uppercase', color: '#2E3350',
-        whiteSpace: 'nowrap',
-      }}>{title}</h3>
-      <div style={{ flex: 1, height: '1px', background: 'rgba(46,51,80,0.10)' }} />
+    <div style={{ padding: 'var(--space-lg)', background: '#F4ECDF', borderRadius: 'var(--radius-lg)', borderLeft: '3px solid #E9B0B9', marginBottom: 'var(--space-xl)' }}>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#2E3350', lineHeight: 1.8, fontWeight: 300 }}>{text}</p>
     </div>
   )
 }
@@ -166,14 +75,15 @@ export default function Spa() {
   const [modalOpen, setModalOpen] = useState(false)
 
   const tabs = [
-    t('spa.tabs.packages'), t('spa.tabs.facials'),
-    t('spa.tabs.peels'), t('spa.tabs.waxing'),
-    t('salon.tabs.lashBrow'), t('salon.tabs.nailBar'), t('salon.tabs.makeupBar'),
+    t('salon.tabs.hair'), t('salon.tabs.colour'),
+    t('spa.tabs.waxing'), t('spa.tabs.enhancements'),
+    t('salon.tabs.nailBar'), t('spa.tabs.foot'),
     t('spa.tabs.faq'),
   ]
 
-  const GRID_SM = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 280px))', justifyContent: 'center', gap: 'var(--space-lg)' }
-  const GRID_MD = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 360px))', justifyContent: 'center', gap: 'var(--space-lg)' }
+  const LIST_COLUMN = { maxWidth: '760px', margin: '0 auto var(--space-xl)' }
+  const listHeaders = [t('spa.col.service'), t('spa.col.price')]
+  const fr = table => (isFrench ? table : null)
   const CENTER_BUTTON_STYLE = { display: 'flex', margin: '0 auto' }
 
   return (
@@ -181,7 +91,7 @@ export default function Spa() {
       {/* Page hero */}
       <div style={{ position: 'relative', height: '70vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img src="/branding/Spa%20page.svg"
-          alt="Sparivier Spa — serene luxury treatment room" loading="eager"
+          alt="Spa Rivier Spa — serene luxury treatment room" loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,25,38,0.62)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '660px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
@@ -212,261 +122,93 @@ export default function Spa() {
       <div style={{ background: '#F6F5ED', padding: 'var(--space-xl) var(--space-xl) var(--space-lg)', minHeight: '60vh' }}>
         <div className="container">
 
-          {/* ── Packages ── */}
+          {/* ── Hair Cuts & Styling ── */}
           {tab === 0 && (
             <>
-              <TabBanner tab={0} title={t('spa.packages.title')} sub={t('spa.packages.sub')} />
-              <div style={{ ...GRID_MD }}>
-                {spaPackages.map(p => (
-                  (() => {
-                    const translation = isFrench ? spaPackageTranslations[p.id] : null
-                    const displayName = translation?.name || p.name
-                    const displayDescription = translation?.description || p.description
-                    return (
-                  <div key={p.id} style={{ background: 'white', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
-                    <div style={{ height: '200px', overflow: 'hidden' }}>
-                      <img src={p.image} alt={displayName} loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)' }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }} />
-                    </div>
-                    <div style={{ padding: 'var(--space-lg)', borderLeft: '3px solid #E9B0B9' }}>
-                      <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.13em', textTransform: 'uppercase', color: '#2E3350', marginBottom: 'var(--space-xs)' }}>{displayName}</h3>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '1.25rem', fontWeight: 700, color: '#2E3350', marginBottom: 'var(--space-sm)' }}>{p.price}</p>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.65)', lineHeight: 1.7, marginBottom: 'var(--space-lg)' }}>{displayDescription}</p>
-                      <button className="btn-primary" style={{ width: '100%', fontSize: '0.72rem', padding: '12px' }} onClick={() => setModalOpen(true)}>{t('spa.packages.bookBtn')}</button>
-                    </div>
-                  </div>
-                    )
-                  })()
-                ))}
+              <TabBanner tab={0} title={t('salon.hair.title')} sub={t('salon.hair.sub')} />
+              <div style={LIST_COLUMN}>
+                <PriceList headers={listHeaders} title={t('salon.hair.listTitle')} items={cutsStyles} translations={fr(cutsStylesTranslations)} />
+                <MenuNote text={t('salon.hair.note')} />
               </div>
+              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.hair.bookBtn')}</button>
             </>
           )}
 
-          {/* ── Organic Facials ── */}
+          {/* ── Colour, Highlights, Perms & Treatments ── */}
           {tab === 1 && (
             <>
-              <TabBanner tab={2} title={t('spa.facials.title')} sub={t('spa.facials.sub')} />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 340px))', justifyContent: 'center', gap: 'var(--space-xl)', marginBottom: 'var(--space-3xl)' }}>
-                {organicFacials.map((f, i) => (
-                  (() => {
-                    const translation = isFrench ? spaFacialTranslations[f.id] : null
-                    const displayName = translation?.name || f.name
-                    const displayDescription = translation?.description || f.description
-                    return (
-                  <div key={f.id} style={{ background: 'white', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
-                    <div style={{ height: '260px', overflow: 'hidden' }}>
-                      <img src={FACIAL_IMAGES[i % FACIAL_IMAGES.length]} alt={displayName} loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
-                    </div>
-                    <div style={{ padding: 'var(--space-xl)', borderLeft: '3px solid #E9B0B9' }}>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-sm)' }}>{t('spa.facials.badge')}</p>
-                      <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '0.80rem', fontWeight: 700, letterSpacing: '0.10em', textTransform: 'uppercase', color: '#2E3350', marginBottom: 'var(--space-xs)' }}>{displayName}</h3>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '1.4rem', fontWeight: 700, color: '#2E3350', marginBottom: 'var(--space-md)' }}>{f.price}</p>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(46,51,80,0.65)', lineHeight: 1.75 }}>{displayDescription}</p>
-                      <button className="btn-primary" style={{ marginTop: 'var(--space-lg)', width: '100%', fontSize: '0.72rem', padding: '12px' }} onClick={() => setModalOpen(true)}>{t('spa.facials.bookBtn')}</button>
-                    </div>
-                  </div>
-                    )
-                  })()
-                ))}
+              <TabBanner tab={1} title={t('salon.colour.title')} sub={t('salon.colour.sub')} />
+              <div style={LIST_COLUMN}>
+                <PriceList headers={listHeaders} title={t('salon.colour.listTitle')} items={colourServices} translations={fr(colourTranslations)} />
+                <PriceList headers={listHeaders} title={t('salon.perms.permsTitle')} items={permsAndTreatments.perms} translations={fr(permTranslations)} />
+                <PriceList headers={listHeaders} title={t('salon.perms.treatTitle')} items={permsAndTreatments.treatments} translations={fr(treatmentTranslations)} />
+                <MenuNote text={t('salon.hair.note')} />
               </div>
-              <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', position: 'relative', height: '200px' }}>
-                <img src="https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=1400&h=400&fit=crop&q=80"
-                  alt="Eminence Organic skincare products" loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'rgba(46,51,80,0.70)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem,3vw,2rem)', fontStyle: 'italic', color: '#E9B0B9', textAlign: 'center', padding: 'var(--space-xl)' }}>
-                    {t('spa.facials.brand')}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* ── Clinical Peels ── */}
-          {tab === 2 && (
-            <>
-              <TabBanner tab={3} title={t('spa.peels.title')} sub={t('spa.peels.sub')} />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 340px))', justifyContent: 'center', gap: 'var(--space-lg)', marginBottom: 'var(--space-2xl)' }}>
-                {clinicalPeels.map((p, i) => (
-                  (() => {
-                    const translation = isFrench ? spaPeelTranslations[p.name] : null
-                    const displayName = translation?.name || p.name
-                    const displayDescription = translation?.description || p.description
-                    return (
-                  <div key={p.name} style={{ background: 'white', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
-                    <div style={{ height: '160px', overflow: 'hidden' }}>
-                      <img src={PEEL_IMAGES[i % PEEL_IMAGES.length]} alt={displayName} loading="lazy"
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.06)' }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }} />
-                    </div>
-                    <div style={{ padding: 'var(--space-md)', borderLeft: '3px solid #E9B0B9' }}>
-                      <h3 style={{ fontFamily: 'var(--font-body)', fontSize: '0.70rem', fontWeight: 700, letterSpacing: '0.13em', textTransform: 'uppercase', color: '#2E3350', marginBottom: 'var(--space-sm)' }}>{displayName}</h3>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(46,51,80,0.65)', lineHeight: 1.7 }}>{displayDescription}</p>
-                    </div>
-                  </div>
-                    )
-                  })()
-                ))}
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('spa.peels.bookBtn')}</button>
-              </div>
+              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.colour.bookBtn')}</button>
             </>
           )}
 
           {/* ── Waxing ── */}
-          {tab === 3 && (
+          {tab === 2 && (
             <>
-              <TabBanner tab={4} title={t('spa.waxing.title')} sub={t('spa.waxing.sub')} />
-              <div style={{ ...GRID_SM, marginBottom: 'var(--space-xl)' }}>
-                {waxingServices.map((w, i) => (
-                  <ServiceCard key={w.service}
-                    image={WAXING_IMAGES[i % WAXING_IMAGES.length]}
-                    name={w.service}
-                    price={w.price}
-                  />
-                ))}
+              <TabBanner tab={2} title={t('spa.waxing.title')} sub={t('spa.waxing.sub')} />
+              <div style={LIST_COLUMN}>
+                <PriceList headers={listHeaders} title={t('spa.tabs.waxing')} items={waxingServices} translations={fr(waxingTranslations)} />
+                <MenuNote text={t('spa.waxing.note')} />
               </div>
               <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('spa.waxing.bookBtn')}</button>
             </>
           )}
 
-          {/* ── Lash & Brow ── */}
-          {tab === 4 && (
+          {/* ── Enhancements: lashes, brows, piercing, makeup ── */}
+          {tab === 3 && (
             <>
-              <TabBanner tab={5} title={t('salon.lash.title')} sub={t('salon.lash.sub')} />
-              <div style={{ ...GRID_SM, marginBottom: 'var(--space-xl)' }}>
-                <SectionDivider title={t('salon.lash.lashTitle')} />
-                {lashBrow.lashExtensions.map((item, i) => {
-                  const translation = isFrench ? lashExtensionsTranslations[i] : null
-                  const displayName = translation?.service || item.service
-                  return (
-                  <ServiceCard key={item.service}
-                    image={LASH_EXT_IMAGES[i % LASH_EXT_IMAGES.length]}
-                    name={displayName}
-                    price={item.price}
-                  />
-                  )
-                })}
-                <SectionDivider title={t('salon.lash.glazeTitle')} />
-                {lashBrow.glaze.map((item, i) => {
-                  const translation = isFrench ? glazeTranslations[i] : null
-                  const displayName = translation?.service || item.service
-                  return (
-                  <ServiceCard key={item.service}
-                    image={LASH_GLAZE_IMAGES[i % LASH_GLAZE_IMAGES.length]}
-                    name={displayName}
-                    price={item.price}
-                  />
-                  )
-                })}
-                <SectionDivider title={t('salon.lash.browTitle')} />
-                {lashBrow.brows.map((item, i) => {
-                  const translation = isFrench ? browsTranslations[i] : null
-                  const displayName = translation?.service || item.service
-                  return (
-                  <ServiceCard key={item.service}
-                    image={BROW_IMAGES[i % BROW_IMAGES.length]}
-                    name={displayName}
-                    price={item.price}
-                  />
-                  )
-                })}
+              <TabBanner tab={3} title={t('salon.lash.title')} sub={t('salon.lash.sub')} />
+              <div style={LIST_COLUMN}>
+                <PriceList headers={listHeaders} title={t('salon.lash.lashTitle')} items={lashBrow.lashExtensions} translations={fr(lashExtensionsTranslations)} />
+                <PriceList headers={listHeaders} title={t('salon.lash.browTitle')} items={lashBrow.brows} translations={fr(browsTranslations)} />
+                <PriceList headers={listHeaders} title={t('salon.lash.enhanceTitle')} items={lashBrow.enhancements} translations={fr(enhancementsTranslations)} />
               </div>
               <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.lash.bookBtn')}</button>
             </>
           )}
 
-          {/* ── Nail Bar ── */}
-          {tab === 5 && (
+          {/* ── Nail Department ── */}
+          {tab === 4 && (
             <>
-              <TabBanner tab={6} title={t('salon.nails.title')} sub={t('salon.nails.sub')} />
-              <div style={{ ...GRID_SM, marginBottom: 'var(--space-xl)' }}>
-                <SectionDivider title={t('salon.nails.extensionsTitle')} />
-                {nailBar.extensions.map((item, i) => {
-                  const translation = isFrench ? nailExtensionsTranslations[i] : null
-                  const displayName = translation?.service || item.service
-                  return (
-                  <ServiceCard key={item.service}
-                    image={NAIL_EXT_IMAGES[i % NAIL_EXT_IMAGES.length]}
-                    name={displayName}
-                    price={item.price}
-                  />
-                  )
-                })}
-                <SectionDivider title={t('salon.nails.maniTitle')} />
-                {nailBar.hand.map((item, i) => {
-                  const translation = isFrench ? nailHandTranslations[i] : null
-                  const displayName = translation?.service || item.service
-                  return (
-                  <ServiceCard key={item.service}
-                    image={NAIL_MANI_IMAGES[i % NAIL_MANI_IMAGES.length]}
-                    name={displayName}
-                    price={item.price}
-                  />
-                  )
-                })}
-                <SectionDivider title={t('salon.nails.pediTitle')} />
-                {nailBar.foot.map((item, i) => {
-                  const translation = isFrench ? nailFootTranslations[i] : null
-                  const displayName = translation?.service || item.service
-                  return (
-                  <ServiceCard key={item.service}
-                    image={NAIL_PEDI_IMAGES[i % NAIL_PEDI_IMAGES.length]}
-                    name={displayName}
-                    price={item.price}
-                  />
-                  )
-                })}
+              <TabBanner tab={4} title={t('salon.nails.title')} sub={t('salon.nails.sub')} />
+              <div style={LIST_COLUMN}>
+                <PriceList headers={listHeaders} title={t('salon.nails.maniTitle')} items={nailBar.hand} translations={fr(nailHandTranslations)} />
+                <PriceList headers={listHeaders} title={t('salon.nails.extensionsTitle')} items={nailBar.extensions} translations={fr(nailExtensionsTranslations)} />
+                <MenuNote text={t('salon.nails.artNote')} />
               </div>
-              <button className="btn-primary" style={{ display: 'flex', margin: '0 auto' }} onClick={() => setModalOpen(true)}>{t('salon.nails.bookBtn')}</button>
+              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.nails.bookBtn')}</button>
             </>
           )}
 
-          {/* ── Makeup Bar ── */}
-          {tab === 6 && (
+          {/* ── Foot Department ── */}
+          {tab === 5 && (
             <>
-              <TabBanner tab={7} title={t('salon.makeup.title')} sub={t('salon.makeup.sub')} />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 360px))', justifyContent: 'center', gap: 'var(--space-lg)', marginBottom: 'var(--space-2xl)' }}>
-                {makeupBar.map((m, i) => {
-                  const makeupImgs = [
-                    'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=200&fit=crop&q=75',
-                    'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&q=75',
-                    'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=200&fit=crop&q=75',
-                    'https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&h=200&fit=crop&q=75',
-                  ]
-                  const translation = isFrench ? makeupBarTranslations[i] : null
-                  const displayName = translation?.service || m.service
-                  const displayDuration = translation?.duration || m.duration
-                  return (
-                    <ServiceCard key={m.service}
-                      image={makeupImgs[i % makeupImgs.length]}
-                      name={displayName}
-                      subtitle={displayDuration}
-                      price={m.price}
-                    />
-                  )
-                })}
+              <TabBanner tab={5} title={t('spa.foot.title')} sub={t('spa.foot.sub')} />
+              <div style={LIST_COLUMN}>
+                <PriceList headers={listHeaders} title={t('spa.foot.listTitle')} items={nailBar.foot} translations={fr(nailFootTranslations)} />
+                <MenuNote text={t('spa.foot.note')} />
               </div>
-              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('salon.makeup.bookBtn')}</button>
+              <button className="btn-primary" style={CENTER_BUTTON_STYLE} onClick={() => setModalOpen(true)}>{t('spa.foot.bookBtn')}</button>
             </>
           )}
 
           {/* ── FAQ ── */}
-          {tab === 7 && (
+          {tab === 6 && (
             <>
-              <TabBanner tab={8} title={t('spa.faq.title')} sub={t('spa.faq.sub')} />
+              <TabBanner tab={6} title={t('spa.faq.title')} sub={t('spa.faq.sub')} />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div style={{ maxWidth: '720px' }}>
                   <FAQAccordion items={faqItems} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
                   <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=360&fit=crop&q=80"
-                    alt="Sparivier Spa sanctuary" loading="lazy"
+                    alt="Spa Rivier Spa sanctuary" loading="lazy"
                     style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontStyle: 'italic', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>{t('spa.faq.readyTitle')}</p>

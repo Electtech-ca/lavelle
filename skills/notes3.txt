@@ -1,0 +1,59 @@
+self-hosting on the VPS gives you full control. I'd recommend Mailcow (Docker-based, includes Postfix, Dovecot, Rspamd, SOGo webmail, DKIM/admin UI all pre-wired) over manually configuring Postfix/Dovecot/Roundcube — much less to get wrong, and email is unforgiving of misconfiguration (you'll get blacklisted fast).
+
+Prerequisites checklist
+VPS: Ubuntu 22.04/24.04 recommended, min 2 vCPU / 4GB RAM (mailcow is resource-hungry with Rspamd + ClamAV)
+A subdomain dedicated to mail, e.g. mail.yourdomain.com (best practice — don't use bare domain as hostname)
+Root/sudo access via SSH
+Steps
+1. Set up reverse DNS (PTR) in OVH
+
+OVH Control Panel → your VPS → General info → look for "Reverse DNS" / IP management
+Set the PTR record for your VPS's IP to mail.yourdomain.com
+This is critical — most mail providers (Gmail, Outlook) reject/spam mail from servers without matching PTR
+2. Add DNS records at GoDaddy
+
+A record: mail.yourdomain.com → your VPS IP
+MX record: @ → mail.yourdomain.com (priority 10)
+Remove/replace any existing MX records pointing elsewhere
+SPF TXT: v=spf1 mx a ~all (adjust once mailcow is running — it may recommend exact syntax)
+DMARC TXT: _dmarc.yourdomain.com → v=DMARC1; p=quarantine; rua=mailto:you@yourdomain.com
+DKIM TXT: added after mailcow generates the key (step 5)
+3. Install Docker + Docker Compose on the VPS
+
+
+curl -fsSL https://get.docker.com | sh
+apt install docker-compose-plugin -y
+4. Install Mailcow
+
+
+cd /opt
+git clone https://github.com/mailcow/mailcow-dockerized
+cd mailcow-dockerized
+./generate_config.sh
+# when prompted, enter: mail.yourdomain.com
+docker compose pull
+docker compose up -d
+5. Access admin UI and configure
+
+Browse to https://mail.yourdomain.com (self-signed cert initially — mailcow can auto-request Let's Encrypt once DNS resolves)
+Default login: admin / moohoo — change immediately
+Add your domain under Configuration → Mail Setup → Domains
+Mailcow auto-generates a DKIM key — copy the TXT record it shows you into GoDaddy DNS
+6. Open required ports on VPS firewall
+25 (SMTP), 465/587 (submission), 993 (IMAPS), 443 (webmail/admin)
+
+7. Verify
+
+Use https://www.mail-tester.com to send a test email and check your SPF/DKIM/DMARC/blacklist score
+Want me to go deeper on any single step (e.g. exact OVH reverse-DNS location, or troubleshooting once you start the install), or should we proceed step by step live as you execute each one?
+
+...
+
+OVH renames panel tabs fairly often, so let's use the search bar again rather than guessing tab names.
+
+Log into the OVH Control Panel (manager.ovh.com)
+In the left sidebar, find your VPS under "Bare Metal Cloud" or "VPS" section, click into it
+Once inside your VPS's page, look for tabs across the top — likely candidates: "IP", "Network", or "General information"
+If you don't see any of those, use the top search bar and type "reverse DNS" — it should jump you straight to the right page
+On the reverse DNS page, you'll see your VPS's IPv4 (and possibly IPv6) address listed, with an option to edit/set the reverse next to it
+Can you tell me what tabs you actually see across the top of your VPS's page? A screenshot would help me point you to the exact one.

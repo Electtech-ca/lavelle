@@ -2,14 +2,36 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
+import { isMeevoConfigured, meevoBookingUrl } from '../../lib/meevo'
+import { cutsStyles, colourServices, permsAndTreatments, lashBrow, nailBar } from '../../data/salonData'
+import { waxingServices } from '../../data/spaData'
+import {
+  facialPricing, oxygeneoPricing, clinicalFacialPricing, microNeedlingPricing,
+  skinRejuvenationPricing, cryotherapyPricing, trilipoPricing,
+} from '../../data/medispaData'
 
-const timeSlots = ['10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM']
-const allServices = [
-  'Berries With a Twist','Uplift & Refresh','Time Out','Refresh & Delight','Me TIME','Rebalance & Rejuvenate',
-  'Personalized Eminence Organic Facial','Anti-Aging Custom Facial',
-  "Women's Haircut & Style","Precision Cut & Blowout","Balayage & Highlights","Keratin Smoothing",
-  'Full Lash Set','Brow Lamination','Signature Manicure','Spa Pedicure',
-  'Day Makeup','Event Makeup',
+const timeSlots = ['9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM']
+
+/* Bookable services are derived from the published price list so the
+   dropdown can never drift from the menus shown on the service pages. */
+const names = list => list.map(item => item.service || item.name)
+
+const serviceGroups = [
+  ['salon.tabs.hair', [
+    ...names(cutsStyles), ...names(colourServices),
+    ...names(permsAndTreatments.perms), ...names(permsAndTreatments.treatments),
+  ]],
+  ['spa.tabs.waxing', names(waxingServices)],
+  ['spa.tabs.enhancements', [
+    ...names(lashBrow.lashExtensions), ...names(lashBrow.brows), ...names(lashBrow.enhancements),
+  ]],
+  ['salon.tabs.nailBar', [...names(nailBar.hand), ...names(nailBar.extensions)]],
+  ['spa.tabs.foot', names(nailBar.foot)],
+  ['nav.medispa', [
+    ...names(facialPricing), ...names(oxygeneoPricing), ...names(clinicalFacialPricing),
+    ...names(microNeedlingPricing), ...names(skinRejuvenationPricing),
+    ...names(cryotherapyPricing), ...names(trilipoPricing),
+  ]],
 ]
 
 export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
@@ -18,6 +40,7 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const firstRef = useRef(null)
+  const meevoReady = isMeevoConfigured()
 
   useEffect(() => {
     if (isOpen) { setSubmitted(false); setForm(f => ({ ...f, service: defaultService })); setTimeout(() => firstRef.current?.focus(), 50) }
@@ -58,7 +81,26 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
         <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-micro)', fontWeight:500, letterSpacing:'0.2em', textTransform:'uppercase', color:'var(--lavelle-gold-champagne)', marginBottom:'var(--space-xs)' }}>{t('booking.header')}</p>
         <h2 style={{ fontFamily:'var(--font-display)', fontSize:'var(--text-h2)', fontWeight:300, color:'var(--lavelle-plum-deep)', marginBottom:'var(--space-xl)' }}>{t('booking.heading')}</h2>
 
-        {submitted ? (
+        {meevoReady ? (
+          /* Appointments live in Meevo, so the site hands the guest over
+             rather than taking a booking request of its own. There is no
+             service picker here: Meevo's Customer Portal has no parameter
+             for preselecting a treatment, so choosing one on this side only
+             made the guest pick it twice. */
+          <div>
+            <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-small)', color:'var(--lavelle-gray-mid)', lineHeight:1.7, marginBottom:'var(--space-lg)' }}>
+              {t('booking.meevo.intro')}
+            </p>
+            <a className="btn-primary" ref={firstRef} href={meevoBookingUrl(defaultService)}
+              target="_blank" rel="noopener noreferrer" onClick={onClose}
+              style={{ display:'flex', justifyContent:'center', textDecoration:'none' }}>
+              {t('booking.meevo.cta')}
+            </a>
+            <p style={{ fontFamily:'var(--font-body)', fontSize:'var(--text-micro)', color:'var(--lavelle-gray-mid)', textAlign:'center', marginTop:'var(--space-md)', lineHeight:1.6 }}>
+              {t('booking.meevo.note')}
+            </p>
+          </div>
+        ) : submitted ? (
           <div style={{ textAlign:'center', padding:'var(--space-2xl) 0' }}>
             <div style={{ fontSize:'2.5rem', marginBottom:'var(--space-md)' }}>✦</div>
             <h3 style={{ fontFamily:'var(--font-display)', fontSize:'1.6rem', fontWeight:300, color:'var(--lavelle-plum-deep)', marginBottom:'var(--space-md)' }}>{t('booking.success.title', { name: form.firstName })}</h3>
@@ -75,7 +117,11 @@ export default function BookingModal({ isOpen, onClose, defaultService = '' }) {
               <label style={lbl} htmlFor="bm-svc">{t('booking.form.service')}</label>
               <select id="bm-svc" name="service" required style={{ ...inp, cursor:'pointer' }} value={form.service} onChange={change}>
                 <option value="">{t('booking.form.selectService')}</option>
-                {allServices.map(s => <option key={s} value={s}>{s}</option>)}
+                {serviceGroups.map(([labelKey, items]) => (
+                  <optgroup key={labelKey} label={t(labelKey)}>
+                    {items.map(s => <option key={s} value={s}>{s}</option>)}
+                  </optgroup>
+                ))}
               </select>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'var(--space-md)', marginBottom:'var(--space-md)' }}>

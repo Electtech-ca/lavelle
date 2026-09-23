@@ -16,7 +16,7 @@ export default function AwardsSection() {
           onMouseEnter={e => e.currentTarget.style.animationPlayState='paused'}
           onMouseLeave={e => e.currentTarget.style.animationPlayState='running'}>
           {[...awards, ...awards].map((award, i) => (
-            <AwardBadge key={i} year={award.year} title={award.title} org={award.org} />
+            <AwardBadge key={i} year={award.year} title={award.title} org={award.org} image={award.image} />
           ))}
         </div>
       </div>

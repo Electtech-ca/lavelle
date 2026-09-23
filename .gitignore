@@ -11,3 +11,10 @@ yarn-debug.log*
 yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
+
+# SSH keys — never commit
+ovhSSH
+ovhSSH.pub
+*.pem
+id_ed25519*
+id_rsa*

@@ -39,7 +39,7 @@ export default function OrderConfirmation() {
           <button onClick={handlePrint} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Printer size={16} /> {t('confirm.print')}
           </button>
-          <a href={`mailto:${order.email}?subject=Your Sparivier Order ${order.reference}`} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <a href={`mailto:${order.email}?subject=Your Spa Rivier Order ${order.reference}`} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Mail size={16} /> {t('confirm.emailCopy')}
           </a>
           <a href="/" className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -58,7 +58,7 @@ export default function OrderConfirmation() {
             <div style={{ marginBottom: 'var(--space-sm)' }}>
               <img
                 src="/logo.png"
-                alt="Sparivier"
+                alt="Spa Rivier"
                 style={{ height: '72px', width: 'auto', display: 'block' }}
               />
             </div>

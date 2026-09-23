@@ -1,0 +1,13 @@
+# Spa Rivier additions to the self-hosted Supabase stack.
+# Loaded automatically alongside docker-compose.yml.
+services:
+  functions:
+    # Secrets for the gift-certificate email sender (set with
+    # set-certificate-secrets.sh; the file is readable only by ubuntu).
+    env_file:
+      - .env.certificates
+    environment:
+      SMTP_HOST: mail.sparivier.ca
+      SMTP_PORT: "465"
+      SMTP_USER: noreply@sparivier.ca
+      MAIL_FROM: "Spa Rivier <noreply@sparivier.ca>"

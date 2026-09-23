@@ -6,7 +6,7 @@ const SLIDE_META = [
   { id:1, bgImage:'/branding/Web%20page.svg', bg:'linear-gradient(135deg,#1e2535 0%,#313a4d 40%,#1a2030 100%)', overlay:'rgba(20,25,38,0.52)' },
   { id:2, bgImage:'/branding/Spa%20page.svg', bg:'linear-gradient(135deg,#313a4d 0%,#1e2a4a 50%,#0f1830 100%)', overlay:'rgba(15,20,35,0.55)', link:'/spa' },
   { id:3, bgImage:'/branding/Lifestyle.svg', bg:'linear-gradient(135deg,#0f1a0f 0%,#1a2e1a 40%,#0a1a1a 100%)', overlay:'rgba(8,18,8,0.50)' },
-  { id:4, bgImage:'/branding/Gifts.svg', bg:'linear-gradient(135deg,#2e1a0a 0%,#3e2a0a 40%,#1e1a0a 100%)', overlay:'rgba(30,16,5,0.52)', link:'/gift-certificates' },
+  { id:4, bgImage:'/branding/Gifts.svg', bg:'linear-gradient(135deg,#2e1a0a 0%,#3e2a0a 40%,#1e1a0a 100%)', overlay:'rgba(30,16,5,0.52)', link:'/giftware#certificates' },
   { id:5, bgImage:'/branding/Fashion.svg', bg:'linear-gradient(135deg,#1e2535 0%,#0f1828 40%,#0a1020 100%)', overlay:'rgba(10,15,28,0.50)', link:'https://maps.google.com/?q=353+Reid+Street+Quesnel+BC' },
 ]
 

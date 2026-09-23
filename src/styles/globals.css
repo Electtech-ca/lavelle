@@ -106,16 +106,19 @@ h1, h2, h3, h4, h5, h6 {
 .gift-certificate-grid > :nth-child(7) { grid-column: 10 / span 3; }
 
 .promotion-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
 }
-.promotion-grid > * { grid-column: span 3; min-width: 0; }
-.promotion-grid > :nth-child(5) { grid-column: 2 / span 3; }
-.promotion-grid > :nth-child(6) { grid-column: 6 / span 3; }
-.promotion-grid > :nth-child(7) { grid-column: 10 / span 3; }
+/* Four across, and a partial last row centres itself. The basis subtracts the
+   three gaps between four cards; every .promotion-grid sets gap to --space-xl. */
+.promotion-grid > * {
+  flex: 0 1 calc((100% - 3 * var(--space-xl)) / 4);
+  min-width: 0;
+}
 
 @media (max-width: 1024px) {
   .gift-certificate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -123,11 +126,7 @@ h1, h2, h3, h4, h5, h6 {
   .gift-certificate-grid > :nth-child(5),
   .gift-certificate-grid > :nth-child(6),
   .gift-certificate-grid > :nth-child(7) { grid-column: auto; }
-  .promotion-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .promotion-grid > *,
-  .promotion-grid > :nth-child(5),
-  .promotion-grid > :nth-child(6),
-  .promotion-grid > :nth-child(7) { grid-column: auto; }
+  .promotion-grid > * { flex-basis: calc((100% - var(--space-xl)) / 2); }
 }
 
 @media (max-width: 768px) {
@@ -139,7 +138,7 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 600px) {
   .gourmet-menu-grid { grid-template-columns: minmax(0, 1fr); }
   .gift-certificate-grid { grid-template-columns: minmax(0, 1fr); }
-  .promotion-grid { grid-template-columns: minmax(0, 1fr); }
+  .promotion-grid > * { flex-basis: 100%; }
 }
 
 /* ── Divider (replaces Gold Divider) ── */
@@ -286,4 +285,22 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 641px) and (max-width: 1024px) {
   .business-line-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+
+/* ── Print ────────────────────────────────────────────────────────────────
+   Used by the gift-certificate page: the guest prints the certificate and
+   gives it in person, so everything around it is dropped and the tier's
+   colours are forced through (browsers drop backgrounds by default). */
+@media print {
+  .no-print, nav, footer, header { display: none !important; }
+  body { background: #fff !important; }
+  section { padding: 0 !important; }
+  .print-sheet {
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page { margin: 12mm; }
 }

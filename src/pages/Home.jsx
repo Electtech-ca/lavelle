@@ -7,11 +7,11 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import SectionHeader    from '../components/ui/SectionHeader'
 import GoldDivider      from '../components/ui/GoldDivider'
 
-const STORY_IMAGE   = 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=900&h=1000&fit=crop&q=85'
+const STORY_IMAGE   = '/images/boutique/boutique-interior.jpg'
 const FEATURE_IMGS  = [
-  'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=700&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=700&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=700&fit=crop&q=80',
+  '/images/spa/bath-ritual.jpg',            // spa
+  '/images/medispa/led-light-therapy.jpg',  // medispa
+  '/images/gourmet/gimber-ginger.jpg',      // gourmet
 ]
 
 export default function Home() {
@@ -70,7 +70,7 @@ export default function Home() {
               border: '2px solid #E9B0B9', borderRadius: 'var(--radius-xl)',
               opacity: 0.35, pointerEvents: 'none',
             }} />
-            <img src={STORY_IMAGE} alt="Sparivier luxury interior — opulence and beauty" loading="lazy"
+            <img src={STORY_IMAGE} alt="Spa Rivier luxury interior — opulence and beauty" loading="lazy"
               style={{ width: '100%', height: '520px', objectFit: 'cover', objectPosition: 'center', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-hover)', display: 'block' }} />
             <div style={{
               position: 'absolute', bottom: 'var(--space-xl)', left: 'var(--space-xl)',
@@ -111,7 +111,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── About Sparivier ── */}
+      {/* ── About Spa Rivier ── */}
       <section style={{ background: 'var(--color-white)', padding: '57.6px var(--space-xl)' }}>
         <div className="container">
           {/* Section label */}
@@ -128,10 +128,10 @@ export default function Home() {
           {/* 4-photo gallery */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-2xl)' }}>
             {[
-              { src: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=420&fit=crop&q=80', alt: ' interior' },
-              { src: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=420&fit=crop&q=80', alt: 'Professional hair colour services' },
-              { src: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=420&fit=crop&q=80', alt: 'Sparivier Spa sanctuary' },
-              { src: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=420&fit=crop&q=80', alt: 'Nail bar artistry' },
+              { src: '/images/boutique/autumn-collection.jpg', alt: 'Boutique Rivier seasonal collection' },
+              { src: '/images/salon/colour-care-collection.jpg', alt: 'Professional hair colour services' },
+              { src: '/images/spa/aromatherapy-diffuser.jpg', alt: 'Spa Rivier Spa sanctuary' },
+              { src: '/images/salon/nails-glitter.jpg', alt: 'Nail bar artistry' },
             ].map(img => (
               <img key={img.alt} src={img.src} alt={img.alt} loading="lazy"
                 style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', transition: 'transform 0.4s ease, box-shadow 0.4s ease' }}

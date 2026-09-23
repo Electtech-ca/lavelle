@@ -19,7 +19,7 @@ const BRUNCH_IMGS = [
   'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&h=380&fit=crop&q=80',  // granola parfait
   'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&h=380&fit=crop&q=80',  // eggs benedict
   'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=380&fit=crop&q=80',  // crepes
-  'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=600&h=380&fit=crop&q=80',  // charcuterie board
+  '/images/gourmet/gimber-ginger.jpg',  // Gimber No 1 ginger concentrate
 ]
 
 const ALACARTE_IMGS = [
@@ -92,7 +92,7 @@ export default function GourmetFood() {
       {/* Page hero */}
       <div style={{ position: 'relative', height: '70vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img src="/branding/Lifestyle.svg"
-          alt="Sparivier Gourmet dining" loading="eager"
+          alt="Spa Rivier Gourmet dining" loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,18,8,0.65)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '660px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
@@ -176,7 +176,7 @@ export default function GourmetFood() {
               {/* Tea ambience strip */}
               <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: '220px', position: 'relative' }}>
                 <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=1400&h=440&fit=crop&q=80"
-                  alt="Afternoon tea at Sparivier" loading="lazy"
+                  alt="Afternoon tea at Spa Rivier" loading="lazy"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <div style={{ position: 'absolute', inset: 0, background: 'rgba(49,58,77,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.1rem,2.5vw,1.8rem)', fontStyle: 'italic', color: 'var(--lavelle-gold-champagne)', textAlign: 'center', padding: 'var(--space-xl)' }}>
@@ -210,7 +210,7 @@ export default function GourmetFood() {
               {/* Full-width private dining photo */}
               <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 'var(--space-2xl)', height: '340px' }}>
                 <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1400&h=680&fit=crop&q=85"
-                  alt="Sparivier Private Dining Room" loading="lazy"
+                  alt="Spa Rivier Private Dining Room" loading="lazy"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
               </div>
 
@@ -242,7 +242,7 @@ export default function GourmetFood() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
                   <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=700&h=360&fit=crop&q=80"
-                    alt="Private dining at Sparivier" loading="lazy"
+                    alt="Private dining at Spa Rivier" loading="lazy"
                     style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ textAlign: 'center' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('gourmet.private.bookBtn')}</button>

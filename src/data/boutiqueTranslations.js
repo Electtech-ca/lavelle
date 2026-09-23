@@ -1,12 +1,12 @@
 export const boutiqueProductTranslations = {
-  1: { name: 'Robe midi en soie prune', description: '100 % soie pure, coupe en biais et bretelles réglables. La signature de la maison Sparivier. Disponible en prune, ivoire et champagne.' },
+  1: { name: 'Robe midi en soie prune', description: '100 % soie pure, coupe en biais et bretelles réglables. La signature de la maison Spa Rivier. Disponible en prune, ivoire et champagne.' },
   2: { name: 'Robe de soirée en velours', description: 'Velours extensible prune profond, silhouette longue et dos échancré. La robe qui impose le silence dans une pièce.' },
   3: { name: 'Robe maxi en maille dorée', description: 'Maille lurex côtelée, longueur maxi avec fente latérale. Créée pour les soirées dont on se souvient.' },
   4: { name: 'Robe portefeuille drapée en satin', description: 'Satin martelé couleur champagne, fermeture portefeuille et lien cascade. Une coupe flatteuse pour toutes.' },
   5: { name: 'Robe de cérémonie brodée', description: 'Broderie florale sur tulle. Édition limitée. Une robe qui porte déjà un souvenir.' },
   6: { name: 'Robe cocktail asymétrique', description: 'Crêpe structuré bleu nuit, ourlet asymétrique et décolleté à une épaule. Une élégance naturelle.' },
   7: { name: 'Robe col roulé en laine mérinos', description: 'Mérinos extra-fin brun chocolat, longueur genou et côtes discrètes. La façon la plus chic de rester au chaud.' },
-  8: { name: 'Blouse florale Sparivier', description: 'Imprimé floral français dormant sur georgette. Manches volantées. Un romantisme naturel.' },
+  8: { name: 'Blouse florale Spa Rivier', description: 'Imprimé floral français dormant sur georgette. Manches volantées. Un romantisme naturel.' },
   9: { name: 'Blouse en organza ornée de cristaux', description: 'Organza ivoire transparent et boutons en cristal posés à la main sur les poignets. Raffinée, précise, inoubliable.' },
   10: { name: 'Blouse de soirée en soie bordée de plumes', description: 'Charmeuse de soie ivoire 16 mm avec ourlet en plumes marabout. Pour les moments qui méritent la grandeur.' },
   11: { name: 'Col roulé fin en cachemire', description: 'Cachemire 100 % qualité Grade A, coupe près du corps, poignets et ourlet côtelés. En camel, avoine et prune profond.' },
@@ -20,7 +20,7 @@ export const boutiqueProductTranslations = {
   19: { name: 'Veste de soirée en brocart', description: 'Brocart jacquard doré, col mandarin sans revers. La pièce forte de chaque occasion.' },
   20: { name: 'Tailleur-pantalon croisé', description: 'Mélange de laine italienne anthracite, veste croisée et pantalon droit assorti. L’autorité, avec élégance.' },
   21: { name: 'Tailleur short ajusté', description: 'Ensemble deux pièces en crêpe ivoire structuré. Un power dressing sophistiqué pour les beaux jours.' },
-  22: { name: 'Trench Sparivier', description: 'Gabardine déperlante croisée avec ceinture. Le manteau intemporel que vous cherchiez.' },
+  22: { name: 'Trench Spa Rivier', description: 'Gabardine déperlante croisée avec ceinture. Le manteau intemporel que vous cherchiez.' },
   23: { name: 'Manteau ceinturé en laine bouclée', description: 'Laine bouclée italienne ivoire, larges revers et ceinture assortie. La pièce qui définit la saison.' },
   24: { name: 'Gilet cache-cœur en cachemire', description: 'Cachemire écossais Grade A. Coupe cache-cœur ample avec ceinture satinée. En camel, prune et avoine.' },
 }

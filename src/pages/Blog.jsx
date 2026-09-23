@@ -3,9 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Clock, User, Tag } from 'lucide-react'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GoldDivider      from '../components/ui/GoldDivider'
+import SectionHeader    from '../components/ui/SectionHeader'
 import BookingModal     from '../components/ui/BookingModal'
 import { blogPosts, blogCategories } from '../data/blogData'
 import { blogTranslations, blogCategoryTranslations } from '../data/blogTranslations'
+import { promotions } from '../data/promotionsData'
+import { promotionTranslations } from '../data/promotionTranslations'
+import { events } from '../data/eventsData'
 
 /* ── Category colour map ── */
 const CAT_COLOURS = {
@@ -75,7 +79,7 @@ function ArticleView({ post, onBack, onBook }) {
           if (block.type === 'cta') return (
             <div key={i} style={{ marginTop: 'var(--space-2xl)', padding: 'var(--space-xl)', background: '#2E3350', borderRadius: 'var(--radius-xl)', textAlign: 'center' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(246,245,237,0.75)', marginBottom: 'var(--space-lg)' }}>
-                {post.isFrench ? 'Prête à vivre cette expérience chez Sparivier ?' : 'Ready to experience this at Sparivier?'}
+                {post.isFrench ? 'Prête à vivre cette expérience chez Spa Rivier ?' : 'Ready to experience this at Spa Rivier?'}
               </p>
               <a href={block.href} className="btn-primary">{block.text}</a>
             </div>
@@ -90,7 +94,7 @@ function ArticleView({ post, onBack, onBook }) {
           </div>
           <div>
             <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350' }}>{post.author}</p>
-            <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.55)' }}>Sparivier — Quesnel, BC</p>
+            <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.55)' }}>Spa Rivier — Quesnel, BC</p>
           </div>
           <div style={{ marginLeft: 'auto' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#2E3350' }}>
@@ -232,8 +236,8 @@ export default function Blog() {
       {/* ── Page Hero ── */}
       <div style={{ position: 'relative', height: '52vh', minHeight: '380px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
-          src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=1920&h=700&fit=crop&q=90"
-          alt="Sparivier Journal"
+          src="/images/salon/moroccanoil-collection.jpg"
+          alt="Spa Rivier Journal"
           loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
         />
@@ -254,6 +258,85 @@ export default function Blog() {
       {/* ── Content ── */}
       <div style={{ background: '#F6F5ED', padding: 'var(--space-lg) var(--space-xl)' }}>
         <div className="container">
+
+          {/* ── Promotions ── */}
+          <SectionHeader
+            eyebrow={t('featured.promos.eyebrow')}
+            headline={t('featured.promos.headline')}
+            subtext={t('featured.promos.sub')}
+            align="center"
+          />
+          <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
+            {promotions.map(promo => {
+              const tr = isFrench ? promotionTranslations[promo.id] : null
+              return (
+                <div key={promo.id}
+                  style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid var(--lavelle-gold-champagne)', transition: 'transform 0.3s ease, box-shadow 0.3s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)' }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)' }}>
+                  <p style={{ display: 'inline-block', background: 'var(--lavelle-gold-champagne)', color: 'var(--lavelle-plum-deep)', padding: '4px 12px', borderRadius: 'var(--radius-full)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, marginBottom: 'var(--space-md)' }}>
+                    {tr?.[1] || promo.value}
+                  </p>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 400, color: 'var(--lavelle-plum-deep)', marginBottom: 'var(--space-sm)', lineHeight: 1.3 }}>
+                    {tr?.[0] || promo.title}
+                  </h3>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7, marginBottom: 'var(--space-md)' }}>
+                    {tr?.[3] || promo.description}
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)' }}>
+                    {t('featured.promos.valid')}: {tr?.[2] || promo.expiry}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+
+          <GoldDivider />
+
+          {/* ── Events ── */}
+          <SectionHeader
+            eyebrow={t('featured.events.eyebrow')}
+            headline={t('featured.events.headline')}
+            subtext={t('featured.events.sub')}
+            align="center"
+          />
+          {events.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 'var(--space-2xl) var(--space-xl)', background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)', marginBottom: 'var(--space-2xl)' }}>
+              <p style={{ fontSize: '1.6rem', marginBottom: 'var(--space-sm)' }} aria-hidden="true">✦</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.75, maxWidth: '440px', margin: '0 auto' }}>
+                {t('featured.events.empty')}
+              </p>
+            </div>
+          ) : (
+            <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
+              {events.map(ev => (
+                <div key={ev.id} style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid var(--lavelle-plum-soft)' }}>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)', marginBottom: 'var(--space-sm)' }}>
+                    {ev.when}
+                  </p>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 400, color: 'var(--lavelle-plum-deep)', marginBottom: 'var(--space-sm)', lineHeight: 1.3 }}>
+                    {ev.title}
+                  </h3>
+                  {ev.where && (
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)', marginBottom: 'var(--space-sm)' }}>{ev.where}</p>
+                  )}
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7 }}>{ev.detail}</p>
+                  {ev.cta && (
+                    <a href={ev.cta.href} className="btn-secondary" style={{ marginTop: 'var(--space-md)', display: 'inline-flex', textDecoration: 'none' }}>{ev.cta.text}</a>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <GoldDivider />
+
+          {/* ── Articles ── */}
+          <SectionHeader
+            eyebrow={t('featured.articles.eyebrow')}
+            headline={t('featured.articles.headline')}
+            align="center"
+          />
 
           {/* Featured post */}
           {localizedFeatured && activeCategory === 'All' && (

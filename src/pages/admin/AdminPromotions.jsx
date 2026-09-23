@@ -88,6 +88,11 @@ export default function AdminPromotions() {
     const errs = validate(form)
     if (Object.keys(errs).length) { setErrors(errs); return }
 
+    if (!supabase) {
+      setSaveError('Database connection is not configured. Please contact the site administrator.')
+      return
+    }
+
     setSaving(true)
     setSaveError('')
 
@@ -115,6 +120,11 @@ export default function AdminPromotions() {
 
   async function handleDelete() {
     if (!deleteId) return
+    if (!supabase) {
+      alert('Delete failed: Database connection is not configured. Please contact the site administrator.')
+      setDeleteId(null)
+      return
+    }
     setDeleting(true)
     const { error } = await supabase.from('promotions').delete().eq('id', deleteId)
     if (error) { alert('Delete failed: ' + error.message) } else {
@@ -130,6 +140,15 @@ export default function AdminPromotions() {
 
   return (
     <AdminLayout title="Promotions">
+
+      {/* Dev-mode banner */}
+      {!supabase && (
+        <div style={{ background: 'rgba(228,62,45,0.1)', border: '1px solid rgba(228,62,45,0.35)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-md) var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#b83020' }}>
+            <strong>Dev mode:</strong> Changes are reflected live in this session but are not persisted to a database. Connect Supabase to enable permanent storage and real-time sync across all sessions.
+          </p>
+        </div>
+      )}
 
       {/* Toolbar */}
       <div style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'center', marginBottom: 'var(--space-xl)', flexWrap: 'wrap' }}>

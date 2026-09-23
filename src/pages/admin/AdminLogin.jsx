@@ -39,7 +39,7 @@ export default function AdminLogin() {
         <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
           <img
             src="/logo.png"
-            alt="Sparivier"
+            alt="Spa Rivier"
             style={{ height: '100px', width: 'auto', display: 'block', margin: '0 auto var(--space-md)' }}
           />
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#E9B0B9' }}>
@@ -52,7 +52,7 @@ export default function AdminLogin() {
             Welcome Back
           </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
-            Sign in to your Sparivier admin account
+            Sign in to your Spa Rivier admin account
           </p>
 
           {error && (
@@ -98,7 +98,7 @@ export default function AdminLogin() {
 
         <p style={{ textAlign: 'center', marginTop: 'var(--space-lg)' }}>
           <a href="/" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>
-            ← Back to Sparivier
+            ← Back to Spa Rivier
           </a>
         </p>
       </div>

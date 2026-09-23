@@ -1,37 +1,15 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useCart } from '../../context/CartContext'
-import { formatMoney } from '../../lib/tax'
-import QuantitySelector from './QuantitySelector'
 import { boutiqueProductTranslations } from '../../data/boutiqueTranslations'
 
 export default function ProductCard({ product }) {
   const { t, i18n }             = useTranslation()
   const [hovered, setHovered]   = useState(false)
-  const [qty, setQty]           = useState(1)
-  const [added, setAdded]       = useState(false)
-  const { addItem }             = useCart()
 
   const outOfStock = (product.stock ?? 99) === 0
-  const lineTotal  = product.priceInCents ? formatMoney(product.priceInCents * qty) : null
   const frenchProduct = i18n.language.startsWith('fr') ? boutiqueProductTranslations[product.id] : null
   const displayName = frenchProduct?.name || product.name
   const displayDescription = frenchProduct?.description || product.description
-
-  function handleAdd() {
-    if (outOfStock || !product.priceInCents) return
-    addItem({
-      id:       product.id,
-      name:     displayName,
-      price:    product.priceInCents,
-      image:    product.image,
-      category: 'boutique',
-      qty,
-      maxQty:   product.stock ?? 99,
-    })
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2200)
-  }
 
   return (
     <div
@@ -76,44 +54,19 @@ export default function ProductCard({ product }) {
           {displayDescription}
         </p>
 
-        {/* Price row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-md)' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 600, color: 'var(--lavelle-plum-mid)' }}>
-            {product.priceInCents ? formatMoney(product.priceInCents) : product.price}
-          </span>
-          {qty > 1 && lineTotal && (
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)' }}>
-              {qty} × = {lineTotal}
-            </span>
+        {/* Merch is sold in store only — no price or cart online */}
+        <a href="tel:+12509928084" style={{
+          display: 'block', textAlign: 'center', textDecoration: 'none',
+          fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 600,
+          letterSpacing: '0.12em', textTransform: 'uppercase', padding: '9px 12px',
+          borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-gold-champagne)',
+          color: outOfStock ? 'var(--lavelle-gray-mid)' : 'var(--lavelle-plum-deep)',
+        }}>
+          {outOfStock ? t('product.soldOut') : t('product.inStore')}
+          {!outOfStock && (
+            <span style={{ display: 'block', fontWeight: 400, letterSpacing: '0.06em', marginTop: '2px' }}>250-992-8084</span>
           )}
-        </div>
-
-        {/* Qty + Add */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
-          <QuantitySelector
-            size="sm"
-            value={qty}
-            max={product.stock ?? 99}
-            disabled={outOfStock}
-            onChange={setQty}
-          />
-          <button
-            onClick={handleAdd}
-            disabled={outOfStock}
-            aria-label={t('a11y.addItem', { name: displayName })}
-            aria-live="polite"
-            style={{
-              flex: 1, fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 600,
-              letterSpacing: '0.12em', textTransform: 'uppercase', padding: '9px 12px',
-              borderRadius: 'var(--radius-full)', cursor: outOfStock ? 'not-allowed' : 'pointer',
-              border: added ? '1px solid #2E7D5E' : '1px solid var(--lavelle-gold-champagne)',
-              background: added ? 'rgba(46,125,94,0.1)' : outOfStock ? 'var(--lavelle-cream)' : 'var(--lavelle-gold-champagne)',
-              color: added ? '#2E7D5E' : outOfStock ? 'var(--lavelle-gray-mid)' : 'var(--lavelle-plum-deep)',
-              transition: 'all 0.25s ease',
-            }}>
-            {outOfStock ? t('product.soldOut') : added ? t('product.added') : t('product.addToCart')}
-          </button>
-        </div>
+        </a>
       </div>
     </div>
   )

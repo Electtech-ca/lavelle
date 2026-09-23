@@ -12,14 +12,12 @@ import Home              from './pages/Home'
 import Spa               from './pages/Spa'
 import MediSpa           from './pages/MediSpa'
 import Boutique          from './pages/Boutique'
-import GourmetFood       from './pages/GourmetFood'
-import Gifts             from './pages/Gifts'
-import GiftCertificates  from './pages/GiftCertificates'
-import Cart              from './pages/Cart'
-import Checkout          from './pages/Checkout'
+// import GourmetFood       from './pages/GourmetFood'   // hidden — see /gourmet route below
+import Giftware          from './pages/Giftware'
 import OrderConfirmation from './pages/OrderConfirmation'
 import MemberPortal      from './pages/MemberPortal'
 import Blog              from './pages/Blog'
+import CertificateConfirmed from './pages/CertificateConfirmed'
 
 import AdminLogin      from './pages/admin/AdminLogin'
 import AdminDashboard  from './pages/admin/AdminDashboard'
@@ -73,14 +71,22 @@ export default function App() {
           <Route path="/medispa" element={<PublicLayout><PageTransition><MediSpa /></PageTransition></PublicLayout>} />
           <Route path="/salon" element={<Navigate to="/medispa" replace />} />
           <Route path="/boutique" element={<PublicLayout><PageTransition><Boutique /></PageTransition></PublicLayout>} />
-          <Route path="/gourmet" element={<PublicLayout><PageTransition><GourmetFood /></PageTransition></PublicLayout>} />
-          <Route path="/gifts"             element={<PublicLayout><PageTransition><Gifts /></PageTransition></PublicLayout>} />
-          <Route path="/gift-certificates" element={<PublicLayout><PageTransition><GiftCertificates /></PageTransition></PublicLayout>} />
+          {/* Gourmet is temporarily hidden. The page and its data are intact —
+              swap these two lines back to relist it. */}
+          {/* <Route path="/gourmet" element={<PublicLayout><PageTransition><GourmetFood /></PageTransition></PublicLayout>} /> */}
+          <Route path="/gourmet" element={<Navigate to="/giftware" replace />} />
+          <Route path="/giftware"          element={<PublicLayout><PageTransition><Giftware /></PageTransition></PublicLayout>} />
+          {/* Gifts was renamed Giftware and absorbed the certificates page;
+              both old paths still resolve so existing links keep working. */}
+          <Route path="/gifts"             element={<Navigate to="/giftware" replace />} />
+          <Route path="/gift-certificates" element={<Navigate to="/giftware#certificates" replace />} />
           <Route path="/blog"              element={<PublicLayout><PageTransition><Blog /></PageTransition></PublicLayout>} />
-          <Route path="/promotions"        element={<Navigate to="/gifts" replace />} />
-          <Route path="/cart"              element={<PublicLayout><PageTransition><Cart /></PageTransition></PublicLayout>} />
-          <Route path="/checkout"          element={<PublicLayout><PageTransition><Checkout /></PageTransition></PublicLayout>} />
+          <Route path="/promotions"        element={<Navigate to="/giftware" replace />} />
+          <Route path="/cart"              element={<Navigate to="/boutique" replace />} />
+          <Route path="/checkout"          element={<Navigate to="/boutique" replace />} />
           <Route path="/order-confirmation" element={<PublicLayout><PageTransition><OrderConfirmation /></PageTransition></PublicLayout>} />
+          {/* Stripe returns certificate buyers here with ?session_id=cs_… */}
+          <Route path="/certificate-confirmed" element={<PublicLayout><PageTransition><CertificateConfirmed /></PageTransition></PublicLayout>} />
 
           {/* Member portal */}
           <Route path="/my-account" element={
