@@ -23,7 +23,7 @@ export const outerwearTypes = ['jackets', 'cardigans']
 export const boutiqueBrands = [
   {
     slug: 'fdj',
-    name: 'FDJ French Dressing Jeans',
+    name: 'French Dressing Jeans',
     types: ['tops', 'bottoms', 'jackets', 'cardigans'],
     images: img('fdj', 4),
     tagline: 'Great fit. Easy comfort. Everyday confidence.',
