@@ -66,7 +66,7 @@ export default function AdminGifts() {
                 <tr key={o.id}>
                   <td style={tdStyle}>{o.id.slice(0, 8)}…</td>
                   <td style={tdStyle}>{o.item_name || '—'}</td>
-                  <td style={tdStyle}>{o.amount ? `$${o.amount}` : '—'}</td>
+                  <td style={tdStyle}>{o.amount ? `$${(o.amount / 100).toFixed(2)}` : '—'}</td>
                   <td style={tdStyle}>{o.recipient_email || '—'}</td>
                   <td style={tdStyle}>{o.created_at ? new Date(o.created_at).toLocaleDateString('en-CA') : '—'}</td>
                 </tr>

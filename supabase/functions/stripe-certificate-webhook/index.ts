@@ -5,17 +5,22 @@
    (checkout.session.completed). It:
 
      1. verifies the call really came from Stripe (signing secret),
-     2. finds the order the website saved, by certificate code — the
-        site sends that code to Stripe as client_reference_id,
-     3. marks the order active and records the amount actually paid
-        (custom-amount certificates are saved with 0 until now),
-     4. emails the certificate code to the recipient.
+     2. finds the order the website saved. The site sends Stripe
+        "<certificate code>_<view token>" as client_reference_id and
+        only the order holding both is taken, so an order row someone
+        else created with the same code can never receive this payment,
+     3. marks the order active and records what Stripe charged: the
+        face value (before any discount) and the amount paid,
+     4. emails the certificate to the recipient, and a copy to the
+        buyer to print. Each shows the certificate as a card and links
+        to it on sparivier.ca to view or print (see email.ts).
 
    Stripe retries a call until it gets a 2xx, so the order is claimed
    with a conditional update (pending → active) before anything is
    sent: a retry finds nothing left to claim and does not send twice.
-   If the email fails the claim is released and a 500 asks Stripe to
-   try again later.
+   If the recipient's email fails the claim is released and a 500 asks
+   Stripe to try again later. The buyer's copy is best effort, since the
+   buyer also saw the certificate on the page after payment.
 
    Configuration (container environment, see docker-compose.override.yml):
      STRIPE_WEBHOOK_SECRET, SMTP_PASSWORD   — from .env.certificates
@@ -24,6 +29,7 @@
    ────────────────────────────────────────────────────────────── */
 
 import nodemailer from 'npm:nodemailer@6.9.16'
+import { certificateLink, recipientEmail, buyerEmail, money } from './email.ts'
 
 const env = (k: string) => Deno.env.get(k) ?? ''
 
@@ -81,59 +87,12 @@ async function db(path: string, init: RequestInit = {}) {
   return res.json()
 }
 
-/* ── Email ── */
-const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, c =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!))
+/* client_reference_id is "LV-0100-4823_<token>". A purchase started on an
+   older copy of the site sends the code alone. */
+const REFERENCE = /^(LV-\d{4}-\d{4})(?:_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}))?$/i
 
-const money = (cents: number) =>
-  '$' + (cents / 100).toLocaleString('en-CA', { minimumFractionDigits: cents % 100 ? 2 : 0 })
-
-function validUntil(): string {
-  const d = new Date(); d.setFullYear(d.getFullYear() + 1)
-  return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })
-}
-
-function certificateEmail(o: { code: string; cents: number; recipientName: string; senderName: string; message: string }) {
-  const amount = money(o.cents)
-  const until = validUntil()
-  const greeting = o.recipientName ? `Hi ${o.recipientName},` : 'Hello,'
-  const fromLine = o.senderName ? `${o.senderName} has sent you` : 'You have received'
-
-  const text = [
-    greeting, '',
-    `${fromLine} a Spa Rivier gift certificate worth ${amount}.`,
-    ...(o.message ? ['', `"${o.message}"`] : []),
-    '', `Your certificate code: ${o.code}`, '',
-    'To use it, quote this code when you book, or show it at 353 Reid Street, Quesnel.',
-    `Valid for all Spa Rivier services until ${until}.`, '',
-    'Questions? Call us at 250-992-8084. Please do not reply to this email.',
-    '', 'Spa Rivier · sparivier.ca',
-  ].join('\n')
-
-  const html = `<!doctype html><html><body style="margin:0;background:#f6f5ed;font-family:Helvetica,Arial,sans-serif;color:#2e3350">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f5ed;padding:32px 12px"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:14px;overflow:hidden">
-  <tr><td style="background:#2e3350;padding:28px 32px">
-    <p style="margin:0;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#e9b0b9">Gift Certificate</p>
-    <p style="margin:6px 0 0;font-size:24px;color:#f6f5ed">Spa Rivier</p>
-  </td></tr>
-  <tr><td style="padding:32px">
-    <p style="margin:0 0 14px;font-size:16px">${esc(greeting)}</p>
-    <p style="margin:0 0 20px;font-size:16px;line-height:1.6">${esc(fromLine)} a Spa Rivier gift certificate worth <strong>${esc(amount)}</strong>.</p>
-    ${o.message ? `<p style="margin:0 0 24px;padding:14px 18px;border-left:3px solid #e9b0b9;background:#faf6f1;font-style:italic;line-height:1.6;white-space:pre-wrap">${esc(o.message)}</p>` : ''}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px"><tr><td align="center" style="border:1px solid #e9b0b9;border-radius:10px;padding:20px">
-      <p style="margin:0 0 6px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#8a8fa3">Your certificate code</p>
-      <p style="margin:0;font-family:'Courier New',monospace;font-size:26px;font-weight:bold;letter-spacing:4px;color:#2e3350">${esc(o.code)}</p>
-    </td></tr></table>
-    <p style="margin:0 0 8px;font-size:14px;line-height:1.6">To use it, quote this code when you book, or show it at <strong>353 Reid Street, Quesnel</strong>.</p>
-    <p style="margin:0 0 24px;font-size:14px;line-height:1.6">Valid for all Spa Rivier services until <strong>${esc(until)}</strong>.</p>
-    <p style="margin:0;font-size:13px;color:#8a8fa3;line-height:1.6">Questions? Call <a href="tel:+12509928084" style="color:#2e3350">250-992-8084</a>. Please do not reply to this email.</p>
-  </td></tr>
-  <tr><td style="background:#faf6f1;padding:16px 32px;font-size:12px;color:#8a8fa3">Spa Rivier · 353 Reid Street, Quesnel BC · <a href="https://sparivier.ca" style="color:#8a8fa3">sparivier.ca</a></td></tr>
-</table></td></tr></table></body></html>`
-
-  return { subject: o.senderName ? `${o.senderName} sent you a Spa Rivier gift certificate` : 'Your Spa Rivier gift certificate', text, html }
-}
+const sameAddress = (a?: string | null, b?: string | null) =>
+  (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase()
 
 /* ── Handler ── */
 const HANDLED = new Set(['checkout.session.completed', 'checkout.session.async_payment_succeeded'])
@@ -153,41 +112,46 @@ Deno.serve(async (req) => {
   const session = event.data?.object ?? {}
   if (session.payment_status !== 'paid') return json(200, { ignored: 'not paid yet' })
 
-  const code: string = session.client_reference_id ?? ''
-  if (!/^LV-\d{4}-\d{4}$/.test(code)) return json(200, { ignored: 'not a certificate' })
+  const ref = REFERENCE.exec(session.client_reference_id ?? '')
+  if (!ref) return json(200, { ignored: 'not a certificate' })
+  const code  = ref[1]
+  const token = ref[2]?.toLowerCase() ?? null
 
-  const cents: number = session.amount_total ?? 0
-  const buyerEmail: string = session.customer_details?.email ?? ''
+  const paid: number = session.amount_total ?? 0
+  const face: number = session.amount_subtotal ?? paid     // before any discount: what the certificate is worth
+  const buyer: string = session.customer_details?.email ?? ''
+
+  const match = `cert_code=eq.${encodeURIComponent(code)}&type=eq.certificate` + (token ? `&view_token=eq.${token}` : '')
 
   // Claim the order: only a pending one flips to active, so retries do nothing.
-  const [order] = await db(
-    `gift_orders?cert_code=eq.${encodeURIComponent(code)}&type=eq.certificate&status=eq.pending`,
-    { method: 'PATCH', body: JSON.stringify({ status: 'active', amount: cents }) },
-  )
+  const [order] = await db(`gift_orders?${match}&status=eq.pending`, {
+    method: 'PATCH', body: JSON.stringify({ status: 'active', amount: paid, cert_amount: face }),
+  })
 
   if (!order) {
-    const existing = await db(`gift_orders?cert_code=eq.${encodeURIComponent(code)}&select=status`)
+    const existing = await db(`gift_orders?${match}&select=status`)
     if (existing.length) {
       console.log(`[certificate] ${code} already delivered (${existing[0].status}); nothing to do`)
       return json(200, { alreadyDelivered: code })
     }
-    // The website failed to save the order, so we have no recipient: send the
-    // code to the buyer instead, so the certificate is never lost.
-    console.warn(`[certificate] ${code} has no saved order — sending the code to the buyer`)
-    if (buyerEmail) {
-      const mail = certificateEmail({ code, cents, recipientName: '', senderName: '', message: '' })
-      await mailer.sendMail({ from: env('MAIL_FROM'), to: buyerEmail, ...mail })
+    // The website failed to save the order, so there is no recipient and no
+    // certificate page: send the certificate to the buyer, so it is never lost.
+    console.warn(`[certificate] ${code} has no saved order — sending the certificate to the buyer`)
+    if (buyer) {
+      const mail = recipientEmail({ code, cents: face, recipientName: '', senderName: '', message: '' }, null)
+      await mailer.sendMail({ from: env('MAIL_FROM'), to: buyer, ...mail })
     }
     return json(200, { delivered: code, to: 'buyer (no saved order)' })
   }
 
-  // Custom-amount certificates are saved at 0 until the payment says otherwise.
-  if (!order.cert_amount) await db(`gift_orders?id=eq.${order.id}`, { method: 'PATCH', body: JSON.stringify({ cert_amount: cents }) })
-
-  const to = order.recipient_email || order.sender_email || buyerEmail
+  const cert = {
+    code, cents: face,
+    recipientName: order.recipient_name ?? '', senderName: order.sender_name ?? '', message: order.message ?? '',
+  }
+  const link = certificateLink(code, order.view_token)
+  const to = order.recipient_email || order.sender_email || buyer
   try {
-    const mail = certificateEmail({ code, cents, recipientName: order.recipient_name, senderName: order.sender_name, message: order.message })
-    await mailer.sendMail({ from: env('MAIL_FROM'), to, ...mail })
+    await mailer.sendMail({ from: env('MAIL_FROM'), to, ...recipientEmail(cert, link) })
   } catch (err) {
     // Release the claim so Stripe's retry can deliver it.
     await db(`gift_orders?id=eq.${order.id}`, { method: 'PATCH', body: JSON.stringify({ status: 'pending' }) })
@@ -195,6 +159,17 @@ Deno.serve(async (req) => {
     return json(500, { error: 'email failed; Stripe will retry' })
   }
 
-  console.log(`[certificate] ${code} (${money(cents)}) delivered to ${to}`)
+  // The buyer's copy to print, unless the buyer is the recipient.
+  const copyTo = order.sender_email || buyer
+  const sendCopy = Boolean(copyTo) && !sameAddress(copyTo, to)
+  if (sendCopy) {
+    try {
+      await mailer.sendMail({ from: env('MAIL_FROM'), to: copyTo, ...buyerEmail(cert, link, to) })
+    } catch (err) {
+      console.error(`[certificate] ${code} buyer's copy to ${copyTo} failed (the recipient has theirs):`, err)
+    }
+  }
+
+  console.log(`[certificate] ${code} (${money(face)}) delivered to ${to}${sendCopy ? `, copy to ${copyTo}` : ''}`)
   return json(200, { delivered: code })
 })

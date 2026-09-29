@@ -249,9 +249,13 @@ CREATE TABLE IF NOT EXISTS public.gift_orders (
   -- Link to payment record once paid
   payment_id       uuid        REFERENCES public.payments(id) ON DELETE SET NULL,
 
+  -- Private token in the emailed certificate link (see certificate_view below)
+  view_token       uuid        NOT NULL DEFAULT gen_random_uuid(),
+
   created_at       timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_gift_orders_view_token ON public.gift_orders(view_token);
 CREATE INDEX IF NOT EXISTS idx_gift_orders_sender_email    ON public.gift_orders(sender_email);
 CREATE INDEX IF NOT EXISTS idx_gift_orders_recipient_email ON public.gift_orders(recipient_email);
 CREATE INDEX IF NOT EXISTS idx_gift_orders_cert_code       ON public.gift_orders(cert_code);
@@ -450,9 +454,26 @@ DROP POLICY IF EXISTS "gift_orders: public insert"     ON public.gift_orders;
 DROP POLICY IF EXISTS "gift_orders: users read own"    ON public.gift_orders;
 DROP POLICY IF EXISTS "gift_orders: admins all"        ON public.gift_orders;
 
-CREATE POLICY "gift_orders: public insert"     ON public.gift_orders FOR INSERT WITH CHECK (true);
+-- The site may only create pending orders; the Stripe webhook (service role)
+-- is what marks one paid.
+CREATE POLICY "gift_orders: public insert"     ON public.gift_orders FOR INSERT WITH CHECK (status = 'pending');
 CREATE POLICY "gift_orders: users read own"    ON public.gift_orders FOR SELECT USING (sender_email = auth.email());
 CREATE POLICY "gift_orders: admins all"        ON public.gift_orders FOR ALL USING (public.is_admin());
+
+-- The emailed certificate link reads one certificate, and only with its token.
+CREATE OR REPLACE FUNCTION public.certificate_view(p_code text, p_token uuid)
+RETURNS TABLE (
+  cert_code text, face_cents integer, recipient_name text, sender_name text,
+  message text, status text, created_at timestamptz
+)
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT g.cert_code, g.cert_amount, g.recipient_name, g.sender_name,
+         g.message, g.status, g.created_at
+  FROM public.gift_orders g
+  WHERE g.type = 'certificate' AND g.cert_code = p_code AND g.view_token = p_token;
+$$;
+REVOKE ALL ON FUNCTION public.certificate_view(text, uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.certificate_view(text, uuid) TO anon, authenticated;
 
 -- ── services ─────────────────────────────────────────────────────────────────
 ALTER TABLE public.services ENABLE ROW LEVEL SECURITY;

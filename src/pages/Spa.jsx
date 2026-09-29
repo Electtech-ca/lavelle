@@ -12,6 +12,7 @@ import {
   lashExtensionsTranslations, browsTranslations, enhancementsTranslations,
   nailExtensionsTranslations, nailHandTranslations, nailFootTranslations, waxingTranslations,
 } from '../data/salonTranslations'
+import { yearsInBusiness } from '../data/business'
 
 /* ── One unique image per tab — Spa Rivier salon & spa photography ── */
 const TAB_IMAGES = {
@@ -157,7 +158,7 @@ export default function Spa() {
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.hair.bookBtn')}</button>
                   </div>
                 </div>
-                <SidePanel tab={0} alt={t('salon.hair.title')} text={t('spa.about.hair')} />
+                <SidePanel tab={0} alt={t('salon.hair.title')} text={t('spa.about.hair', { years: yearsInBusiness() })} />
               </div>
             </>
           )}

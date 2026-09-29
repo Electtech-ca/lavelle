@@ -1,5 +1,5 @@
 export const giftItems = [
-  { id: 1,  name: 'Spa Rivier Signature Gift Box',          price: '$222',      priceInCents: 22200, stock: 12, image: '/images/gifts/gift-assortment.jpg', description: 'Curated luxury box: 5 hand-selected items in plum tissue, gold wax seal, champagne ribbon.' },
+  { id: 1,  name: 'Spa Rivier Signature Gift Box',          price: '$222',      priceInCents: 22200, stock: 12, image: '/images/gifts/gift-assortment.jpg', description: 'Curated luxury box: 5 hand-selected items in plum tissue, tied with champagne ribbon.' },
   { id: 2,  name: 'Pure Cashmere Throw Blanket',          price: '$264',      priceInCents: 26400, stock: 5,  image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop', description: 'Grade-A Scottish cashmere in champagne. Cloud-soft and endlessly elegant.' },
   { id: 3,  name: 'Artisan Candle Collection (Set of 3)', price: '$114',      priceInCents: 11400, stock: 18, image: '/images/gifts/voluspa-japonica-set.jpg', description: 'Hand-poured soy wax in Jasmine & Tuberose, Rose Oud, and Champagne & Fig.' },
   { id: 4,  name: 'Luxury Skincare Ritual Set',           price: '$330',      priceInCents: 33000, stock: 7,  image: '/images/medispa/eminence-strawberry-rhubarb.jpg', description: '5-piece French skincare: cleanser, toner, serum, eye cream, moisturizer in keepsake tray.' },
@@ -120,3 +120,13 @@ export const giftCertificates = [
     prestige: true,
   },
 ]
+
+/* The tier a certificate is drawn in, for an amount in dollars. A standard
+   amount gets its own tier; a custom amount borrows the colours of the
+   nearest tier below it, without that tier's name. */
+export function certificateTier(amount) {
+  const exact = giftCertificates.find(c => c.amount === amount)
+  if (exact) return exact
+  const below = [...giftCertificates].reverse().find(c => c.amount <= amount) || giftCertificates[0]
+  return { ...below, label: null, subtitle: null }
+}

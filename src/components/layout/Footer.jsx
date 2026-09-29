@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Instagram, Facebook, MapPin } from 'lucide-react'
+import { Instagram, Facebook, Store, MapPin } from 'lucide-react'
 
 const navLinks = [
   { to: '/',                  key: 'nav.home' },
@@ -47,8 +47,12 @@ export default function Footer() {
             <p style={{ ...body, fontStyle: 'italic', marginBottom: 'var(--space-lg)' }}>{t('footer.tagline')}</p>
             <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
               {[
-                { Icon: Instagram, label: 'Instagram',   href: '#' },
-                { Icon: Facebook,  label: 'Facebook',    href: '#' },
+                { Icon: Instagram, label: 'Instagram',   href: 'https://www.instagram.com/sparivier/' },
+                { Icon: Facebook,  label: 'Facebook',    href: 'https://www.facebook.com/Sparivierquesnel/' },
+                /* Plain http on purpose: downtownquesnel.com's HTTPS certificate
+                   expired in 2019, so an https link opens on a browser security
+                   warning. Switch to https once their certificate is renewed. */
+                { Icon: Store,     label: 'Downtown Quesnel', href: 'http://www.downtownquesnel.com/businesses/profile/45/spa_rivier/' },
                 { Icon: MapPin,    label: 'Google Maps', href: 'https://maps.google.com/?q=353+Reid+Street+Quesnel+BC' },
               ].map(({ Icon, label, href }) => (
                 <a key={label} href={href} aria-label={label}

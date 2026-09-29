@@ -10,10 +10,13 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Gift } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
+import { GiftMedallion, certInk, certTitle } from '../ui/CertificateSheet'
 import { supabase }  from '../../lib/supabase'
 import { certificatePaymentUrl, hasCertificatePaymentLink,
          customCertificatePaymentUrl, hasCustomCertificateLink } from '../../lib/stripe'
+import { newCertificateCode, newViewToken, paymentReference } from '../../lib/certificates'
 import { giftCertificates } from '../../data/giftsData'
 
 /* ── Certificate voucher component ── */
@@ -43,8 +46,11 @@ function CertificateCard({ cert, onPurchase }) {
         transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
         overflow: 'hidden',
         minHeight: cert.prestige ? '340px' : '300px',
+        height: '100%',                 // one height per row, whatever the tier name's length
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
+        containerType: 'inline-size',   // the label below sizes itself to the card
       }}>
 
       {/* Shimmer sweep on hover */}
@@ -65,28 +71,15 @@ function CertificateCard({ cert, onPurchase }) {
       {/* Inner card content */}
       <div style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', zIndex: 2 }}>
 
-        {/* Header row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'auto' }}>
-          <div>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.28em', textTransform: 'uppercase', color: cert.accentColor, marginBottom: '4px', opacity: 0.8 }}>
-              {t('giftCert.card.label')}
-            </p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 400, color: cert.textColor, lineHeight: 1.2, fontStyle: 'italic' }}>
-              {cert.label.startsWith('Spa Rivier') ? cert.label : `Spa Rivier ${cert.label}`}
-            </p>
-          </div>
-          {/* Wax seal simulation */}
-          <div style={{
-            width: '44px', height: '44px', borderRadius: '50%',
-            background: cert.dark
-              ? `radial-gradient(circle, ${cert.goldColor} 0%, ${cert.accentColor} 100%)`
-              : `radial-gradient(circle, #e43e2d 0%, #b83020 100%)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-            flexShrink: 0,
-          }}>
-            <span style={{ color: cert.dark ? '#0f1a26' : '#313a4d', fontSize: '0.9rem' }}>✦</span>
-          </div>
+        {/* Header: the gift logo and "Gift Certificate", large */}
+        <div style={{ textAlign: 'center', marginBottom: 'auto' }}>
+          <GiftMedallion cert={cert} size={46} />
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(0.72rem, 5.4cqi, 1.05rem)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: certInk(cert), lineHeight: 1.25, margin: '12px 0 4px' }}>
+            {t('giftCert.card.label')}
+          </p>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 400, color: cert.textColor, lineHeight: 1.2, fontStyle: 'italic' }}>
+            {certTitle(cert)}
+          </p>
         </div>
 
         {/* Decorative divider */}
@@ -130,19 +123,18 @@ function CertificateCard({ cert, onPurchase }) {
         {/* Divider */}
         <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${cert.borderColor}, transparent)`, marginBottom: 'var(--space-md)' }} />
 
-        {/* Footer row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.58rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: cert.dark ? 'rgba(255,255,255,0.4)' : cert.accentColor, opacity: 0.7 }}>
-              {t('giftCert.card.valid')}
-            </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: cert.dark ? 'rgba(255,255,255,0.3)' : cert.accentColor, opacity: 0.5, marginTop: '2px' }}>
-              {t('giftCert.card.services')}
-            </p>
-          </div>
+        {/* Footer: the terms, kept legible, then the purchase button */}
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.64rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: certInk(cert), opacity: 0.9 }}>
+            {t('giftCert.card.valid')}
+          </p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.64rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: certInk(cert), opacity: 0.9, marginTop: '2px' }}>
+            {t('giftCert.card.services')}
+          </p>
           <button
             onClick={e => { e.stopPropagation(); onPurchase(cert) }}
             style={{
+              marginTop: 'var(--space-md)',
               fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 700,
               letterSpacing: '0.16em', textTransform: 'uppercase',
               padding: '8px 16px', borderRadius: 'var(--radius-full)',
@@ -168,7 +160,7 @@ const PENDING_KEY = 'sparivier.pendingCertificate'
 
 function PurchaseModal({ cert, onClose }) {
   const { t } = useTranslation()
-  // The code is emailed to the recipient; the buyer gets the printable certificate.
+  // The certificate is emailed to the recipient, with a copy to the buyer to print.
   const [form, setForm] = useState({ recipientName: '', recipientEmail: '', senderName: '', senderEmail: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -179,47 +171,60 @@ function PurchaseModal({ cert, onClose }) {
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
+  // 'saved', 'taken' (that code already exists), or 'failed'.
+  // Note the builder is a thenable without .catch, hence try/await/error.
+  const saveOrder = async (certCode, token) => {
+    try {
+      const { error } = await supabase.from('gift_orders').insert([{
+        type:            'certificate',
+        cert_code:       certCode,
+        view_token:      token,                 // opens the emailed certificate link
+        cert_amount:     cert.amount * 100,     // store in cents; the webhook sets what Stripe charged
+        cert_label:      cert.label,
+        amount:          cert.amount * 100,
+        sender_name:     form.senderName,
+        sender_email:    form.senderEmail,      // a copy of the certificate is emailed here
+        recipient_name:  form.recipientName,
+        recipient_email: form.recipientEmail,   // the certificate is emailed here
+        message:         form.message,
+        delivery:        'email',
+        status:          'pending',             // becomes 'active' once payment confirmed
+      }])
+      if (!error) return 'saved'
+      console.error('[GiftCertificateSection] insert failed:', error)
+      return error.code === '23505' ? 'taken' : 'failed'
+    } catch (err) {
+      console.error('[GiftCertificateSection] insert failed:', err)
+      return 'failed'
+    }
+  }
+
   const submit = async e => {
     e.preventDefault()
     setSaving(true)
-    // Generate a unique certificate code
-    const certCode = `LV-${cert.amount.toString().padStart(4, '0')}-${Math.floor(Math.random() * 9000 + 1000)}`
-    const payUrl = !payOnline ? null
-      : isCustom ? customCertificatePaymentUrl({ certCode, email: form.senderEmail })
-      : certificatePaymentUrl(cert.amount, { certCode, email: form.senderEmail })
-    if (supabase) {
-      // A failed insert must never block the payment — Stripe carries certCode
-      // as client_reference_id, so staff can reconcile the order either way.
-      // Note the builder is a thenable without .catch, hence try/await/error.
-      try {
-        const { error } = await supabase.from('gift_orders').insert([{
-          type:            'certificate',
-          cert_code:       certCode,
-          cert_amount:     cert.amount * 100,     // store in cents
-          cert_label:      cert.label,
-          amount:          cert.amount * 100,
-          sender_name:     form.senderName,
-          sender_email:    form.senderEmail,      // the certificate is emailed here
-          recipient_name:  form.recipientName,
-          recipient_email: form.recipientEmail,   // the code is emailed here
-          message:         form.message,
-          delivery:        'email',
-          status:          'pending',             // becomes 'active' once payment confirmed
-        }])
-        if (error) console.error('[GiftCertificateSection] insert failed:', error)
-      } catch (err) {
-        console.error('[GiftCertificateSection] insert failed:', err)
-      }
+    // A failed insert must never block the payment: Stripe carries the code
+    // and token, so staff can reconcile the order either way. The one failure
+    // worth retrying is a code that is already taken — paying against someone
+    // else's code would leave two certificates sharing it.
+    let certCode, token
+    for (let attempt = 0; attempt < 5; attempt++) {
+      certCode = newCertificateCode(cert.amount)
+      token    = newViewToken()
+      if (!supabase || await saveOrder(certCode, token) !== 'taken') break
     }
+    const reference = paymentReference(certCode, token)
+    const payUrl = !payOnline ? null
+      : isCustom ? customCertificatePaymentUrl({ reference, email: form.senderEmail })
+      : certificatePaymentUrl(cert.amount, { reference, email: form.senderEmail })
     if (payUrl) {
       // Carried across the redirect so the return page can show the guest
-      // a printable certificate next to the Stripe token.
+      // the printable certificate, and look up a custom amount once paid.
       try {
         sessionStorage.setItem(PENDING_KEY, JSON.stringify({
-          certCode, amount: cert.amount, label: cert.label,
+          certCode, token, amount: cert.amount, label: cert.label,
           recipientName: form.recipientName, senderName: form.senderName, message: form.message,
         }))
-      } catch { /* private browsing — the Stripe token alone still works */ }
+      } catch { /* private browsing — the certificate is emailed as well */ }
       window.location.assign(payUrl)
       return
     }
@@ -335,6 +340,11 @@ export default function GiftCertificateSection() {
       {/* ── Certificate cards ── */}
       <section id="certificates" style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl)', scrollMarginTop: '80px' }}>
         <div className="container">
+          <div aria-hidden="true" style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-md)' }}>
+            <span style={{ width: '56px', height: '56px', borderRadius: '50%', border: '1.5px solid var(--color-pink)', color: 'var(--color-blue)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Gift size={28} strokeWidth={1.6} />
+            </span>
+          </div>
           <SectionHeader
             eyebrow={t('giftCert.section.eyebrow')}
             headline={t('giftCert.section.headline')}

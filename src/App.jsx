@@ -18,6 +18,7 @@ import OrderConfirmation from './pages/OrderConfirmation'
 import MemberPortal      from './pages/MemberPortal'
 import Blog              from './pages/Blog'
 import CertificateConfirmed from './pages/CertificateConfirmed'
+import CertificateView     from './pages/CertificateView'
 
 import AdminLogin      from './pages/admin/AdminLogin'
 import AdminDashboard  from './pages/admin/AdminDashboard'
@@ -88,6 +89,8 @@ export default function App() {
           <Route path="/order-confirmation" element={<PublicLayout><PageTransition><OrderConfirmation /></PageTransition></PublicLayout>} />
           {/* Stripe returns certificate buyers here with ?session_id=cs_… */}
           <Route path="/certificate-confirmed" element={<PublicLayout><PageTransition><CertificateConfirmed /></PageTransition></PublicLayout>} />
+          {/* The link emailed with each certificate: ?code=LV-…&k=<token> */}
+          <Route path="/certificate" element={<PublicLayout><PageTransition><CertificateView /></PageTransition></PublicLayout>} />
 
           {/* Member portal */}
           <Route path="/my-account" element={

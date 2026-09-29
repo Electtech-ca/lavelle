@@ -72,18 +72,19 @@ export function hasCertificatePaymentLink(amount) {
 /**
  * The Stripe URL to send a buyer to for one certificate.
  *
- * `certCode` rides along as client_reference_id, which Stripe shows on the
- * payment and makes searchable in the dashboard. That is the link between
- * the Stripe payment and our gift_orders row, and because Stripe records it
- * at payment time it cannot be forged from the browser afterwards.
+ * `reference` rides along as client_reference_id, which Stripe shows on the
+ * payment. It is "<certificate code>_<view token>" (see lib/certificates.js):
+ * the link between the Stripe payment and our gift_orders row, and because
+ * Stripe records it at payment time it cannot be forged from the browser
+ * afterwards. Staff read the certificate code at the start of it.
  */
-export function certificatePaymentUrl(amount, { certCode, email } = {}) {
+export function certificatePaymentUrl(amount, { reference, email } = {}) {
   const base = LINKS[amount]
   if (!base) return null
 
   const url = new URL(base.toString())
-  if (certCode) url.searchParams.set('client_reference_id', certCode)
-  if (email)    url.searchParams.set('prefilled_email', email)
+  if (reference) url.searchParams.set('client_reference_id', reference)
+  if (email)     url.searchParams.set('prefilled_email', email)
   return url.toString()
 }
 
@@ -112,11 +113,11 @@ export function hasCustomCertificateLink() {
 }
 
 /** The Stripe URL for a custom-amount certificate. */
-export function customCertificatePaymentUrl({ certCode, email } = {}) {
+export function customCertificatePaymentUrl({ reference, email } = {}) {
   if (!CUSTOM_LINK) return null
   const url = new URL(CUSTOM_LINK.toString())
-  if (certCode) url.searchParams.set('client_reference_id', certCode)
-  if (email)    url.searchParams.set('prefilled_email', email)
+  if (reference) url.searchParams.set('client_reference_id', reference)
+  if (email)     url.searchParams.set('prefilled_email', email)
   return url.toString()
 }
 

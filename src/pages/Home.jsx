@@ -6,6 +6,7 @@ import AwardsSection    from '../components/sections/AwardsSection'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import SectionHeader    from '../components/ui/SectionHeader'
 import GoldDivider      from '../components/ui/GoldDivider'
+import { yearsInBusiness } from '../data/business'
 
 const STORY_IMAGE   = '/images/boutique/boutique-interior.jpg'
 const FEATURE_IMGS  = [
@@ -16,9 +17,10 @@ const FEATURE_IMGS  = [
 
 export default function Home() {
   const { t } = useTranslation()
+  const years = yearsInBusiness()
 
   const stats = [
-    { value: '35+', label: t('home.stats.years') },
+    { value: String(years), label: t('home.stats.years') },
     { value: '5',   label: t('home.stats.experiences') },
     { value: '12+', label: t('home.stats.awards') },
     { value: '∞',   label: t('home.stats.moments') },
@@ -51,7 +53,7 @@ export default function Home() {
           <div>
             <SectionHeader
               eyebrow={t('home.story.eyebrow')}
-              headline={t('home.story.headline')}
+              headline={t('home.story.headline', { years })}
               subtext={t('home.story.sub')}
             />
             <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.85, marginBottom: 'var(--space-xl)' }}>
@@ -118,7 +120,7 @@ export default function Home() {
           <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.about.eyebrow')}</p>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2 }}>
-              {t('home.about.headline')}
+              {t('home.about.headline', { years })}
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-body)', fontWeight: 300, color: 'var(--text-muted)', maxWidth: '600px', margin: 'var(--space-md) auto 0', lineHeight: 1.75 }}>
               {t('home.about.sub')}
@@ -161,7 +163,7 @@ export default function Home() {
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#E9B0B9', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{t('home.about.attrib')}</p>
               <div style={{ marginTop: 'var(--space-xl)', paddingTop: 'var(--space-lg)', borderTop: '1px solid rgba(246,245,237,0.1)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-lg)' }}>
                 {[
-                  { value: '35+', label: t('home.about.stat1') },
+                  { value: String(years), label: t('home.about.stat1') },
                   { value: '4',   label: t('home.about.stat2') },
                   { value: '12+', label: t('home.about.stat3') },
                   { value: '∞',   label: t('home.about.stat4') },

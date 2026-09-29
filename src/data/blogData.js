@@ -330,7 +330,7 @@ export const blogPosts = [
       },
       {
         type: 'paragraph',
-        text: 'Whatever you choose is finished with gold tissue, our signature wax seal and champagne ribbon, and we will hand-letter the note. The presentation is part of the gift. Same-day collection in store, and local delivery within Quesnel.',
+        text: 'Whatever you choose is finished with gold tissue and champagne ribbon, and we will hand-letter the note. The presentation is part of the gift. Same-day collection in store, and local delivery within Quesnel.',
       },
       {
         type: 'heading',

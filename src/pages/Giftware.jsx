@@ -124,7 +124,6 @@ export default function Giftware() {
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-xl)', textAlign: 'center' }}>
           {[
             { icon: '🎁', label: t('gifts.features.wrapping'),   sub: t('gifts.features.wrapping.sub') },
-            { icon: '🕯️', label: t('gifts.features.waxSeal'),    sub: t('gifts.features.waxSeal.sub') },
             { icon: '✍️', label: t('gifts.features.calligraphy'), sub: t('gifts.features.calligraphy.sub') },
             { icon: '🚚', label: t('gifts.features.delivery'),    sub: t('gifts.features.delivery.sub') },
           ].map(f => (

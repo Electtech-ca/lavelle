@@ -1,5 +1,5 @@
 export const giftTranslations = {
-  1: ['Boîte Cadeau Signature Spa Rivier', 'Coffret de luxe composé de 5 articles choisis avec soin, dans un papier de soie prune, avec sceau de cire doré et ruban champagne.'],
+  1: ['Boîte Cadeau Signature Spa Rivier', 'Coffret de luxe composé de 5 articles choisis avec soin, dans un papier de soie prune, noué d’un ruban champagne.'],
   2: ['Plaid en Cachemire Pur', 'Cachemire écossais Grade A couleur champagne. Doux comme un nuage et d’une élégance intemporelle.'],
   3: ['Collection de Bougies Artisanales (Lot de 3)', 'Cire de soja coulée à la main : Jasmin & Tubéreuse, Rose Oud et Champagne & Figue.'],
   4: ['Coffret Rituel de Soins Luxueux', 'Soins français en 5 étapes : nettoyant, tonique, sérum, crème contour des yeux et hydratant dans un écrin précieux.'],
