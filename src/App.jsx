@@ -12,6 +12,7 @@ import Home              from './pages/Home'
 import Spa               from './pages/Spa'
 import MediSpa           from './pages/MediSpa'
 import Boutique          from './pages/Boutique'
+import Haircare          from './pages/Haircare'
 // import GourmetFood       from './pages/GourmetFood'   // hidden — see /gourmet route below
 import Giftware          from './pages/Giftware'
 import OrderConfirmation from './pages/OrderConfirmation'
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/medispa" element={<PublicLayout><PageTransition><MediSpa /></PageTransition></PublicLayout>} />
           <Route path="/salon" element={<Navigate to="/medispa" replace />} />
           <Route path="/boutique" element={<PublicLayout><PageTransition><Boutique /></PageTransition></PublicLayout>} />
+          <Route path="/haircare" element={<PublicLayout><PageTransition><Haircare /></PageTransition></PublicLayout>} />
           {/* Gourmet is temporarily hidden. The page and its data are intact —
               swap these two lines back to relist it. */}
           {/* <Route path="/gourmet" element={<PublicLayout><PageTransition><GourmetFood /></PageTransition></PublicLayout>} /> */}

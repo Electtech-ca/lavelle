@@ -157,6 +157,9 @@ export default function Spa() {
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.hair.bookBtn')}</button>
                   </div>
+                  <p style={{ textAlign: 'center', marginTop: 'var(--space-md)' }}>
+                    <a href="/haircare" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 600, color: '#2E3350' }}>{t('spa.hair.brandsLink')} →</a>
+                  </p>
                 </div>
                 <SidePanel tab={0} alt={t('salon.hair.title')} text={t('spa.about.hair', { years: yearsInBusiness() })} />
               </div>

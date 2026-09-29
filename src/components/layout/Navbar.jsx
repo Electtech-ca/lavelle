@@ -10,6 +10,7 @@ const navKeys = [
   { to: '/spa',               key: 'nav.spa' },
   { to: '/medispa',           key: 'nav.medispa' },
   { to: '/boutique',          key: 'nav.boutique' },
+  { to: '/haircare',          key: 'nav.haircare' },
   /* Gourmet is hidden for now — restore this line to bring it back. */
   { to: '/giftware',          key: 'nav.giftware' },
   { to: '/blog',              key: 'nav.blog' },
@@ -78,6 +79,7 @@ export default function Navbar() {
     { path: '/spa', label: t('nav.spa'), keywords: 'facial visage peel peeling waxing épilation cils sourcils nails ongles manicure manucure pedicure pédicure' },
     { path: '/medispa', label: t('nav.medispa'), keywords: 'oxygeneo laser micro needling tatouage tattoo freezpen peel peeling esthétique' },
     { path: '/boutique', label: t('nav.boutique'), keywords: 'fashion mode clothing vêtements products produits' },
+    { path: '/haircare', label: t('nav.haircare'), keywords: 'hair haircare cheveux capillaires shampoo shampooing conditioner revitalisant styling coiffage scalp cuir chevelu maria nila moroccanoil argan joico redken ag care design.me sebastian nioxin k18 malibu color wow celeb luxury' },
     { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité promotions certificate certificat voucher bon' },
     { path: '/blog', label: t('nav.blog'), keywords: 'featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
   ]
@@ -123,12 +125,12 @@ export default function Navbar() {
           </ul>
 
           {/* Right controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexShrink: 0, marginLeft: 'var(--space-xl)' }}>
+          <div className="nav-controls" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', flexShrink: 0, marginLeft: 'var(--space-xl)' }}>
             <LanguageToggle />
             <button onClick={() => setSearchOpen(true)} aria-label={t('a11y.search')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(246,245,237,0.8)', display: 'flex', padding: '4px' }}>
               <Search size={18} />
             </button>
-            <button className="btn-secondary" onClick={() => setModalOpen(true)}
+            <button className="btn-secondary nav-book" onClick={() => setModalOpen(true)}
               style={{ padding: '10px 22px', fontSize: '0.68rem' }}
               aria-label={t('cta.book')}>
               {t('cta.book')}
@@ -183,17 +185,19 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Mobile full-screen menu */}
+      {/* Mobile full-screen menu. The auto margins on the first and last
+          items centre it, and on a short screen it scrolls rather than
+          losing its top and bottom. */}
       {menuOpen && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 490,
           background: 'var(--color-blue)',
           display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          gap: 'var(--space-xl)',
+          alignItems: 'center', justifyContent: 'flex-start',
+          gap: 'clamp(12px, 3.5vh, 40px)', overflowY: 'auto', padding: 'calc(72px + var(--space-sm)) 0 var(--space-lg)',
         }}>
           {/* Mobile logo */}
-          <div style={{ marginBottom: 'var(--space-lg)', textAlign: 'center' }}>
+          <div style={{ marginTop: 'auto', marginBottom: 'var(--space-lg)', textAlign: 'center' }}>
             <img
               src="/logo.png"
               alt="Spa Rivier"
@@ -220,7 +224,7 @@ export default function Navbar() {
 
           <button className="btn-primary"
             onClick={() => { setMenuOpen(false); setModalOpen(true) }}
-            style={{ marginTop: 'var(--space-lg)' }}>
+            style={{ marginTop: 'var(--space-lg)', marginBottom: 'auto' }}>
             {t('cta.book')}
           </button>
         </div>
@@ -228,9 +232,15 @@ export default function Navbar() {
 
       <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
+      {/* The full menu needs about 1140px in French ("Soins Capillaires",
+          "Articles Cadeaux"); narrower screens get the menu button, with the
+          controls at the right edge. On phones the header's Book button would
+          push the menu button off-screen, so it gives way there (the menu has
+          its own Book button). */}
       <style>{`
-        @media (min-width: 1025px) { .hamburger { display: none !important; } }
-        @media (max-width: 1024px) { .nav-desktop { display: none !important; } }
+        @media (min-width: 1141px) { .hamburger { display: none !important; } }
+        @media (max-width: 1140px) { .nav-desktop { display: none !important; } .nav-controls { margin-left: auto !important; } }
+        @media (max-width: 480px)  { .nav-book { display: none !important; } }
       `}</style>
     </>
   )
