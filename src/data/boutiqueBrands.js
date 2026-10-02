@@ -46,7 +46,7 @@ export const boutiqueBrands = [
     slug: 'joseph-ribkoff',
     name: 'Joseph Ribkoff',
     types: ['tops', 'bottoms', 'jackets', 'dresses'],
-    images: [],
+    images: img('joseph-ribkoff', 6),
     tagline: 'Timeless style. Beautifully made. Effortlessly sophisticated.',
     body: [
       'Joseph Ribkoff is our premier designer collection — chosen for women who appreciate exceptional style, beautiful fabrics and pieces with staying power. These are the clothes you invest in, wear for years and continue to feel wonderful in.',
@@ -111,7 +111,7 @@ export const boutiqueBrands = [
     slug: 'wanakome',
     name: 'Wanakome',
     types: ['tops'],
-    images: [],
+    images: img('wanakome', 5),
     tagline: 'Fleece that’s in a class of its own.',
     body: [
       'Wanakome is one of our favourite casual brands because the quality of the fleece is truly second to none. Soft, substantial and beautifully made, these are hoodies and sweatshirts that feel luxurious without losing that easy, everyday comfort.',
@@ -121,8 +121,8 @@ export const boutiqueBrands = [
   {
     slug: 'irish-merino',
     name: 'Irish Merino Wool',
-    types: ['tops'],
-    images: [],
+    types: ['tops', 'cardigans'],
+    images: img('irish-merino', 6),
     tagline: 'Timeless warmth. Natural beauty. Made to be loved for years.',
     body: [
       'Our Irish merino wool sweaters are chosen for their beautiful quality, natural warmth and timeless appeal. Soft, breathable and wonderfully wearable, they’re the kind of pieces that feel special the moment you put them on — and only get better with time.',
