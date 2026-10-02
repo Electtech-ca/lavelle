@@ -141,6 +141,24 @@ h1, h2, h3, h4, h5, h6 {
   .promotion-grid > * { flex-basis: 100%; }
 }
 
+/* Staff profile (TeamSection): a 4:5 photo beside the bio; below 960px a
+   single card with the photo on top. When the bio runs taller than the photo,
+   the photo cell stretches and the picture crops to fill it. The stretch must
+   be explicit (a grid item with an aspect-ratio otherwise sits at the top of
+   its row), and the width pinned to the column, or the stretched height would
+   widen it through the ratio. Side by side only while the column is wide
+   enough that the crop stays mild. */
+.team-profile { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.team-profile-photo { aspect-ratio: 4 / 5; align-self: stretch; width: 100%; }
+.team-profile-body { align-self: center; padding: var(--space-2xl); }
+@media (max-width: 1200px) {
+  .team-profile-body { padding: var(--space-xl); }
+}
+@media (max-width: 960px) {
+  .team-profile { grid-template-columns: minmax(0, 1fr); max-width: 560px; margin: 0 auto; }
+  .team-profile-body { padding: var(--space-xl) var(--space-lg); }
+}
+
 /* ── Divider (replaces Gold Divider) ── */
 .gold-divider { display: flex; align-items: center; gap: var(--space-md); width: 100%; max-width: 480px; margin: 0 auto; padding: 24px 0; }
 .gold-divider::before, .gold-divider::after { content: ''; flex: 1; height: 1px; background: var(--color-pink); opacity: 0.5; }
