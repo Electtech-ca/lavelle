@@ -71,9 +71,17 @@ export default function CertificateSheet({ cert, amount, code, recipientName, se
         <div style={{ ...corner, bottom: '16px', left: '16px', borderBottom: `1px solid ${cert.borderColor}`, borderLeft: `1px solid ${cert.borderColor}`, borderRadius: '0 0 0 4px' }} />
         <div style={{ ...corner, bottom: '16px', right: '16px', borderBottom: `1px solid ${cert.borderColor}`, borderRight: `1px solid ${cert.borderColor}`, borderRadius: '0 0 4px 0' }} />
 
-        {/* Masthead: the gift logo and "Gift Certificate", large */}
+        {/* Masthead: the Spa Rivier logo, the gift logo and "Gift Certificate", large.
+            The logo sits on a white disc: its pink would vanish on the pastel tiers. */}
         <div style={{ textAlign: 'center' }}>
-          <GiftMedallion cert={cert} size={60} />
+          <span style={{
+            width: 'clamp(88px, 22cqi, 120px)', aspectRatio: '1', borderRadius: '50%',
+            background: '#ffffff', border: `1px solid ${cert.borderColor}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px',
+          }}>
+            <img src="/logo-cert.svg" alt="Spa Rivier" style={{ height: '70%', width: 'auto', display: 'block' }} />
+          </span>
+          <GiftMedallion cert={cert} size={44} />
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: 'clamp(1.05rem, 4.6cqi, 1.75rem)', fontWeight: 700,
             letterSpacing: '0.2em', textTransform: 'uppercase', color: ink, lineHeight: 1.25, margin: '14px 0 6px',
