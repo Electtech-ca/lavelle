@@ -161,19 +161,6 @@ export default function Home() {
                 {t('home.about.quote')}
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#E9B0B9', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{t('home.about.attrib')}</p>
-              <div style={{ marginTop: 'var(--space-xl)', paddingTop: 'var(--space-lg)', borderTop: '1px solid rgba(246,245,237,0.1)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-lg)' }}>
-                {[
-                  { value: String(years), label: t('home.about.stat1') },
-                  { value: '4',   label: t('home.about.stat2') },
-                  { value: '12+', label: t('home.about.stat3') },
-                  { value: '∞',   label: t('home.about.stat4') },
-                ].map(s => (
-                  <div key={s.label}>
-                    <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', fontWeight: 200, color: '#E9B0B9', lineHeight: 1 }}>{s.value}</p>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'rgba(246,245,237,0.5)', marginTop: '4px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{s.label}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
