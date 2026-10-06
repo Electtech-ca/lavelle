@@ -11,3 +11,6 @@ services:
       SMTP_PORT: "465"
       SMTP_USER: noreply@sparivier.ca
       MAIL_FROM: "Spa Rivier <noreply@sparivier.ca>"
+      # Every certificate paid online is emailed here with its code
+      # (several addresses: separate them with commas).
+      STAFF_EMAIL: deanna@sparivier.ca

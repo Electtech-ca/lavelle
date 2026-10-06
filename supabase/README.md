@@ -16,6 +16,8 @@ Stripe's signature, marks the matching `gift_orders` row active, and emails the
 certificate from `noreply@sparivier.ca`: to the recipient, and a copy to the buyer.
 Each email shows the certificate as a card and links to
 `https://sparivier.ca/certificate?code=…&k=…`, where it can be viewed and printed.
+The spa gets its own email for each certificate, with the code and the order
+details, at `STAFF_EMAIL` in `docker-compose.override.yml` (deanna@sparivier.ca).
 
 **The link's token:** every order has a private `view_token`. The site sends Stripe
 `<code>_<token>` as `client_reference_id`, and the webhook activates only the order

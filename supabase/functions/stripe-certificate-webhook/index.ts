@@ -13,29 +13,33 @@
         face value (before any discount) and the amount paid,
      4. emails the certificate to the recipient, and a copy to the
         buyer to print. Each shows the certificate as a card and links
-        to it on sparivier.ca to view or print (see email.ts).
+        to it on sparivier.ca to view or print (see email.ts),
+     5. emails the spa (STAFF_EMAIL) the code and the order, so staff
+        have every certificate sold on file.
 
    Stripe retries a call until it gets a 2xx, so the order is claimed
    with a conditional update (pending → active) before anything is
    sent: a retry finds nothing left to claim and does not send twice.
    If the recipient's email fails the claim is released and a 500 asks
    Stripe to try again later. The buyer's copy is best effort, since the
-   buyer also saw the certificate on the page after payment.
+   buyer also saw the certificate on the page after payment, and so is
+   the spa's, since the order is in the database and Stripe either way.
 
    Configuration (container environment, see docker-compose.override.yml):
      STRIPE_WEBHOOK_SECRET, SMTP_PASSWORD   — from .env.certificates
-     SMTP_HOST, SMTP_PORT, SMTP_USER, MAIL_FROM
+     SMTP_HOST, SMTP_PORT, SMTP_USER, MAIL_FROM, STAFF_EMAIL
      SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY — provided by Supabase
    ────────────────────────────────────────────────────────────── */
 
 import nodemailer from 'npm:nodemailer@6.9.16'
-import { certificateLink, recipientEmail, buyerEmail, money } from './email.ts'
+import { certificateLink, recipientEmail, buyerEmail, staffEmail, money } from './email.ts'
 
 const env = (k: string) => Deno.env.get(k) ?? ''
 
 const STRIPE_SECRET = env('STRIPE_WEBHOOK_SECRET')
 const DB_URL        = env('SUPABASE_URL')
 const DB_KEY        = env('SUPABASE_SERVICE_ROLE_KEY')
+const STAFF_EMAIL   = env('STAFF_EMAIL')   // the spa's copy of every certificate sold
 const TOLERANCE_S   = 300   // reject signatures older than Stripe's recommended 5 minutes
 
 const mailer = nodemailer.createTransport({
@@ -94,6 +98,22 @@ const REFERENCE = /^(LV-\d{4}-\d{4})(?:_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-
 const sameAddress = (a?: string | null, b?: string | null) =>
   (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase()
 
+/* The spa's copy, with the code. Best effort: a failure is logged, and the
+   order stays in gift_orders and the payment in Stripe. */
+async function tellSpa(mail: { subject: string; html: string; text: string }, code: string): Promise<boolean> {
+  if (!STAFF_EMAIL) {
+    console.warn(`[certificate] ${code}: STAFF_EMAIL is not set, so the spa was not sent the code`)
+    return false
+  }
+  try {
+    await mailer.sendMail({ from: env('MAIL_FROM'), to: STAFF_EMAIL, ...mail })
+    return true
+  } catch (err) {
+    console.error(`[certificate] ${code} spa's copy to ${STAFF_EMAIL} failed:`, err)
+    return false
+  }
+}
+
 /* ── Handler ── */
 const HANDLED = new Set(['checkout.session.completed', 'checkout.session.async_payment_succeeded'])
 
@@ -120,6 +140,8 @@ Deno.serve(async (req) => {
   const paid: number = session.amount_total ?? 0
   const face: number = session.amount_subtotal ?? paid     // before any discount: what the certificate is worth
   const buyer: string = session.customer_details?.email ?? ''
+  const paidAt = new Date((event.created ?? Date.now() / 1000) * 1000)
+  const payment: string = session.payment_intent ?? session.id ?? ''   // what the Stripe dashboard finds it by
 
   const match = `cert_code=eq.${encodeURIComponent(code)}&type=eq.certificate` + (token ? `&view_token=eq.${token}` : '')
 
@@ -141,6 +163,10 @@ Deno.serve(async (req) => {
       const mail = recipientEmail({ code, cents: face, recipientName: '', senderName: '', message: '' }, null)
       await mailer.sendMail({ from: env('MAIL_FROM'), to: buyer, ...mail })
     }
+    await tellSpa(staffEmail({
+      code, cents: face, recipientName: '', senderName: '', message: '',
+      recipientEmail: buyer, senderEmail: '', paidCents: paid, paidAt, payment,
+    }, null), code)
     return json(200, { delivered: code, to: 'buyer (no saved order)' })
   }
 
@@ -170,6 +196,10 @@ Deno.serve(async (req) => {
     }
   }
 
-  console.log(`[certificate] ${code} (${money(face)}) delivered to ${to}${sendCopy ? `, copy to ${copyTo}` : ''}`)
+  const told = await tellSpa(staffEmail({
+    ...cert, recipientEmail: to, senderEmail: copyTo, paidCents: paid, paidAt, payment,
+  }, link), code)
+
+  console.log(`[certificate] ${code} (${money(face)}) delivered to ${to}${sendCopy ? `, copy to ${copyTo}` : ''}${told ? `, spa's copy to ${STAFF_EMAIL}` : ''}`)
   return json(200, { delivered: code })
 })
