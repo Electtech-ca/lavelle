@@ -6,13 +6,17 @@
    haircareBrandsTranslations.js, keyed by slug.
 
    `images`: the first is the tile photo. Moroccanoil's are the client's
-   own (branding/web pics); Redken, AG Care and one Joico shot come from
-   the client's Haircare banner (public/branding/Haircare.svg). A brand
-   without photos gets a typographic tile.
+   own (branding/web pics); Sebastian's, Design.Me's and most of Redken's
+   and Joico's are from the client's Brand Photos folders. AG Care, one
+   Redken and one Joico shot come from the client's Haircare banner
+   (public/branding/Haircare.svg). A brand without photos gets a
+   typographic tile.
 
    `lines` lists the brands inside a category that gathers several.
    No prices here — merchandise is sold in store only.
    ────────────────────────────────────────────────────────────── */
+
+const img = (slug, n) => Array.from({ length: n }, (_, i) => `/images/haircare/${slug}-${i + 1}.webp`)
 
 export const haircareBrands = [
   {
@@ -40,7 +44,7 @@ export const haircareBrands = [
   {
     slug: 'joico',
     name: 'Joico',
-    images: ['/images/salon/joico-k-pak.jpg', '/images/salon/joico-youthlock.jpg', '/images/haircare/joico-3.webp'],
+    images: ['/images/salon/joico-k-pak.jpg', '/images/salon/joico-youthlock.jpg', ...img('joico', 8).slice(2)],   // joico-3 to joico-8
     tagline: 'Professional performance. Exceptional value. A true salon legacy.',
     body: [
       'Joico has earned its place as one of our favourite professional haircare brands because it does so many things well.',
@@ -51,7 +55,7 @@ export const haircareBrands = [
   {
     slug: 'redken',
     name: 'Redken',
-    images: ['/images/haircare/redken-1.webp'],
+    images: img('redken', 8),
     tagline: 'Science-led haircare. Proven solutions. Trusted performance.',
     body: [
       'Redken has built its reputation on a scientific, solution-focused approach to professional haircare.',
@@ -74,7 +78,7 @@ export const haircareBrands = [
   {
     slug: 'design-me',
     name: 'Design.Me',
-    images: [],
+    images: img('design-me', 6),
     tagline: 'Canadian haircare with a little more personality.',
     body: [
       'Design.Me is our second Canadian professional haircare brand, and it brings a fresh, fun energy to the department.',
@@ -85,7 +89,7 @@ export const haircareBrands = [
   {
     slug: 'sebastian',
     name: 'Sebastian',
-    images: [],
+    images: img('sebastian', 6),
     tagline: 'Create. Re-create. Style without limits.',
     body: [
       'Sebastian is a true legacy styling brand, built for women who see their hair as part of their personal style.',
