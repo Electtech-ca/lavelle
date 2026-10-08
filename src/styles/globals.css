@@ -119,6 +119,18 @@ h1, h2, h3, h4, h5, h6 {
   flex: 0 1 calc((100% - 3 * var(--space-xl)) / 4);
   min-width: 0;
 }
+/* The daily promo graphic on What's Happening. Its small print needs the
+   width, so on phones it also takes back the page's side padding (Blog.jsx
+   pads its content by --space-xl). */
+.daily-promo {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  margin: 0 auto var(--space-2xl);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
 
 @media (max-width: 1024px) {
   .gift-certificate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -139,6 +151,12 @@ h1, h2, h3, h4, h5, h6 {
   .gourmet-menu-grid { grid-template-columns: minmax(0, 1fr); }
   .gift-certificate-grid { grid-template-columns: minmax(0, 1fr); }
   .promotion-grid > * { flex-basis: 100%; }
+  .daily-promo {
+    width: calc(100% + 2 * var(--space-xl));
+    max-width: none;
+    margin-left: calc(-1 * var(--space-xl));
+    margin-right: calc(-1 * var(--space-xl));
+  }
 }
 
 /* Staff profile (TeamSection): a 4:5 photo beside the bio; below 960px a

@@ -1,5 +1,5 @@
 /**
- * Spa Rivier events — shown on the Featured page.
+ * Spa Rivier events — shown on the What's Happening page.
  *
  * Shape mirrors promotionsData.js so the two render as sibling cards:
  *   id       unique, used as the translation key in eventsTranslations.js
@@ -9,9 +9,10 @@
  *   detail   one or two sentences
  *   cta      optional { text, href } — omit for an information-only listing
  *
- * The list is intentionally empty until real dates are supplied. The Featured
- * page shows an empty state rather than a blank space when there is nothing
- * scheduled, so an empty list is a valid state, not a broken one.
+ * The list is intentionally empty until real dates are supplied. The
+ * What's Happening page shows an empty state rather than a blank space when
+ * there is nothing scheduled, so an empty list is a valid state, not a
+ * broken one.
  */
 export const events = [
   // Example of the expected shape — uncomment and edit, or add alongside:

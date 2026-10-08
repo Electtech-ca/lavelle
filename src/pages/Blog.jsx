@@ -10,6 +10,7 @@ import { blogTranslations, blogCategoryTranslations } from '../data/blogTranslat
 import { promotions } from '../data/promotionsData'
 import { promotionTranslations } from '../data/promotionTranslations'
 import { events } from '../data/eventsData'
+import { promoOfTheDay } from '../data/dailyPromos'
 
 /* ── Category colour map ── */
 const CAT_COLOURS = {
@@ -210,6 +211,7 @@ export default function Blog() {
   const localizePost = post => isFrench ? { ...post, ...blogTranslations[post.id], isFrench: true } : post
   const localizedFeatured = featured ? localizePost(featured) : null
   const localizedFiltered = filtered.map(localizePost)
+  const dailyPromo = promoOfTheDay()
 
   // If a post is selected, show article view
   if (selectedPost) {
@@ -243,9 +245,6 @@ export default function Blog() {
         />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(46,51,80,0.68)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '620px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-            ✦ {t('blog.hero.eyebrow')}
-          </p>
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 200, color: '#F6F5ED', lineHeight: 1.1, marginBottom: 'var(--space-md)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             {t('blog.hero.headline')}
           </h1>
@@ -258,6 +257,20 @@ export default function Blog() {
       {/* ── Content ── */}
       <div style={{ background: '#F6F5ED', padding: 'var(--space-lg) var(--space-xl)' }}>
         <div className="container">
+
+          {/* ── Daily promo ── */}
+          {dailyPromo && (
+            <>
+              <SectionHeader
+                eyebrow={t('featured.daily.eyebrow')}
+                headline={t('featured.daily.headline')}
+                align="center"
+              />
+              <img className="daily-promo" src={dailyPromo.image} alt={isFrench ? dailyPromo.alt.fr : dailyPromo.alt.en}
+                width={dailyPromo.width} height={dailyPromo.height} loading="lazy" />
+              <GoldDivider />
+            </>
+          )}
 
           {/* ── Promotions ── */}
           <SectionHeader
