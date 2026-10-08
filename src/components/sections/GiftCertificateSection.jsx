@@ -161,7 +161,11 @@ const PENDING_KEY = 'sparivier.pendingCertificate'
 function PurchaseModal({ cert, onClose }) {
   const { t } = useTranslation()
   // The certificate is emailed to the recipient, with a copy to the buyer to print.
-  const [form, setForm] = useState({ recipientName: '', recipientEmail: '', senderName: '', senderEmail: '', message: '' })
+  const [form, setForm] = useState({
+    recipientFirstName: '', recipientLastName: '', recipientEmail: '',
+    senderFirstName: '',    senderLastName: '',    senderEmail: '',
+    message: '',
+  })
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
   const isCustom  = Boolean(cert?.custom)
@@ -170,6 +174,11 @@ function PurchaseModal({ cert, onClose }) {
   if (!cert) return null
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+
+  // Asked in two parts so the last name is required; stored, emailed and
+  // printed as one name.
+  const recipientName = `${form.recipientFirstName.trim()} ${form.recipientLastName.trim()}`
+  const senderName    = `${form.senderFirstName.trim()} ${form.senderLastName.trim()}`
 
   // 'saved', 'taken' (that code already exists), or 'failed'.
   // Note the builder is a thenable without .catch, hence try/await/error.
@@ -182,9 +191,9 @@ function PurchaseModal({ cert, onClose }) {
         cert_amount:     cert.amount * 100,     // store in cents; the webhook sets what Stripe charged
         cert_label:      cert.label,
         amount:          cert.amount * 100,
-        sender_name:     form.senderName,
+        sender_name:     senderName,
         sender_email:    form.senderEmail,      // a copy of the certificate is emailed here
-        recipient_name:  form.recipientName,
+        recipient_name:  recipientName,
         recipient_email: form.recipientEmail,   // the certificate is emailed here
         message:         form.message,
         delivery:        'email',
@@ -222,7 +231,7 @@ function PurchaseModal({ cert, onClose }) {
       try {
         sessionStorage.setItem(PENDING_KEY, JSON.stringify({
           certCode, token, amount: cert.amount, label: cert.label,
-          recipientName: form.recipientName, senderName: form.senderName, message: form.message,
+          recipientName, senderName, message: form.message,
         }))
       } catch { /* private browsing — the certificate is emailed as well */ }
       window.location.assign(payUrl)
@@ -263,17 +272,25 @@ function PurchaseModal({ cert, onClose }) {
               </p>
 
               {[
-                { name: 'recipientName',  label: t('giftCert.modal.recipient'),      type: 'text',  required: true },
-                { name: 'recipientEmail', label: t('giftCert.modal.recipientEmail'), type: 'email', required: true },
-                { name: 'senderName',     label: t('giftCert.modal.yourName'),       type: 'text',  required: true },
-                { name: 'senderEmail',    label: t('giftCert.modal.yourEmail'),      type: 'email', required: true },
-              ].map(f => (
-                <div key={f.name} style={{ marginBottom: 'var(--space-md)' }}>
-                  <label style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)', display: 'block', marginBottom: '6px' }}>
-                    {f.label} {f.required && '*'}
-                  </label>
-                  <input type={f.type} name={f.name} value={form[f.name]} onChange={handle} required={f.required}
-                    style={{ width: '100%', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', padding: '10px 14px', border: '1px solid var(--lavelle-cream)', borderRadius: 'var(--radius-md)', background: 'var(--lavelle-ivory)', color: 'var(--lavelle-charcoal)', outline: 'none', boxSizing: 'border-box' }} />
+                [{ name: 'recipientFirstName', label: t('giftCert.modal.recipientFirstName'), type: 'text',  required: true },
+                 { name: 'recipientLastName',  label: t('giftCert.modal.recipientLastName'),  type: 'text',  required: true }],
+                [{ name: 'recipientEmail',     label: t('giftCert.modal.recipientEmail'),     type: 'email', required: true }],
+                [{ name: 'senderFirstName',    label: t('giftCert.modal.yourFirstName'),      type: 'text',  required: true },
+                 { name: 'senderLastName',     label: t('giftCert.modal.yourLastName'),       type: 'text',  required: true }],
+                [{ name: 'senderEmail',        label: t('giftCert.modal.yourEmail'),          type: 'email', required: true }],
+              ].map(row => (
+                // First and last name share a row, stacking when the modal is narrow.
+                // Inputs align to the bottom in case one label wraps and the other doesn't.
+                <div key={row[0].name} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 'var(--space-md)', alignItems: 'end', marginBottom: 'var(--space-md)' }}>
+                  {row.map(f => (
+                    <div key={f.name}>
+                      <label style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)', display: 'block', marginBottom: '6px' }}>
+                        {f.label} {f.required && '*'}
+                      </label>
+                      <input type={f.type} name={f.name} value={form[f.name]} onChange={handle} required={f.required}
+                        style={{ width: '100%', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', padding: '10px 14px', border: '1px solid var(--lavelle-cream)', borderRadius: 'var(--radius-md)', background: 'var(--lavelle-ivory)', color: 'var(--lavelle-charcoal)', outline: 'none', boxSizing: 'border-box' }} />
+                    </div>
+                  ))}
                 </div>
               ))}
 
