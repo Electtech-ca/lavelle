@@ -5,6 +5,7 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GoldDivider      from '../components/ui/GoldDivider'
 import SectionHeader    from '../components/ui/SectionHeader'
 import BookingModal     from '../components/ui/BookingModal'
+import PromotionFeature from '../components/ui/PromotionFeature'
 import { blogPosts, blogCategories } from '../data/blogData'
 import { blogTranslations, blogCategoryTranslations } from '../data/blogTranslations'
 import { promotions } from '../data/promotionsData'
@@ -282,6 +283,12 @@ export default function Blog() {
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
             {promotions.map(promo => {
               const tr = isFrench ? promotionTranslations[promo.id] : null
+              if (promo.image) return (
+                <PromotionFeature key={promo.id} image={promo.image}
+                  title={tr?.[0] || promo.title} value={tr?.[1] || promo.value}
+                  description={tr?.[3] || promo.description}
+                  valid={`${t('featured.promos.valid')}: ${tr?.[2] || promo.expiry}`} />
+              )
               return (
                 <div key={promo.id}
                   style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid var(--lavelle-gold-champagne)', transition: 'transform 0.3s ease, box-shadow 0.3s ease' }}

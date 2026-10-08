@@ -119,6 +119,17 @@ h1, h2, h3, h4, h5, h6 {
   flex: 0 1 calc((100% - 3 * var(--space-xl)) / 4);
   min-width: 0;
 }
+/* A promotion with a graphic of its own (PromotionFeature) takes a whole row:
+   the graphic fills one half and the text sits beside it; below 768px they
+   stack. */
+.promotion-grid > .promotion-feature {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  overflow: hidden;
+}
+.promotion-feature > img { display: block; width: 100%; height: auto; }
 /* The daily promo graphic on What's Happening. Its small print needs the
    width, so on phones it also takes back the page's side padding (Blog.jsx
    pads its content by --space-xl). */
@@ -145,6 +156,7 @@ h1, h2, h3, h4, h5, h6 {
   .gourmet-menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .gourmet-menu-grid > *,
   .gourmet-menu-grid > :nth-child(5) { grid-column: auto; }
+  .promotion-grid > .promotion-feature { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 600px) {

@@ -80,8 +80,8 @@ export default function Navbar() {
     { path: '/medispa', label: t('nav.medispa'), keywords: 'oxygeneo laser micro needling tatouage tattoo freezpen peel peeling esthétique' },
     { path: '/boutique', label: t('nav.boutique'), keywords: 'fashion mode clothing vêtements products produits' },
     { path: '/haircare', label: t('nav.haircare'), keywords: 'hair haircare cheveux capillaires shampoo shampooing conditioner revitalisant styling coiffage scalp cuir chevelu maria nila moroccanoil argan joico redken ag care design.me sebastian nioxin k18 malibu color wow celeb luxury' },
-    { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité promotions certificate certificat voucher bon' },
-    { path: '/blog', label: t('nav.blog'), keywords: 'what\'s happening whats happening quoi de neuf daily promo promo du jour featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
+    { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité royalty promotions certificate certificat voucher bon' },
+    { path: '/blog', label: t('nav.blog'), keywords: 'what\'s happening whats happening quoi de neuf daily promo promo du jour royalty loyalty fidélité featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
   ]
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase()
   const searchResults = normalizedQuery

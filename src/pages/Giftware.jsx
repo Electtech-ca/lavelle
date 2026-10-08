@@ -5,6 +5,7 @@ import GiftCard         from '../components/ui/GiftCard'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GiftCertificateSection from '../components/sections/GiftCertificateSection'
+import PromotionFeature from '../components/ui/PromotionFeature'
 import { giftItems }    from '../data/giftsData'
 import { promotions, loyaltyTiers } from '../data/promotionsData'
 import { promotionTranslations, loyaltyTranslations } from '../data/promotionTranslations'
@@ -18,6 +19,8 @@ const PROMO_IMAGES = [
   '/images/gifts/voluspa-cherry-gloss.jpg',
   '/images/gifts/candle-diffuser-tray.jpg',
 ]
+// Promotions without a graphic of their own take these photos in turn.
+const STOCK_PROMOS = promotions.filter(p => !p.image)
 
 const LOYALTY_IMAGES = [
   '/images/gifts/voluspa-pomegranate.jpg',
@@ -203,19 +206,23 @@ export default function Giftware() {
             align="center"
           />
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)' }}>
-            {promotions.map((promo, i) => {
+            {promotions.map(promo => {
               const translation = isFrench ? promotionTranslations[promo.id] : null
               const displayTitle = translation?.[0] || promo.title
               const displayValue = translation?.[1] || promo.value
               const displayExpiry = translation?.[2] || promo.expiry
               const displayDescription = translation?.[3] || promo.description
+              if (promo.image) return (
+                <PromotionFeature key={promo.id} image={promo.image} title={displayTitle} value={displayValue}
+                  description={displayDescription} valid={`${t('gifts.promos.valid')}: ${displayExpiry}`} />
+              )
               return (
               <div key={promo.id}
                 style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-card)', transition: 'transform 0.3s ease, box-shadow 0.3s ease' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)' }}>
                 <div style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
-                  <img src={PROMO_IMAGES[i % PROMO_IMAGES.length]} alt={displayTitle} loading="lazy"
+                  <img src={PROMO_IMAGES[STOCK_PROMOS.indexOf(promo) % PROMO_IMAGES.length]} alt={displayTitle} loading="lazy"
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
                     onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)' }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }} />
