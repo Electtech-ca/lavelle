@@ -198,25 +198,26 @@ export default function Boutique() {
   return (
     <>
       {/* Page hero */}
-      <div style={{ position: 'relative', height: '68vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div style={{ position: 'relative', minHeight: 'max(68vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img src="/branding/Fashion.svg"
           alt={t('boutique.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(25,12,4,0.78) 0%, rgba(25,12,4,0.5) 60%, rgba(25,12,4,0.72) 100%)' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,0.45), transparent)' }} />
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '700px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
+        {/* Lighter than the other heroes so the photos show, with a soft shadow under the lettering instead */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(25,12,4,0.62) 0%, rgba(25,12,4,0.36) 60%, rgba(25,12,4,0.56) 100%)' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)' }} />
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '700px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)', textShadow: '0 1px 14px rgba(0,0,0,0.55)' }}>
           <p className="slide-in-up-1" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>✦ {t('boutique.hero.eyebrow')}</p>
-          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>{t('boutique.hero.headline')}</h1>
-          <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, marginBottom: 'var(--space-xl)' }}>{t('boutique.hero.sub')}</p>
-          <div className="slide-in-up-4" style={{ display: 'flex', gap: 'var(--space-md)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/giftware" className="btn-secondary">{t('boutique.hero.cta.gifts')}</a>
-            <a href="/giftware#certificates" className="btn-secondary">{t('boutique.hero.cta.certs')}</a>
+          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.5)' }}>{t('boutique.hero.headline')}</h1>
+          <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.75, marginBottom: 'var(--space-md)' }}>{t('boutique.hero.sub')}</p>
+          <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.75, marginBottom: 'var(--space-xl)' }}>{t('boutique.hero.tagline')}</p>
+          <div className="slide-in-up-4" style={{ display: 'flex', justifyContent: 'center' }}>
+            <a href="#brands" className="btn-secondary">{t('boutique.hero.cta')}</a>
           </div>
         </div>
       </div>
 
       {/* Brands */}
-      <div style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl) var(--space-2xl)', minHeight: '60vh' }}>
+      <div id="brands" style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl) var(--space-2xl)', minHeight: '60vh', scrollMarginTop: '72px' }}>
         <div className="container">
           <SectionHeader eyebrow={t('boutique.section.eyebrow')} headline={t('boutique.section.headline')} subtext={t('boutique.section.sub')} />
 
