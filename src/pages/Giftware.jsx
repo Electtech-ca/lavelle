@@ -117,13 +117,13 @@ const CATEGORY_ICONS = {
   occasion: FEATURE_ICONS.gift,
 }
 
-/* The client's nine categories, in their order: three rows of three. An item
-   can sit in more than one (a gift is rarely just one thing); ids are from
-   giftsData.js. */
+/* The client's nine categories, in their order: three rows of three. A
+   category with a photo shows it in place of its icon. An item can sit in
+   more than one (a gift is rarely just one thing); ids are from giftsData.js. */
 const CATEGORIES = [
-  { key: 'floral',    items: [7] },
+  { key: 'floral',    items: [7], image: '/images/gifts/floral-greenery.jpg' },
   { key: 'candles',   items: [3] },
-  { key: 'home',      items: [2, 13, 17] },
+  { key: 'home',      items: [2, 13, 17], image: '/images/gifts/home-decor.jpg' },
   { key: 'kitchen',   items: [6, 14, 22, 23] },
   { key: 'gourmet',   items: [8, 14, 16, 21, 22, 23] },
   { key: 'seasonal',  items: [] },                        // awaiting stock
@@ -228,7 +228,9 @@ export default function Giftware() {
             {CATEGORIES.map(c => (
               <button key={c.key} type="button" className="gift-category" aria-pressed={category === c.key}
                 onClick={() => setCategory(category === c.key ? null : c.key)}>
-                <span className="gift-category__icon">{CATEGORY_ICONS[c.key]}</span>
+                <span className="gift-category__icon">
+                  {c.image ? <img src={c.image} alt="" loading="lazy" /> : CATEGORY_ICONS[c.key]}
+                </span>
                 <span className="gift-category__text">
                   <span className="gift-category__name">{t(`gifts.cat.${c.key}`)}</span>
                   <span className="gift-category__sub">{t(`gifts.cat.${c.key}.sub`)}</span>
