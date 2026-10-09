@@ -152,14 +152,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 .gift-features__text { padding: var(--space-xs) var(--space-lg); }
 .gift-features > * + * .gift-features__text { border-left: 1px solid rgba(246, 245, 237, 0.25); }
-/* Giftware's category boxes: three rows of three, the chosen one in navy.
-   Below 768px they stack, the icon beside the name and the description
-   under both. */
+/* Giftware's category boxes: two across, the chosen one in navy. Below
+   768px they stack, the photo beside the name and the description under
+   both. */
 .gift-categories {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-lg);
-  max-width: 1080px;
+  max-width: 880px;
   margin: 0 auto var(--space-2xl);
 }
 .gift-category {
@@ -181,13 +181,13 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 120px;
-  height: 120px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   background: rgba(233, 176, 185, 0.25);
   overflow: hidden;
 }
-.gift-category__icon svg { width: 64px; height: 64px; }
+.gift-category__icon svg { width: 84px; height: 84px; }
 .gift-category__icon img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
 .gift-category__text { display: flex; flex-direction: column; gap: var(--space-sm); }
 .gift-category__name {

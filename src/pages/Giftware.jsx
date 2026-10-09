@@ -96,13 +96,6 @@ const CATEGORY_ICONS = {
       <path d="M32 46c-4-4-10-4-10 0s6 4 10 0zM32 46c4-4 10-4 10 0s-6 4-10 0zM30 47l-4 9M34 47l4 9" />
     </svg>
   ),
-  lifestyle: (
-    <svg {...iconProps}>
-      <path d="M24 26v-5a8 8 0 0 1 16 0v5" />
-      <path d="M16 26h32a2 2 0 0 1 2 2l2 24a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4l2-24a2 2 0 0 1 2-2z" />
-      <rect x="29" y="31" width="6" height="5" rx="1" />
-    </svg>
-  ),
   plush: (
     <svg {...iconProps}>
       <path d="M17.6 31a7 7 0 1 1 7.4-7.4M46.4 31a7 7 0 1 0-7.4-7.4" />
@@ -117,9 +110,9 @@ const CATEGORY_ICONS = {
   occasion: FEATURE_ICONS.gift,
 }
 
-/* The client's nine categories, in their order: three rows of three. A
-   category with a photo shows it in place of its icon. An item can sit in
-   more than one (a gift is rarely just one thing); ids are from giftsData.js. */
+/* The client's categories, in their order, two across. A category with a
+   photo shows it in place of its icon. An item can sit in more than one (a
+   gift is rarely just one thing); ids are from giftsData.js. */
 const CATEGORIES = [
   { key: 'floral',    items: [7], image: '/images/gifts/floral-greenery.jpg' },
   { key: 'candles',   items: [3] },
@@ -127,9 +120,8 @@ const CATEGORIES = [
   { key: 'kitchen',   items: [6, 14, 22, 23], image: '/images/gifts/kitchen-entertaining.jpg' },
   { key: 'gourmet',   items: [8, 14, 16, 21, 22, 23], image: '/images/gifts/gourmet-food-beverages.jpg' },
   { key: 'seasonal',  items: [], image: '/images/gifts/seasonal-collections.jpg' },   // awaiting stock
-  { key: 'lifestyle', items: [4, 5, 9, 11, 12, 15, 18, 19] },
-  { key: 'plush',     items: [] },                        // awaiting stock
-  { key: 'occasion',  items: [1, 8, 10, 20, 21] },
+  { key: 'plush',     items: [], image: '/images/gifts/plush-keepsakes.jpg' },        // awaiting stock
+  { key: 'occasion',  items: [1, 4, 5, 8, 9, 10, 11, 12, 15, 18, 19, 20, 21], image: '/images/gifts/gifts-every-occasion.jpg' },
 ]
 
 export default function Giftware() {
@@ -148,7 +140,7 @@ export default function Giftware() {
     return () => clearTimeout(id)
   }, [])
 
-  // The gifts sit below all nine boxes, so choosing one brings its gifts up.
+  // The gifts sit below all the boxes, so choosing one brings its gifts up.
   useEffect(() => {
     if (category) resultsRef.current?.scrollIntoView({ block: 'start' })
   }, [category])
