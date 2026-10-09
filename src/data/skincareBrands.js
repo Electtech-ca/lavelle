@@ -7,10 +7,11 @@
 
    `images`: the first is the tile photo. Eminence's first is the one
    MediSpa uses; the client's Skincare heading (public/branding/
-   Skincare.svg) gave Eminence's other two, NOON's lineup and Jane
-   Iredale's flat lay. The rest are from the client's Brand Photos
-   folders. `shortName` is the name in the tile's "Explore … at Spa
-   Rivier" line, as the client wrote it.
+   Skincare.svg) gave Eminence's second and third, NOON's lineup and
+   Jane Iredale's flat lay. The last of Eminence's and NOON's are ones
+   the client sent for this page, and the rest come from their Brand
+   Photos folders. `shortName` is the name in the tile's "Explore … at
+   Spa Rivier" line, as the client wrote it.
    No prices here — merchandise is sold in store only.
    ────────────────────────────────────────────────────────────── */
 
@@ -21,7 +22,7 @@ export const skincareBrands = [
     slug: 'eminence',
     name: 'Eminence Organic Skin Care',
     shortName: 'Eminence',
-    images: img('eminence', 3),
+    images: img('eminence', 4),
     tagline: 'Trusted for 20 years. Loved from the very beginning.',
     body: [
       'Eminence is one of those rare brands that has truly stood the test of time at Spa Rivier. We have carried it for 20 years, and we love it just as much today as we did when we first brought it in.',
@@ -32,7 +33,7 @@ export const skincareBrands = [
   {
     slug: 'noon',
     name: 'NOON Aesthetics',
-    images: img('noon', 5),
+    images: img('noon', 6),
     tagline: 'Advanced skincare. Targeted results. Powerful, yet gentle.',
     body: [
       'NOON Aesthetics is the clinical skincare line we use when women are ready to take a more focused approach to their skin. Highly concentrated and results-driven, it is designed to target specific concerns with advanced formulations that feel sophisticated without being harsh.',
