@@ -111,7 +111,10 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: '1px solid rgba(233,176,185,0.2)', padding: 'var(--space-lg) 0', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-sm)' }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 300, color: 'rgba(246,245,237,0.40)' }}>
-            {t('footer.copyright')} · {t('footer.built')}
+            {t('footer.copyright')} · {t('footer.built')} · {t('footer.poweredBy')}{' '}
+            <a href="https://www.electtech.ca" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+              Elect Technologies
+            </a>
           </p>
           <div style={{ display: 'flex', gap: 'var(--space-lg)' }}>
             {['footer.privacy', 'footer.terms'].map(key => (
