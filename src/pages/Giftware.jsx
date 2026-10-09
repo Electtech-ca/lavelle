@@ -294,7 +294,7 @@ export default function Giftware() {
               const displayDescription = translation?.[3] || promo.description
               if (promo.image) return (
                 <PromotionFeature key={promo.id} image={promo.image} title={displayTitle} value={displayValue}
-                  description={displayDescription} valid={`${t('gifts.promos.valid')}: ${displayExpiry}`} />
+                  description={displayDescription} valid={displayExpiry && `${t('gifts.promos.valid')}: ${displayExpiry}`} />
               )
               return (
               <div key={promo.id}

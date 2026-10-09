@@ -283,11 +283,12 @@ export default function Blog() {
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
             {promotions.map(promo => {
               const tr = isFrench ? promotionTranslations[promo.id] : null
+              const expiry = tr?.[2] || promo.expiry
               if (promo.image) return (
                 <PromotionFeature key={promo.id} image={promo.image}
                   title={tr?.[0] || promo.title} value={tr?.[1] || promo.value}
                   description={tr?.[3] || promo.description}
-                  valid={`${t('featured.promos.valid')}: ${tr?.[2] || promo.expiry}`} />
+                  valid={expiry && `${t('featured.promos.valid')}: ${expiry}`} />
               )
               return (
                 <div key={promo.id}
@@ -304,7 +305,7 @@ export default function Blog() {
                     {tr?.[3] || promo.description}
                   </p>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)' }}>
-                    {t('featured.promos.valid')}: {tr?.[2] || promo.expiry}
+                    {t('featured.promos.valid')}: {expiry}
                   </p>
                 </div>
               )

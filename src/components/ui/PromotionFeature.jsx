@@ -17,9 +17,11 @@ export default function PromotionFeature({ image, title, value, description, val
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7, marginBottom: 'var(--space-md)' }}>
           {description}
         </p>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)' }}>
-          {valid}
-        </p>
+        {valid && (
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)' }}>
+            {valid}
+          </p>
+        )}
       </div>
     </div>
   )
