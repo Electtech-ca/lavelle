@@ -142,6 +142,16 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
 }
+/* Giftware's banner strip under the hero: three features side by side, a
+   thin rule between their text blocks; below 768px they stack and the rules
+   drop. */
+.gift-features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  text-align: center;
+}
+.gift-features__text { padding: var(--space-xs) var(--space-lg); }
+.gift-features > * + * .gift-features__text { border-left: 1px solid rgba(246, 245, 237, 0.25); }
 
 @media (max-width: 1024px) {
   .gift-certificate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -157,6 +167,8 @@ h1, h2, h3, h4, h5, h6 {
   .gourmet-menu-grid > *,
   .gourmet-menu-grid > :nth-child(5) { grid-column: auto; }
   .promotion-grid > .promotion-feature { grid-template-columns: minmax(0, 1fr); }
+  .gift-features { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .gift-features > * + * .gift-features__text { border-left: 0; }
 }
 
 @media (max-width: 600px) {

@@ -28,6 +28,37 @@ const LOYALTY_IMAGES = [
   '/images/spa/bath-ritual.jpg',
 ]
 
+// Line icons for the banner strip under the hero, drawn in currentColor.
+const iconProps = {
+  width: 56, height: 56, viewBox: '0 0 64 64', fill: 'none', stroke: 'currentColor',
+  strokeWidth: 2.5, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true,
+}
+const FEATURE_ICONS = {
+  flower: (
+    <svg {...iconProps}>
+      <circle cx="43" cy="26" r="6.5" /><circle cx="37.5" cy="16.5" r="6.5" /><circle cx="26.5" cy="16.5" r="6.5" />
+      <circle cx="21" cy="26" r="6.5" /><circle cx="26.5" cy="35.5" r="6.5" /><circle cx="37.5" cy="35.5" r="6.5" />
+      <circle cx="32" cy="26" r="4" fill="currentColor" />
+      <path d="M32 47v8" />
+    </svg>
+  ),
+  gift: (
+    <svg {...iconProps}>
+      <path d="M18 22a7 7 0 0 1 14 0M32 22a7 7 0 0 1 14 0" />
+      <rect x="10" y="22" width="44" height="8" />
+      <rect x="13" y="30" width="38" height="26" />
+      <path d="M32 22v34" />
+    </svg>
+  ),
+  store: (
+    <svg {...iconProps}>
+      <path d="M17 12h30M16 16h32l4 8H12z" />
+      <rect x="15" y="24" width="34" height="32" />
+      <rect x="28" y="42" width="8" height="14" />
+    </svg>
+  ),
+}
+
 const categoryMap = {
   'Hampers & Sets':         [1, 8, 20],
   'Lifestyle':              [2, 3, 5, 6, 13, 14, 16, 17, 18, 19],
@@ -108,7 +139,7 @@ export default function Giftware() {
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '700px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
           <p className="slide-in-up-1" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>
-            ✦ {t('gifts.hero.eyebrow')}
+            {t('gifts.hero.eyebrow')}
           </p>
           <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 30px rgba(0,0,0,0.5)', whiteSpace: 'pre-line' }}>
             {t('gifts.hero.headline')}
@@ -123,17 +154,19 @@ export default function Giftware() {
       </div>
 
       {/* ── Signature banner strip ── */}
-      <div style={{ background: 'var(--lavelle-plum-deep)', padding: 'var(--space-xl) var(--space-xl)' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-xl)', textAlign: 'center' }}>
+      <div style={{ background: 'var(--lavelle-plum-deep)', padding: 'var(--space-2xl) var(--space-xl)' }}>
+        <div className="container gift-features">
           {[
-            { icon: '🎁', label: t('gifts.features.wrapping'),   sub: t('gifts.features.wrapping.sub') },
-            { icon: '✍️', label: t('gifts.features.calligraphy'), sub: t('gifts.features.calligraphy.sub') },
-            { icon: '🚚', label: t('gifts.features.delivery'),    sub: t('gifts.features.delivery.sub') },
+            { icon: FEATURE_ICONS.flower, label: t('gifts.features.curated'),  sub: t('gifts.features.curated.sub') },
+            { icon: FEATURE_ICONS.gift,   label: t('gifts.features.occasion'), sub: t('gifts.features.occasion.sub') },
+            { icon: FEATURE_ICONS.store,  label: t('gifts.features.downtown'), sub: t('gifts.features.downtown.sub') },
           ].map(f => (
             <div key={f.label} className="slide-in-up">
-              <p style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{f.icon}</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 600, color: 'var(--lavelle-gold-champagne)', marginBottom: '4px' }}>{f.label}</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'rgba(255,255,255,0.55)' }}>{f.sub}</p>
+              <div style={{ color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>{f.icon}</div>
+              <div className="gift-features__text">
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '1.2rem', fontWeight: 600, color: 'var(--lavelle-white)', marginBottom: 'var(--space-sm)' }}>{f.label}</p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(255,255,255,0.75)' }}>{f.sub}</p>
+              </div>
             </div>
           ))}
         </div>
