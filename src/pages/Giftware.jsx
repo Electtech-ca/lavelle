@@ -153,7 +153,7 @@ export default function Giftware() {
   return (
     <>
       {/* ── Page hero ── */}
-      <div style={{ position: 'relative', height: '68vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div style={{ position: 'relative', minHeight: 'max(68vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
           src="/branding/Gifts.svg"
           alt="Spa Rivier Gifts & Hampers" loading="eager"

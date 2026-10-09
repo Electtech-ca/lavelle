@@ -90,7 +90,7 @@ export default function MediSpa() {
   return (
     <>
       {/* ── Page Hero ── */}
-      <div style={{ position: 'relative', height: '70vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div style={{ position: 'relative', minHeight: 'max(70vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
           src="/branding/Skincare.svg"
           alt="Spa Rivier MediSpa — advanced aesthetic treatments"

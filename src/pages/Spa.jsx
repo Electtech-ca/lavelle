@@ -113,7 +113,7 @@ export default function Spa() {
   return (
     <>
       {/* Page hero */}
-      <div style={{ position: 'relative', height: '70vh', minHeight: '480px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div style={{ position: 'relative', minHeight: 'max(70vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img src="/branding/Spa%20page.svg"
           alt="Spa Rivier Spa — serene luxury treatment room" loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />

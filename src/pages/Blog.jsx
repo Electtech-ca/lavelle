@@ -237,7 +237,7 @@ export default function Blog() {
   return (
     <>
       {/* ── Page Hero ── */}
-      <div style={{ position: 'relative', height: '52vh', minHeight: '380px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <div style={{ position: 'relative', minHeight: 'max(52vh, 380px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
           src="/images/salon/moroccanoil-collection.jpg"
           alt="Spa Rivier Journal"
