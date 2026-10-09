@@ -7,8 +7,8 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GiftCertificateSection from '../components/sections/GiftCertificateSection'
 import PromotionFeature from '../components/ui/PromotionFeature'
 import { giftItems }    from '../data/giftsData'
-import { promotions, loyaltyTiers } from '../data/promotionsData'
-import { promotionTranslations, loyaltyTranslations } from '../data/promotionTranslations'
+import { promotions }   from '../data/promotionsData'
+import { promotionTranslations } from '../data/promotionTranslations'
 
 const PROMO_IMAGES = [
   '/images/gifts/voluspa-holiday-set.jpg',
@@ -21,12 +21,6 @@ const PROMO_IMAGES = [
 ]
 // Promotions without a graphic of their own take these photos in turn.
 const STOCK_PROMOS = promotions.filter(p => !p.image)
-
-const LOYALTY_IMAGES = [
-  '/images/gifts/voluspa-pomegranate.jpg',
-  '/images/gifts/voluspa-lavender.jpg',
-  '/images/spa/bath-ritual.jpg',
-]
 
 // Line icons for the banner strip under the hero, drawn in currentColor.
 const iconProps = {
@@ -229,11 +223,10 @@ export default function Giftware() {
 
       <GoldDivider />
 
-      {/* ── Current Promotions ── */}
+      {/* ── What's Happening at Rivier: promotions, events and features ── */}
       <section style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-md) var(--space-xl)' }}>
         <div className="container">
           <SectionHeader
-            eyebrow={t('gifts.promos.eyebrow')}
             headline={t('gifts.promos.headline')}
             subtext={t('gifts.promos.sub')}
             align="center"
@@ -276,63 +269,6 @@ export default function Giftware() {
       </section>
 
       <GoldDivider />
-
-      {/* ── Loyalty Programme ── */}
-      <section style={{ background: 'var(--lavelle-plum-deep)', padding: 'var(--space-md) var(--space-xl)' }}>
-        <div className="container">
-          <SectionHeader
-            eyebrow={t('gifts.loyalty.eyebrow')}
-            headline={t('gifts.loyalty.headline')}
-            subtext={t('gifts.loyalty.sub')}
-            light align="center"
-          />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-xl)', marginBottom: 'var(--space-xl)' }}>
-            {loyaltyTiers.map((tier, i) => {
-              const translation = isFrench ? loyaltyTranslations[tier.tier] : null
-              const displayTier = translation?.tier || tier.tier
-              const displayRange = translation?.range || tier.range
-              const displayBenefits = translation?.benefits || tier.benefits
-              return (
-              <div key={tier.tier} style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: i === 2 ? '1px solid rgba(228,62,45,0.5)' : '1px solid rgba(255,255,255,0.1)', boxShadow: i === 2 ? '0 0 40px rgba(228,62,45,0.12)' : 'none' }}>
-                <div style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
-                  <img src={LOYALTY_IMAGES[i]} alt={`${displayTier} tier`} loading="lazy"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(49,58,77,0.6)' }} />
-                  <div style={{ position: 'absolute', bottom: 'var(--space-md)', left: 'var(--space-lg)', display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
-                    <span style={{ fontSize: '1.8rem' }}>{tier.emoji}</span>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 400, color: 'var(--lavelle-gold-champagne)' }}>{displayTier}</h3>
-                  </div>
-                </div>
-                <div style={{ padding: 'var(--space-xl)', background: i === 2 ? 'rgba(228,62,45,0.08)' : 'rgba(255,255,255,0.05)' }}>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginBottom: 'var(--space-lg)' }}>{displayRange}</p>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {displayBenefits.map(b => (
-                      <li key={b} style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(255,255,255,0.82)', lineHeight: 2.1, display: 'flex', gap: 'var(--space-sm)', alignItems: 'flex-start' }}>
-                        <span style={{ color: 'var(--lavelle-gold-champagne)', marginTop: '7px', fontSize: '0.45rem', flexShrink: 0 }}>✦</span> {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              )
-            })}
-          </div>
-
-          {/* Join CTA */}
-          <div style={{ position: 'relative', borderRadius: 'var(--radius-xl)', overflow: 'hidden', textAlign: 'center' }}>
-            <img src="/images/gifts/voluspa-mercury-glass.jpg"
-              alt="Join the Spa Rivier loyalty programme" loading="lazy"
-              style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(49,58,77,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-lg)', padding: 'var(--space-sm)' }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem,2.5vw,1.8rem)', fontStyle: 'italic', color: 'var(--lavelle-gold-champagne)' }}>
-                {t('gifts.loyalty.tagline')}
-              </p>
-              <a href="/my-account" className="btn-primary">{t('gifts.loyalty.cta')}</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <NewsletterSignup />
     </>
   )
