@@ -11,13 +11,14 @@ const navKeys = [
   { to: '/medispa',           key: 'nav.medispa' },
   { to: '/boutique',          key: 'nav.boutique' },
   { to: '/haircare',          key: 'nav.haircare' },
+  { to: '/skincare',          key: 'nav.skincare' },
   /* Gourmet is hidden for now — restore this line to bring it back. */
   { to: '/giftware',          key: 'nav.giftware' },
   { to: '/blog',              key: 'nav.blog' },
 ]
 
 export default function Navbar() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [scrolled,  setScrolled]  = useState(false)
   const [menuOpen,  setMenuOpen]  = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
@@ -80,6 +81,7 @@ export default function Navbar() {
     { path: '/medispa', label: t('nav.medispa'), keywords: 'oxygeneo laser micro needling tatouage tattoo freezpen peel peeling esthétique' },
     { path: '/boutique', label: t('nav.boutique'), keywords: 'fashion mode clothing vêtements products produits' },
     { path: '/haircare', label: t('nav.haircare'), keywords: 'hair haircare cheveux capillaires shampoo shampooing conditioner revitalisant styling coiffage scalp cuir chevelu maria nila moroccanoil argan joico redken ag care design.me sebastian nioxin k18 malibu color wow celeb luxury' },
+    { path: '/skincare', label: t('nav.skincare'), keywords: 'skin skincare skin care soins peau visage face eminence organic biologique noon aesthetics clinical clinique anti-aging anti-âge jane iredale makeup maquillage mineral minéral spf fps foundation fond de teint' },
     { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité royalty promotions certificate certificat voucher bon' },
     { path: '/blog', label: t('nav.blog'), keywords: 'what\'s happening whats happening quoi de neuf daily promo promo du jour royalty loyalty fidélité featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
   ]
@@ -96,7 +98,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav style={{
+      <nav className={i18n.language.startsWith('fr') ? 'nav-fr' : undefined} style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500,
         height: '72px', display: 'flex', alignItems: 'center',
         transition: 'background 0.4s ease, box-shadow 0.4s ease',
@@ -232,14 +234,20 @@ export default function Navbar() {
 
       <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
-      {/* The full menu needs about 1140px in French ("Soins Capillaires",
-          "Articles Cadeaux"); narrower screens get the menu button, with the
-          controls at the right edge. On phones the header's Book button would
-          push the menu button off-screen, so it gives way there (the menu has
-          its own Book button). */}
+      {/* The full menu needs about 1140px in English and 1260px in French
+          ("Soins de la Peau", "Soins Capillaires", "Articles Cadeaux"), plus a
+          scrollbar's width where one shows; narrower screens get the menu
+          button, with the controls at the right edge. On phones the header's
+          Book button would push the menu button off-screen, so it gives way
+          there (the menu has its own Book button). */}
       <style>{`
-        @media (min-width: 1141px) { .hamburger { display: none !important; } }
-        @media (max-width: 1140px) { .nav-desktop { display: none !important; } .nav-controls { margin-left: auto !important; } }
+        @media (min-width: 1161px) { .hamburger { display: none !important; } }
+        @media (max-width: 1160px) { .nav-desktop { display: none !important; } .nav-controls { margin-left: auto !important; } }
+        @media (min-width: 1161px) and (max-width: 1280px) {
+          .nav-fr .nav-desktop { display: none !important; }
+          .nav-fr .nav-controls { margin-left: auto !important; }
+          .nav-fr .hamburger { display: flex !important; }
+        }
         @media (max-width: 480px)  { .nav-book { display: none !important; } }
       `}</style>
     </>
