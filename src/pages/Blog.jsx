@@ -8,7 +8,7 @@ import BookingModal     from '../components/ui/BookingModal'
 import PromotionFeature from '../components/ui/PromotionFeature'
 import { blogPosts, blogCategories } from '../data/blogData'
 import { blogTranslations, blogCategoryTranslations } from '../data/blogTranslations'
-import { promotions } from '../data/promotionsData'
+import { currentPromotions } from '../data/promotionsData'
 import { promotionTranslations } from '../data/promotionTranslations'
 import { events } from '../data/eventsData'
 import { promoOfTheDay } from '../data/dailyPromos'
@@ -281,7 +281,7 @@ export default function Blog() {
             align="center"
           />
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
-            {promotions.map(promo => {
+            {currentPromotions().map(promo => {
               const tr = isFrench ? promotionTranslations[promo.id] : null
               const expiry = tr?.[2] || promo.expiry
               if (promo.image) return (

@@ -7,7 +7,7 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GiftCertificateSection from '../components/sections/GiftCertificateSection'
 import PromotionFeature from '../components/ui/PromotionFeature'
 import { giftItems }    from '../data/giftsData'
-import { promotions }   from '../data/promotionsData'
+import { promotions, currentPromotions } from '../data/promotionsData'
 import { promotionTranslations } from '../data/promotionTranslations'
 
 const PROMO_IMAGES = [
@@ -286,7 +286,7 @@ export default function Giftware() {
             align="center"
           />
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)' }}>
-            {promotions.map(promo => {
+            {currentPromotions().map(promo => {
               const translation = isFrench ? promotionTranslations[promo.id] : null
               const displayTitle = translation?.[0] || promo.title
               const displayValue = translation?.[1] || promo.value
