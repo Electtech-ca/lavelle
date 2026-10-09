@@ -14,6 +14,7 @@ import MediSpa           from './pages/MediSpa'
 import Boutique          from './pages/Boutique'
 import Haircare          from './pages/Haircare'
 import Skincare          from './pages/Skincare'
+import BathBody          from './pages/BathBody'
 // import GourmetFood       from './pages/GourmetFood'   // hidden — see /gourmet route below
 import Giftware          from './pages/Giftware'
 import OrderConfirmation from './pages/OrderConfirmation'
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/boutique" element={<PublicLayout><PageTransition><Boutique /></PageTransition></PublicLayout>} />
           <Route path="/haircare" element={<PublicLayout><PageTransition><Haircare /></PageTransition></PublicLayout>} />
           <Route path="/skincare" element={<PublicLayout><PageTransition><Skincare /></PageTransition></PublicLayout>} />
+          <Route path="/bath-body" element={<PublicLayout><PageTransition><BathBody /></PageTransition></PublicLayout>} />
           {/* Gourmet is temporarily hidden. The page and its data are intact —
               swap these two lines back to relist it. */}
           {/* <Route path="/gourmet" element={<PublicLayout><PageTransition><GourmetFood /></PageTransition></PublicLayout>} /> */}

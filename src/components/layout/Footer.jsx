@@ -9,6 +9,7 @@ const navLinks = [
   { to: '/boutique',          key: 'nav.boutique' },
   { to: '/haircare',          key: 'nav.haircare' },
   { to: '/skincare',          key: 'nav.skincare' },
+  { to: '/bath-body',         key: 'nav.bathbody' },
   /* Gourmet is hidden for now — restore this line to bring it back. */
   { to: '/giftware',          key: 'nav.giftware' },
   { to: '/blog',              key: 'nav.blog' },

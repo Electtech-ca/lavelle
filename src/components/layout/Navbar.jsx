@@ -12,6 +12,7 @@ const navKeys = [
   { to: '/boutique',          key: 'nav.boutique' },
   { to: '/haircare',          key: 'nav.haircare' },
   { to: '/skincare',          key: 'nav.skincare' },
+  { to: '/bath-body',         key: 'nav.bathbody' },
   /* Gourmet is hidden for now — restore this line to bring it back. */
   { to: '/giftware',          key: 'nav.giftware' },
   { to: '/blog',              key: 'nav.blog' },
@@ -82,6 +83,7 @@ export default function Navbar() {
     { path: '/boutique', label: t('nav.boutique'), keywords: 'fashion mode clothing vêtements products produits' },
     { path: '/haircare', label: t('nav.haircare'), keywords: 'hair haircare cheveux capillaires shampoo shampooing conditioner revitalisant styling coiffage scalp cuir chevelu maria nila moroccanoil argan joico redken ag care design.me sebastian nioxin k18 malibu color wow celeb luxury' },
     { path: '/skincare', label: t('nav.skincare'), keywords: 'skin skincare skin care soins peau visage face eminence organic biologique noon aesthetics clinical clinique anti-aging anti-âge jane iredale makeup maquillage mineral minéral spf fps foundation fond de teint' },
+    { path: '/bath-body', label: t('nav.bathbody'), keywords: 'bath body bain corps body care soins du corps lotion hand cream crème mains soap savon fragrance parfum perfume toasted crumpet library of flowers cottage greenhouse tokyomilk tokyo milk margot elena moroccanoil body well kept razor rasoir hempz lovoh cloths chiffons honeylux silk soie pillowcase taie' },
     { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité royalty promotions certificate certificat voucher bon' },
     { path: '/blog', label: t('nav.blog'), keywords: 'what\'s happening whats happening quoi de neuf daily promo promo du jour royalty loyalty fidélité featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
   ]
@@ -109,7 +111,7 @@ export default function Navbar() {
         <div className="container" style={{ display: 'flex', alignItems: 'center', height: '100%', gap: 0 }}>
 
           {/* ── Spa Rivier Logo ── */}
-          <NavLink to="/" aria-label="Spa Rivier home" style={{ textDecoration: 'none', flexShrink: 0, marginRight: 'var(--space-xl)' }}>
+          <NavLink to="/" aria-label="Spa Rivier home" className="nav-logo" style={{ textDecoration: 'none', flexShrink: 0, marginRight: 'var(--space-xl)' }}>
             <img
               src="/logo.png"
               alt="Spa Rivier"
@@ -234,16 +236,22 @@ export default function Navbar() {
 
       <BookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
-      {/* The full menu needs about 1140px in English and 1260px in French
+      {/* Below 1500px the menu draws in its spacing so all nine links fit.
+          Even so it needs about 1165px in English and 1355px in French
           ("Soins de la Peau", "Soins Capillaires", "Articles Cadeaux"), plus a
           scrollbar's width where one shows; narrower screens get the menu
           button, with the controls at the right edge. On phones the header's
           Book button would push the menu button off-screen, so it gives way
           there (the menu has its own Book button). */}
       <style>{`
-        @media (min-width: 1161px) { .hamburger { display: none !important; } }
-        @media (max-width: 1160px) { .nav-desktop { display: none !important; } .nav-controls { margin-left: auto !important; } }
-        @media (min-width: 1161px) and (max-width: 1280px) {
+        @media (max-width: 1499px) {
+          .nav-desktop { gap: var(--space-md) !important; }
+          .nav-logo { margin-right: var(--space-lg) !important; }
+          .nav-controls { margin-left: var(--space-lg) !important; }
+        }
+        @media (min-width: 1186px) { .hamburger { display: none !important; } }
+        @media (max-width: 1185px) { .nav-desktop { display: none !important; } .nav-controls { margin-left: auto !important; } }
+        @media (min-width: 1186px) and (max-width: 1380px) {
           .nav-fr .nav-desktop { display: none !important; }
           .nav-fr .nav-controls { margin-left: auto !important; }
           .nav-fr .hamburger { display: flex !important; }
