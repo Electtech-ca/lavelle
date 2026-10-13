@@ -115,7 +115,7 @@ const CATEGORY_ICONS = {
    gift is rarely just one thing); ids are from giftsData.js. */
 const CATEGORIES = [
   { key: 'floral',    items: [7], image: '/images/gifts/floral-greenery.jpg' },
-  { key: 'candles',   items: [3] },
+  { key: 'candles',   items: [3], image: '/images/gifts/candles-home-fragrance.jpg' },
   { key: 'home',      items: [2, 13, 17], image: '/images/gifts/home-decor.jpg' },
   { key: 'kitchen',   items: [6, 14, 22, 23], image: '/images/gifts/kitchen-entertaining.jpg' },
   { key: 'gourmet',   items: [8, 14, 16, 21, 22, 23], image: '/images/gifts/gourmet-food-beverages.jpg' },
