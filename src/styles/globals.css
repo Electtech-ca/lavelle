@@ -183,7 +183,7 @@ h1, h2, h3, h4, h5, h6 {
   flex-shrink: 0;
   width: 160px;
   height: 160px;
-  border-radius: 50%;
+  border-radius: var(--radius-md);
   background: rgba(233, 176, 185, 0.25);
   overflow: hidden;
 }
