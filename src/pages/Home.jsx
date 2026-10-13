@@ -67,7 +67,9 @@ export default function Home() {
                 {t(k)}
               </p>
             ))}
-            <Link to="/team" className="btn-primary" style={{ marginTop: 'var(--space-sm)' }}>{t('nav.team')}</Link>
+            <div className="cta-center" style={{ marginTop: 'var(--space-sm)' }}>
+              <Link to="/team" className="btn-primary">{t('nav.team')}</Link>
+            </div>
           </div>
 
           <img src={FAMILY_PHOTO} alt={t('home.family.photoAlt')} loading="lazy"
