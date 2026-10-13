@@ -10,8 +10,6 @@ export const promotions = [
     image: { src: '/images/promos/rivier-royalty.webp', width: 940, height: 788 } },
   { id: 10, title: '5th Saturday Rivier Royalty Event', value: 'Members only',   expiry: 'Every month with a 5th Saturday', description: 'We’re celebrating our Rivier Royalty members! Join us for a sip & shop experience: exclusive discounts and giveaways, a gift bag with purchase for the first 18 purchasers, and a gift basket draw.',
     image: { src: '/images/promos/fifth-saturday.webp', width: 940, height: 788 } },
-  { id: 5, title: 'Spa & Salon Bundle',            value: 'Save $72',         expiry: 'Monthly',        description: 'Book a signature facial + hair service in one visit and save $72 off the combined price.' },
-  { id: 7, title: 'Bridal Inner Circle Package',   value: 'Bespoke pricing',  expiry: 'Year-round',     description: 'Complete bridal preparation: bridal shower high tea, pre-wedding spa day, wedding hair & makeup.' },
   { id: 8, title: 'Fashion Promotion',             value: 'Second one free',  expiry: 'While stocks last', description: 'Buy one sale item at Boutique Rivier and get the second one free. All sales final.' },
 ]
 
