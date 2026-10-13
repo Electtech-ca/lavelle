@@ -7,12 +7,13 @@
    collections (Library of Flowers, The Cottage Greenhouse, TokyoMilk)
    together. French is in bathBodyBrandsTranslations.js, keyed by slug.
 
-   `images`: the first is the tile photo. The Cottage Greenhouse's and
-   Moroccanoil Body's come from the client's Body heading (public/
-   branding/Body.svg), HoneyLux's from their Brand Photos folder, and
-   Library of Flowers' and TokyoMilk's are the ones Giftware uses. The
-   client is sending photos for the rest; until then a brand gets a
-   typographic tile. No prices here — merchandise is sold in store only.
+   `images`: the first is the tile photo. Most are the client's Bath &
+   Body photos (October 2026). Library of Flowers and TokyoMilk end with
+   the shots Giftware uses; The Cottage Greenhouse's first and Moroccanoil
+   Body's come from the client's Body heading (public/branding/Body.svg),
+   and HoneyLux's from their Brand Photos folder. Lovoh has no photos
+   yet, so it gets a typographic tile. No prices here — merchandise is
+   sold in store only.
    ────────────────────────────────────────────────────────────── */
 
 const img = (slug, n) => Array.from({ length: n }, (_, i) => `/images/bathbody/${slug}-${i + 1}.webp`)
@@ -21,7 +22,7 @@ export const bathBodyBrands = [
   {
     slug: 'toasted-crumpet',
     name: 'Toasted Crumpet',
-    images: [],
+    images: img('toasted-crumpet', 3),
     tagline: 'British charm, inspired by nature',
     body: [
       'Discover the beauty of the British countryside with Toasted Crumpet, a charming collection of bath and body essentials proudly made in Britain.',
@@ -32,7 +33,7 @@ export const bathBodyBrands = [
   {
     slug: 'library-of-flowers',
     name: 'Library of Flowers',
-    images: img('library-of-flowers', 2),
+    images: img('library-of-flowers', 5),
     tagline: 'A little luxury, inspired by the garden',
     body: [
       'Step into a garden of beautiful fragrances with Library of Flowers, a delightful collection created by Margot Elena.',
@@ -43,7 +44,7 @@ export const bathBodyBrands = [
   {
     slug: 'cottage-greenhouse',
     name: 'The Cottage Greenhouse',
-    images: img('cottage-greenhouse', 1),
+    images: img('cottage-greenhouse', 5),
     tagline: 'Garden-inspired goodness for everyday self-care',
     body: [
       'Inspired by the beauty and goodness of nature, The Cottage Greenhouse is a delightful bath and body collection created by Margot Elena.',
@@ -54,7 +55,7 @@ export const bathBodyBrands = [
   {
     slug: 'tokyomilk',
     name: 'TokyoMilk',
-    images: img('tokyomilk', 3),
+    images: img('tokyomilk', 9),
     tagline: 'Fragrance with an unexpected twist',
     body: [
       'For those who appreciate something a little different, TokyoMilk is a world of intriguing fragrances, artistic expression, and unexpected combinations.',
@@ -76,7 +77,7 @@ export const bathBodyBrands = [
   {
     slug: 'well-kept',
     name: 'Well Kept',
-    images: [],
+    images: img('well-kept', 4),
     tagline: 'Thoughtful self-care, made in Canada',
     body: [
       'Beautifully simple and thoughtfully designed, Well Kept is a Canadian brand bringing a fresh perspective to everyday personal care.',
@@ -87,7 +88,7 @@ export const bathBodyBrands = [
   {
     slug: 'hempz',
     name: 'Hempz',
-    images: [],
+    images: img('hempz', 5),
     tagline: 'Everyday hydration that feels wonderful',
     body: [
       'Healthy-looking, beautifully moisturized skin starts with everyday care, and Hempz makes it easy to enjoy.',
