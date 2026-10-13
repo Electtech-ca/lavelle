@@ -10,7 +10,9 @@ import { bathBodyBrandsFrench } from '../data/bathBodyBrandsTranslations'
 /* ──────────────────────────────────────────────────────────────
    Bath & Body — the body care brands we carry, one tile per brand like
    the Haircare and Skincare pages, with Bath & Body Accessories as a
-   subsection beneath them. The hero is the client's Body heading.
+   subsection beneath them. The hero is the client's "Beautiful to use.
+   Beautiful to give." banner, rebuilt in markup on their Body heading so
+   it stacks on phones and translates.
    ────────────────────────────────────────────────────────────── */
 
 export default function BathBody() {
@@ -48,7 +50,7 @@ export default function BathBody() {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,0.45), transparent)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '700px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
           <p className="slide-in-up-1" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>✦ {t('bathbody.hero.eyebrow')}</p>
-          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>{t('bathbody.hero.headline')}</h1>
+          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.4)', textWrap: 'balance' }}>{t('bathbody.hero.headline')}</h1>
           <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, marginBottom: 'var(--space-xl)' }}>{t('bathbody.hero.sub')}</p>
           <div className="slide-in-up-4" style={{ display: 'flex', justifyContent: 'center' }}>
             <a href="#brands" className="btn-secondary">{t('bathbody.hero.cta')}</a>
