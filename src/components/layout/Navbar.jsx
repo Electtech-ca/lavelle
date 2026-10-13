@@ -88,6 +88,7 @@ export default function Navbar() {
     { path: '/bath-body', label: t('nav.bathbody'), keywords: 'bath body bain corps body care soins du corps lotion hand cream crème mains soap savon fragrance parfum perfume toasted crumpet library of flowers cottage greenhouse tokyomilk tokyo milk margot elena moroccanoil body well kept razor rasoir hempz lavoh cloths chiffons honeylux silk soie pillowcase taie' },
     { path: '/giftware', label: t('nav.giftware'), keywords: 'giftware gift cadeau hampers coffret loyalty fidélité royalty promotions certificate certificat voucher bon' },
     { path: '/blog', label: t('nav.blog'), keywords: 'what\'s happening whats happening quoi de neuf daily promo promo du jour royalty loyalty fidélité featured à la une journal article articles promotion promotions offre event events événement événements skincare soins wellness bien-être inspiration' },
+    { path: '/team', label: t('nav.team'), keywords: 'team équipe meet rencontrer staff personnel family famille story histoire about à propos owner owners propriétaire fondatrice founder donna kristina deanna' },
   ]
   const normalizedQuery = searchQuery.trim().toLocaleLowerCase()
   const searchResults = normalizedQuery

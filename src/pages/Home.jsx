@@ -3,30 +3,22 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import HeroBanner       from '../components/sections/HeroBanner'
 import BusinessLineGrid from '../components/sections/BusinessLineGrid'
-import TeamSection      from '../components/sections/TeamSection'
 import AwardsSection    from '../components/sections/AwardsSection'
 import SectionHeader    from '../components/ui/SectionHeader'
+import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import { yearsInBusiness } from '../data/business'
 
 const STORY_IMAGE   = '/images/boutique/boutique-interior.jpg'
-
-/* Staff at work, until the client sends a team photo with both the service
-   and the retail side in it. */
-const TEAM_PHOTOS = [
-  { src: '/images/team/donna.jpg',          alt: 'home.team.photo.owner', pos: 'center 20%' },
-  { src: '/images/home/salon-service.jpg',  alt: 'home.team.photo.salon', pos: '70% center' },
-  { src: '/images/home/nail-bar.jpg',       alt: 'home.team.photo.nails', pos: 'center 40%' },
-  { src: '/images/home/spa-treatment.jpg',  alt: 'home.team.photo.spa',   pos: 'center 30%' },
-]
+const FAMILY_PHOTO  = '/images/team/family-smiling.jpg'   // the three women behind Spa Rivier, in the boutique
 
 export default function Home() {
   const { t } = useTranslation()
   const { hash, key } = useLocation()
   const years = yearsInBusiness()
 
-  // "Our Story" and "Meet the Team" live on this page for now (/#our-story,
-  // /#team). React Router does not scroll to a #hash, so bring the section up.
+  // Links can point at sections here (/#our-story, /#experience). React
+  // Router does not scroll to a #hash, so bring the section up.
   useEffect(() => {
     if (!hash) return
     const id = setTimeout(() => {
@@ -105,33 +97,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── The people behind Spa Rivier ── */}
+      {/* ── The family behind Spa Rivier: the short story; the full one is on the Team page ── */}
       <section style={{ background: 'var(--color-white)', padding: 'var(--space-3xl) var(--space-xl)' }}>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.team.eyebrow')}</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2, marginBottom: 'var(--space-xl)' }}>
-              {t('home.team.headline')}
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.family.eyebrow')}</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2, marginBottom: 'var(--space-xl)', textWrap: 'balance' }}>
+              <Sentences text={t('home.family.headline')} />
             </h2>
-            {['home.team.body1', 'home.team.body2', 'home.team.body3'].map(k => (
+            {['home.family.body1', 'home.family.body2', 'home.family.body3', 'home.family.body4'].map(k => (
               <p key={k} style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'var(--lavelle-charcoal)', lineHeight: 1.85, marginBottom: 'var(--space-lg)' }}>
                 {t(k)}
               </p>
             ))}
-            <Link to="/#team" className="btn-primary" style={{ marginTop: 'var(--space-sm)' }}>{t('home.team.cta')}</Link>
+            <Link to="/team" className="btn-primary" style={{ marginTop: 'var(--space-sm)' }}>{t('nav.team')}</Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 'var(--space-md)' }}>
-            {TEAM_PHOTOS.map(p => (
-              <img key={p.src} src={p.src} alt={t(p.alt)} loading="lazy"
-                style={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', objectPosition: p.pos, borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', display: 'block' }} />
-            ))}
-          </div>
+          <img src={FAMILY_PHOTO} alt={t('home.family.photoAlt')} loading="lazy"
+            style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', objectPosition: 'center 30%', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-hover)', display: 'block' }} />
         </div>
       </section>
 
       <AwardsSection />
-      <TeamSection preview id="team" />
       <GoldDivider />
 
       {/* ── What's new: the What's Happening page in place of the email signup ── */}

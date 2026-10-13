@@ -2,8 +2,8 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Instagram, Facebook, Store, MapPin, Phone } from 'lucide-react'
 
-/* The client's order. Our Story and Meet the Team are sections of the homepage
-   for now. Gourmet stays hidden. */
+/* The client's order. Our Story is a section of the homepage. Gourmet stays
+   hidden. */
 const quickLinks = [
   { to: '/',                      key: 'nav.home' },
   { to: '/spa',                   key: 'nav.spa' },
@@ -17,7 +17,7 @@ const quickLinks = [
   { to: '/giftware#certificates', key: 'nav.certificates' },
   { to: '/blog',                  key: 'nav.blog' },
   { to: '/#our-story',            key: 'nav.story' },
-  { to: '/#team',                 key: 'nav.team' },
+  { to: '/team',                  key: 'nav.team' },
 ]
 
 const DIRECTIONS = 'https://www.google.com/maps/dir/?api=1&destination=Spa+Rivier%2C+353+Reid+Street%2C+Quesnel%2C+BC'

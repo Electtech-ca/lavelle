@@ -6,12 +6,12 @@ import { FOUNDED_YEAR } from '../../data/business'
 
 /* Each staff member as a profile: the photo beside the bio (.team-profile in
    globals.css), stacked on phones. */
-export default function TeamSection({ preview = false, id }) {
+export default function TeamSection({ preview = false }) {
   const { t, i18n } = useTranslation()
   const members = preview ? teamMembers.slice(0, 4) : teamMembers
 
   return (
-    <section id={id} style={{ background:'var(--lavelle-ivory)', padding:'48px 0', scrollMarginTop:'72px' }}>
+    <section style={{ background:'var(--lavelle-ivory)', padding:'48px 0' }}>
       <div className="container">
         <SectionHeader eyebrow={t('team.eyebrow')} headline={t('team.headline')} subtext={t('team.sub', { year: FOUNDED_YEAR })} align="center" />
         <div style={{ display:'grid', gap:'var(--space-2xl)', maxWidth:'1040px', margin:'0 auto' }}>
