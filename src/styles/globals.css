@@ -93,17 +93,50 @@ h1, h2, h3, h4, h5, h6 {
 }
 .gourmet-menu-grid > * { grid-column: span 4; min-width: 0; }
 .gourmet-menu-grid > :nth-child(5) { grid-column: 5 / span 4; }
-.gift-certificate-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
+/* ── Gift certificates: one simple card per amount, four across, two on
+   tablets and phones. Every card is the same gift, so they share one layout
+   and differ only in a soft tint; text is a deep ink for contrast. The last
+   card, "your amount", is the same size so it is just as easy to find. ── */
+.cert-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-lg);
+  max-width: 1120px; margin: 0 auto var(--space-2xl);
 }
-.gift-certificate-grid > * { grid-column: span 3; min-width: 0; }
-.gift-certificate-grid > :nth-child(5) { grid-column: 2 / span 3; }
-.gift-certificate-grid > :nth-child(6) { grid-column: 6 / span 3; }
-.gift-certificate-grid > :nth-child(7) { grid-column: 10 / span 3; }
+.cert-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  min-height: 260px; padding: var(--space-xl) var(--space-lg); box-sizing: border-box;
+  border-radius: 16px; border: 1px solid rgba(46,51,80,0.12);
+  text-align: center; text-decoration: none; cursor: pointer; font: inherit;
+  box-shadow: 0 8px 26px rgba(46,51,80,0.10);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.cert-card:focus-visible { outline: 2px solid var(--lavelle-plum-deep); outline-offset: 3px; }
+@media (hover: hover) {
+  .cert-card:hover { transform: translateY(-6px); box-shadow: 0 20px 44px rgba(46,51,80,0.18); }
+}
+.cert-card__icon {
+  width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid currentColor;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.cert-card__label { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+.cert-card__amount { font-family: var(--font-display); font-size: clamp(2.4rem, 4vw, 3.3rem); font-weight: 400; line-height: 1.05; }
+.cert-card__terms { display: flex; flex-direction: column; font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; line-height: 1.5; }
+.cert-card__buy {
+  margin-top: 6px; padding: 9px 20px; border-radius: var(--radius-full); border: 1.5px solid currentColor;
+  font-family: var(--font-body); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+}
+.cert-card--custom { background: var(--lavelle-plum-deep); color: #F6F5ED; border-color: rgba(233,176,185,0.45); }
+.cert-card--custom .cert-card__amount { font-size: clamp(1.6rem, 2.3vw, 2.05rem); line-height: 1.15; color: #E9B0B9; }
+.cert-card--custom .cert-card__buy { color: #E9B0B9; }
+@media (max-width: 1024px) { .cert-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) {
+  .cert-grid { gap: var(--space-sm); }
+  .cert-card { min-height: 220px; padding: var(--space-lg) 6px; gap: 8px; }
+  .cert-card__label { font-size: 0.6rem; letter-spacing: 0.08em; }
+  .cert-card__amount { font-size: 2.2rem; }
+  .cert-card--custom .cert-card__amount { font-size: 1.45rem; }
+  .cert-card__terms { font-size: 0.72rem; }
+  .cert-card__buy { padding: 8px 12px; font-size: 0.6rem; letter-spacing: 0.08em; }
+}
 
 .promotion-grid {
   display: flex;
@@ -218,11 +251,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 1024px) {
-  .gift-certificate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .gift-certificate-grid > *,
-  .gift-certificate-grid > :nth-child(5),
-  .gift-certificate-grid > :nth-child(6),
-  .gift-certificate-grid > :nth-child(7) { grid-column: auto; }
   .promotion-grid > * { flex-basis: calc((100% - var(--space-xl)) / 2); }
   .gift-categories { gap: var(--space-md); }
   .gift-category { padding: var(--space-lg) var(--space-md); }
@@ -252,7 +280,6 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 600px) {
   .gourmet-menu-grid { grid-template-columns: minmax(0, 1fr); }
-  .gift-certificate-grid { grid-template-columns: minmax(0, 1fr); }
   .promotion-grid > * { flex-basis: 100%; }
   .daily-promo {
     width: calc(100% + 2 * var(--space-xl));

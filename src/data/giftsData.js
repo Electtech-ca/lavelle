@@ -121,12 +121,26 @@ export const giftCertificates = [
   },
 ]
 
-/* The tier a certificate is drawn in, for an amount in dollars. A standard
-   amount gets its own tier; a custom amount borrows the colours of the
-   nearest tier below it, without that tier's name. */
+/* The amounts offered on the Giftware page. Every certificate is the same
+   gift — the freedom to choose — so the cards carry no tier names, only the
+   amount; a soft tint tells them apart, with a deep ink of the same hue for
+   strong contrast. (The issued certificate still draws on the palettes above.) */
+export const certificateAmounts = [
+  { amount: 50,   tint: ['#f8e8f0', '#efd3df'], ink: '#5c2338' },
+  { amount: 100,  tint: ['#faf3e0', '#f0e2b8'], ink: '#5a3e0c' },
+  { amount: 150,  tint: ['#e8f4ec', '#cfe5d6'], ink: '#23472f' },
+  { amount: 200,  tint: ['#f0eaf8', '#ddd2f0'], ink: '#33205f' },
+  { amount: 300,  tint: ['#e9edf5', '#d3dae9'], ink: '#2e3350' },
+  { amount: 500,  tint: ['#fbeee6', '#f2d8c8'], ink: '#5e3020' },
+  { amount: 1000, tint: ['#f7f3ea', '#e8dfcc'], ink: '#3d3420' },
+]
+
+/* The colours a certificate is drawn in, for an amount in dollars: its own
+   palette for a standard amount, the nearest one below for a custom amount.
+   The tier names are not shown — every certificate is the same gift — so the
+   sheet reads simply "Spa Rivier" and the amount. */
 export function certificateTier(amount) {
   const exact = giftCertificates.find(c => c.amount === amount)
-  if (exact) return exact
-  const below = [...giftCertificates].reverse().find(c => c.amount <= amount) || giftCertificates[0]
-  return { ...below, label: null, subtitle: null }
+  const base = exact || [...giftCertificates].reverse().find(c => c.amount <= amount) || giftCertificates[0]
+  return { ...base, label: null, subtitle: null }
 }

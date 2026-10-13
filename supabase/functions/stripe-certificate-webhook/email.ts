@@ -38,16 +38,17 @@ function blend(rgba: string, over: string): string {
   return '#' + [r, g, b].map((c, i) => Math.round(c * a + base[i] * (1 - a)).toString(16).padStart(2, '0')).join('')
 }
 
-/* The tier for a face value in dollars: its own tier for a standard amount,
-   otherwise the colours of the nearest tier below, without its name. */
+/* The colours for a face value in dollars: its own tier for a standard amount,
+   otherwise the nearest tier below. Tier names are not shown (every
+   certificate is the same gift), so the certificate reads "Spa Rivier". */
 function tierFor(dollars: number) {
   const exact = TIERS.find(t => t.amount === dollars)
   const base = exact ?? [...TIERS].reverse().find(t => t.amount <= dollars) ?? TIERS[0]
   const bg = base.stops[1]
   return {
     ...base,
-    label: exact ? base.label : null,
-    subtitle: exact ? base.subtitle : null,
+    label: null as string | null,
+    subtitle: null as string | null,
     bg,
     border: blend(base.border, bg),
     ink: base.dark ? base.gold : base.accent,          // gift logo and "Gift Certificate"

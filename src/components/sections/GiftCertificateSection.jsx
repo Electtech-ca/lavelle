@@ -4,155 +4,55 @@
    These used to live on their own /gift-certificates page. The
    certificates are part of the Giftware offering, so the page was
    folded in and this section carries the whole flow: the four
-   explanatory steps, the tier cards, the custom-amount block, and
-   the purchase modal.
+   explanatory steps, the amount cards (with "your amount" as one
+   of them), and the purchase modal.
    ────────────────────────────────────────────────────────────── */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Gift } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
-import { GiftMedallion, certInk, certTitle } from '../ui/CertificateSheet'
+import { formatAmount } from '../ui/CertificateSheet'
 import { supabase }  from '../../lib/supabase'
 import { certificatePaymentUrl, hasCertificatePaymentLink,
          customCertificatePaymentUrl, hasCustomCertificateLink } from '../../lib/stripe'
 import { newCertificateCode, newViewToken, paymentReference } from '../../lib/certificates'
-import { giftCertificates } from '../../data/giftsData'
+import { certificateAmounts } from '../../data/giftsData'
 
-/* ── Certificate voucher component ── */
-function CertificateCard({ cert, onPurchase }) {
+/* ── One amount, as a simple card: the amount is the focus (.cert-card in globals.css).
+   The whole card is the button. ── */
+function CertificateCard({ amount, tint, ink, onPurchase }) {
   const { t } = useTranslation()
-  const [hovered, setHovered] = useState(false)
-  const certNum = `LV-${cert.amount.toString().padStart(4, '0')}-${Math.floor(Math.random() * 9000 + 1000)}`
-
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => onPurchase(cert)}
-      style={{
-        position: 'relative',
-        background: cert.gradient,
-        borderRadius: '16px',
-        padding: '0',
-        cursor: 'pointer',
-        border: `1px solid ${cert.borderColor}`,
-        boxShadow: hovered
-          ? `0 28px 80px rgba(0,0,0,0.35), 0 0 0 1px ${cert.borderColor}, 0 0 60px ${cert.shimmer}`
-          : cert.prestige
-            ? `0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px ${cert.borderColor}`
-            : `0 8px 30px rgba(0,0,0,0.12), 0 0 0 1px ${cert.borderColor}`,
-        transform: hovered ? 'translateY(-10px) scale(1.02)' : 'translateY(0) scale(1)',
-        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        overflow: 'hidden',
-        minHeight: cert.prestige ? '340px' : '300px',
-        height: '100%',                 // one height per row, whatever the tier name's length
-        boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        containerType: 'inline-size',   // the label below sizes itself to the card
-      }}>
-
-      {/* Shimmer sweep on hover */}
-      <div style={{
-        position: 'absolute', top: 0, left: hovered ? '200%' : '-100%', width: '60%', height: '100%',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-        transform: 'skewX(-20deg)',
-        transition: 'left 0.6s ease',
-        pointerEvents: 'none', zIndex: 1,
-      }} />
-
-      {/* Corner filigree ornaments */}
-      <div style={{ position: 'absolute', top: '12px', left: '12px', width: '40px', height: '40px', borderTop: `1px solid ${cert.borderColor}`, borderLeft: `1px solid ${cert.borderColor}`, borderRadius: '4px 0 0 0', opacity: 0.8 }} />
-      <div style={{ position: 'absolute', top: '12px', right: '12px', width: '40px', height: '40px', borderTop: `1px solid ${cert.borderColor}`, borderRight: `1px solid ${cert.borderColor}`, borderRadius: '0 4px 0 0', opacity: 0.8 }} />
-      <div style={{ position: 'absolute', bottom: '12px', left: '12px', width: '40px', height: '40px', borderBottom: `1px solid ${cert.borderColor}`, borderLeft: `1px solid ${cert.borderColor}`, borderRadius: '0 0 0 4px', opacity: 0.8 }} />
-      <div style={{ position: 'absolute', bottom: '12px', right: '12px', width: '40px', height: '40px', borderBottom: `1px solid ${cert.borderColor}`, borderRight: `1px solid ${cert.borderColor}`, borderRadius: '0 0 4px 0', opacity: 0.8 }} />
-
-      {/* Inner card content */}
-      <div style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', flex: 1, position: 'relative', zIndex: 2 }}>
-
-        {/* Header: the gift logo and "Gift Certificate", large */}
-        <div style={{ textAlign: 'center', marginBottom: 'auto' }}>
-          <GiftMedallion cert={cert} size={46} />
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(0.72rem, 5.4cqi, 1.05rem)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: certInk(cert), lineHeight: 1.25, margin: '12px 0 4px' }}>
-            {t('giftCert.card.label')}
-          </p>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 400, color: cert.textColor, lineHeight: 1.2, fontStyle: 'italic' }}>
-            {certTitle(cert)}
-          </p>
-        </div>
-
-        {/* Decorative divider */}
-        <div style={{ margin: 'var(--space-lg) 0', height: '1px', background: `linear-gradient(to right, transparent, ${cert.borderColor}, transparent)` }} />
-
-        {/* Amount — centrepiece */}
-        <div style={{ textAlign: 'center', marginBottom: 'var(--space-lg)' }}>
-          <p style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: cert.prestige ? '3.8rem' : '3.2rem',
-            fontWeight: 300,
-            lineHeight: 1,
-            color: cert.accentColor,
-            textShadow: cert.dark
-              ? `0 0 40px ${cert.shimmer}, 0 2px 8px rgba(0,0,0,0.5)`
-              : `0 2px 8px rgba(0,0,0,0.08)`,
-            letterSpacing: '-0.02em',
-          }}>
-            ${cert.amount}
-          </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontStyle: 'italic', color: cert.dark ? 'rgba(255,255,255,0.5)' : cert.accentColor, marginTop: '6px', opacity: 0.8 }}>
-            {cert.subtitle}
-          </p>
-        </div>
-
-        {/* Barcode decoration */}
-        <div style={{ display: 'flex', gap: '2px', justifyContent: 'center', marginBottom: 'var(--space-md)', opacity: 0.35 }}>
-          {Array.from({ length: 28 }, (_, i) => (
-            <div key={i} style={{
-              width: i % 5 === 0 ? '3px' : i % 3 === 0 ? '1.5px' : '1px',
-              height: '20px',
-              background: cert.dark ? cert.accentColor : cert.textColor,
-              borderRadius: '1px',
-            }} />
-          ))}
-        </div>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.55rem', letterSpacing: '0.18em', textAlign: 'center', color: cert.dark ? 'rgba(255,255,255,0.3)' : cert.accentColor, opacity: 0.6, marginBottom: 'var(--space-lg)' }}>
-          {certNum}
-        </p>
-
-        {/* Divider */}
-        <div style={{ height: '1px', background: `linear-gradient(to right, transparent, ${cert.borderColor}, transparent)`, marginBottom: 'var(--space-md)' }} />
-
-        {/* Footer: the terms, kept legible, then the purchase button */}
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.64rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: certInk(cert), opacity: 0.9 }}>
-            {t('giftCert.card.valid')}
-          </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.64rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: certInk(cert), opacity: 0.9, marginTop: '2px' }}>
-            {t('giftCert.card.services')}
-          </p>
-          <button
-            onClick={e => { e.stopPropagation(); onPurchase(cert) }}
-            style={{
-              marginTop: 'var(--space-md)',
-              fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 700,
-              letterSpacing: '0.16em', textTransform: 'uppercase',
-              padding: '8px 16px', borderRadius: 'var(--radius-full)',
-              border: `1px solid ${cert.borderColor}`,
-              background: cert.dark
-                ? `rgba(255,255,255,0.08)`
-                : `rgba(255,255,255,0.5)`,
-              color: cert.accentColor,
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              backdropFilter: 'blur(4px)',
-            }}>
-            {t('giftCert.card.purchase')}
-          </button>
-        </div>
-      </div>
-    </div>
+    <button type="button" className="cert-card" onClick={() => onPurchase({ amount })}
+      aria-label={`${t('giftCert.card.purchase')}: ${t('giftCert.card.label')} ${formatAmount(amount)}`}
+      style={{ background: `linear-gradient(135deg, ${tint[0]} 0%, ${tint[1]} 100%)`, color: ink }}>
+      <span className="cert-card__icon" aria-hidden="true"><Gift size={20} strokeWidth={1.6} /></span>
+      <span className="cert-card__label">{t('giftCert.card.label')}</span>
+      <span className="cert-card__amount">{formatAmount(amount)}</span>
+      <span className="cert-card__terms"><span>{t('giftCert.card.services')}</span><span>{t('giftCert.card.valid')}</span></span>
+      <span className="cert-card__buy">{t('giftCert.card.purchase')}</span>
+    </button>
   )
+}
+
+/* ── "Your amount", the same size as the others: online once the Stripe link
+   that lets the customer set the price is in place, by phone until then. ── */
+function CustomAmountCard({ onPurchase }) {
+  const { t } = useTranslation()
+  const online = hasCustomCertificateLink()
+  const inner = (
+    <>
+      <span className="cert-card__icon" aria-hidden="true"><Gift size={20} strokeWidth={1.6} /></span>
+      <span className="cert-card__label">{t('giftCert.card.label')}</span>
+      <span className="cert-card__amount">{t('giftCert.custom.amount')}</span>
+      <span className="cert-card__terms">{t('giftCert.custom.card')}</span>
+      <span className="cert-card__buy">{online ? t('giftCert.custom.ctaOnline') : t('giftCert.custom.cta')}</span>
+    </>
+  )
+  return online
+    ? <button type="button" className="cert-card cert-card--custom" onClick={() => onPurchase({ amount: 0, custom: true })}>{inner}</button>
+    : <a href="tel:+12509928084" className="cert-card cert-card--custom">{inner}</a>
 }
 
 /* ── Purchase modal ── */
@@ -169,6 +69,7 @@ function PurchaseModal({ cert, onClose }) {
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
   const isCustom  = Boolean(cert?.custom)
+  const label     = isCustom ? 'Custom' : 'Gift Certificate'   // no tier names any more
   const payOnline = isCustom ? hasCustomCertificateLink() : hasCertificatePaymentLink(cert?.amount)
 
   if (!cert) return null
@@ -189,7 +90,7 @@ function PurchaseModal({ cert, onClose }) {
         cert_code:       certCode,
         view_token:      token,                 // opens the emailed certificate link
         cert_amount:     cert.amount * 100,     // store in cents; the webhook sets what Stripe charged
-        cert_label:      cert.label,
+        cert_label:      label,
         amount:          cert.amount * 100,
         sender_name:     senderName,
         sender_email:    form.senderEmail,      // a copy of the certificate is emailed here
@@ -230,7 +131,7 @@ function PurchaseModal({ cert, onClose }) {
       // the printable certificate, and look up a custom amount once paid.
       try {
         sessionStorage.setItem(PENDING_KEY, JSON.stringify({
-          certCode, token, amount: cert.amount, label: cert.label,
+          certCode, token, amount: cert.amount, label,
           recipientName, senderName, message: form.message,
         }))
       } catch { /* private browsing — the certificate is emailed as well */ }
@@ -251,7 +152,7 @@ function PurchaseModal({ cert, onClose }) {
           <button onClick={onClose} style={{ position: 'absolute', top: 'var(--space-md)', right: 'var(--space-md)', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', fontSize: '1rem' }}>✕</button>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-sm)' }}>{t('giftCert.modal.heading')}</p>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 300, color: 'var(--lavelle-white)' }}>
-            {isCustom ? t('giftCert.custom.heading') : `$${cert.amount} · ${cert.label}`}
+            {isCustom ? t('giftCert.custom.heading') : `${formatAmount(cert.amount)} · ${t('giftCert.card.label')}`}
           </p>
         </div>
 
@@ -369,40 +270,13 @@ export default function GiftCertificateSection() {
             align="center"
           />
 
-          <div className="gift-certificate-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
-            {giftCertificates.map((cert, i) => (
-              <div key={cert.amount} className={`slide-in-up-${Math.min(i + 1, 6)}`}>
-                <CertificateCard cert={cert} onPurchase={setSelected} />
-              </div>
+          {/* "Your amount" first, as an equal card, so a budget of their own is
+              the first thing people see; then the amounts */}
+          <div className="cert-grid">
+            <CustomAmountCard onPurchase={setSelected} />
+            {certificateAmounts.map(c => (
+              <CertificateCard key={c.amount} {...c} onPurchase={setSelected} />
             ))}
-          </div>
-
-          {/* Custom amount block */}
-          <div style={{
-            position: 'relative', borderRadius: 'var(--radius-xl)', overflow: 'hidden',
-            background: 'linear-gradient(135deg, var(--lavelle-plum-deep) 0%, #1a0530 100%)',
-            padding: 'var(--space-2xl)', maxWidth: '680px', width: '100%', margin: '0 auto', boxSizing: 'border-box',
-            border: '1px solid rgba(228,62,45,0.2)',
-            boxShadow: 'var(--shadow-card)',
-          }}>
-            <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '160px', height: '160px', borderRadius: '50%', border: '1px solid rgba(228,62,45,0.1)' }} />
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-sm)' }}>{t('giftCert.custom.heading')}</p>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 300, color: 'var(--lavelle-white)', marginBottom: 'var(--space-md)', lineHeight: 1.3 }}>{t('giftCert.custom.sub')}</p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, marginBottom: 'var(--space-lg)' }}>
-              {t('giftCert.custom.body')}
-            </p>
-            <div className="cta-center">
-              {/* Buy online once the "customer chooses the amount" link is set;
-                  until then the block still works, by phone. */}
-              {hasCustomCertificateLink() ? (
-                <button className="btn-secondary"
-                  onClick={() => setSelected({ amount: 0, label: 'Custom', custom: true })}>
-                  {t('giftCert.custom.ctaOnline')}
-                </button>
-              ) : (
-                <a href="tel:+12509928084" className="btn-secondary">{t('giftCert.custom.cta')}</a>
-              )}
-            </div>
           </div>
         </div>
       </section>
