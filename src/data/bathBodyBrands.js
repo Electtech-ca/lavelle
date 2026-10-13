@@ -11,9 +11,9 @@
    Body photos (October 2026). Library of Flowers and TokyoMilk end with
    the shots Giftware uses; The Cottage Greenhouse's first and Moroccanoil
    Body's come from the client's Body heading (public/branding/Body.svg),
-   and HoneyLux's from their Brand Photos folder. Lovoh has no photos
-   yet, so it gets a typographic tile. No prices here — merchandise is
-   sold in store only.
+   and HoneyLux's from their Brand Photos folder. The write-up spelled
+   Lavoh "Lovoh"; the packet in their photo and the brand say Lavoh.
+   No prices here — merchandise is sold in store only.
    ────────────────────────────────────────────────────────────── */
 
 const img = (slug, n) => Array.from({ length: n }, (_, i) => `/images/bathbody/${slug}-${i + 1}.webp`)
@@ -100,13 +100,13 @@ export const bathBodyBrands = [
 
 export const bathBodyAccessories = [
   {
-    slug: 'lovoh',
-    name: 'Lovoh Cloths',
-    images: [],
+    slug: 'lavoh',
+    name: 'Lavoh Cloths',
+    images: img('lavoh', 1),
     tagline: 'A thoughtful addition to your daily routine',
     body: [
       'Sometimes the simplest accessories make the biggest difference in our everyday routines.',
-      'Lovoh cloths bring a practical touch to personal care, offering a convenient addition to your cleansing and bathing essentials.',
+      'Lavoh cloths bring a practical touch to personal care, offering a convenient addition to your cleansing and bathing essentials.',
       'At Spa Rivier, we believe that thoughtful details can make even the simplest daily rituals more enjoyable.',
     ],
   },

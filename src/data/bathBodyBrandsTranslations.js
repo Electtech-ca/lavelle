@@ -57,11 +57,11 @@ export const bathBodyBrandsFrench = {
       'Chez Spa Rivier, nous aimons Hempz pour ses soins hydratants fiables au quotidien, son vaste choix et ses prix accessibles. Un plaisir simple qui fait de chaque soin de la peau un moment merveilleux.',
     ],
   },
-  'lovoh': {
+  'lavoh': {
     tagline: 'Un ajout bien pensé à votre routine quotidienne',
     body: [
       'Ce sont parfois les accessoires les plus simples qui font la plus grande différence dans nos routines de tous les jours.',
-      'Les chiffons Lovoh apportent une touche pratique aux soins personnels et complètent commodément vos essentiels pour le nettoyage et le bain.',
+      'Les chiffons Lavoh apportent une touche pratique aux soins personnels et complètent commodément vos essentiels pour le nettoyage et le bain.',
       'Chez Spa Rivier, nous croyons que des détails bien pensés peuvent rendre plus agréables même les plus simples rituels quotidiens.',
     ],
   },
