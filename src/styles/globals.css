@@ -185,9 +185,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 .gift-features__text { padding: var(--space-xs) var(--space-lg); }
 .gift-features > * + * .gift-features__text { border-left: 1px solid rgba(246, 245, 237, 0.25); }
-/* Giftware's category boxes: two across, the chosen one in navy. Below
-   768px they stack, the photo beside the name and the description under
-   both. */
+/* Giftware's category boxes: a showcase of what is in store, two across.
+   Below 768px they stack, the photo beside the name and the description
+   under both. */
 .gift-categories {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -207,7 +207,6 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
 }
 .gift-category__icon {
   display: flex;
@@ -221,7 +220,7 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 .gift-category__icon svg { width: 84px; height: 84px; }
-.gift-category__icon img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gift-category__icon img { width: 100%; height: 100%; object-fit: cover; }
 .gift-category__text { display: flex; flex-direction: column; gap: var(--space-sm); }
 .gift-category__name {
   font-family: var(--font-display);
@@ -236,18 +235,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   line-height: 1.65;
   color: var(--lavelle-gray-mid);
-}
-.gift-category[aria-pressed="true"] {
-  color: var(--lavelle-white);
-  background: var(--lavelle-plum-deep);
-  border-color: var(--lavelle-gold-champagne);
-}
-.gift-category[aria-pressed="true"] .gift-category__icon { color: var(--lavelle-gold-champagne); background: rgba(233, 176, 185, 0.14); }
-.gift-category[aria-pressed="true"] .gift-category__sub { color: rgba(255, 255, 255, 0.75); }
-.gift-category:focus-visible { outline: 2px solid var(--lavelle-plum-deep); outline-offset: 3px; }
-@media (hover: hover) {
-  .gift-category:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-  .gift-category:hover .gift-category__icon img { transform: scale(1.06); }
 }
 
 @media (max-width: 1024px) {

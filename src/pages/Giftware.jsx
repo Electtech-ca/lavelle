@@ -1,14 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SectionHeader    from '../components/ui/SectionHeader'
 import Sentences        from '../components/ui/Sentences'
-import GiftCard         from '../components/ui/GiftCard'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GiftCertificateSection from '../components/sections/GiftCertificateSection'
 import PromotionFeature from '../components/ui/PromotionFeature'
-import { giftItems }    from '../data/giftsData'
 import { promotions, currentPromotions } from '../data/promotionsData'
 import { promotionTranslations } from '../data/promotionTranslations'
 
@@ -112,25 +110,23 @@ const CATEGORY_ICONS = {
   occasion: FEATURE_ICONS.gift,
 }
 
-/* The client's categories, in their order, two across. A category with a
-   photo shows it in place of its icon. An item can sit in more than one (a
-   gift is rarely just one thing); ids are from giftsData.js. */
+/* The client's giftware categories, in their order, two across: a showcase of
+   what is in store, as the products themselves are not listed online. A
+   category with a photo shows it in place of its icon. */
 const CATEGORIES = [
-  { key: 'floral',    items: [7], image: '/images/gifts/floral-greenery.jpg' },
-  { key: 'candles',   items: [3], image: '/images/gifts/candles-home-fragrance.jpg' },
-  { key: 'home',      items: [2, 13, 17], image: '/images/gifts/home-decor.jpg' },
-  { key: 'kitchen',   items: [6, 14, 23], image: '/images/gifts/kitchen-entertaining.jpg' },
-  { key: 'gourmet',   items: [14, 16, 23], image: '/images/gifts/gourmet-food-beverages.jpg' },
-  { key: 'seasonal',  items: [], image: '/images/gifts/seasonal-collections.jpg' },   // awaiting stock
-  { key: 'plush',     items: [], image: '/images/gifts/plush-keepsakes.jpg' },        // awaiting stock
-  { key: 'occasion',  items: [4, 5, 9, 12, 19], image: '/images/gifts/gifts-every-occasion.jpg' },
+  { key: 'floral',    image: '/images/gifts/floral-greenery.jpg' },
+  { key: 'candles',   image: '/images/gifts/candles-home-fragrance.jpg' },
+  { key: 'home',      image: '/images/gifts/home-decor.jpg' },
+  { key: 'kitchen',   image: '/images/gifts/kitchen-entertaining.jpg' },
+  { key: 'gourmet',   image: '/images/gifts/gourmet-food-beverages.jpg' },
+  { key: 'seasonal',  image: '/images/gifts/seasonal-collections.jpg' },
+  { key: 'plush',     image: '/images/gifts/plush-keepsakes.jpg' },
+  { key: 'occasion',  image: '/images/gifts/gifts-every-occasion.jpg' },
 ]
 
 export default function Giftware() {
   const { t, i18n } = useTranslation()
   const isFrench = i18n.language.startsWith('fr')
-  const [category, setCategory] = useState(null)        // null shows every gift
-  const resultsRef = useRef(null)
 
   // React Router does not honour a #hash on navigation, so a link to
   // /giftware#certificates — from another page or this one — would not scroll.
@@ -142,16 +138,6 @@ export default function Giftware() {
     }, 100)
     return () => clearTimeout(id)
   }, [hash, key])
-
-  // The gifts sit below all the boxes, so choosing one brings its gifts up.
-  useEffect(() => {
-    if (category) resultsRef.current?.scrollIntoView({ block: 'start' })
-  }, [category])
-
-  const active = CATEGORIES.find(c => c.key === category)
-  const visible = active
-    ? giftItems.filter(g => active.items.includes(g.id))
-    : giftItems
 
   return (
     <>
@@ -208,7 +194,7 @@ export default function Giftware() {
         </div>
       </div>
 
-      {/* ── Gift grid ── */}
+      {/* ── The giftware collection, by category ── */}
       <section style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl)' }}>
         <div className="container">
           <SectionHeader
@@ -218,11 +204,9 @@ export default function Giftware() {
             align="center"
           />
 
-          {/* Category boxes: each filters the gifts below; choosing it again shows them all */}
           <div className="gift-categories">
             {CATEGORIES.map(c => (
-              <button key={c.key} type="button" className="gift-category" aria-pressed={category === c.key}
-                onClick={() => setCategory(category === c.key ? null : c.key)}>
+              <div key={c.key} className="gift-category">
                 <span className="gift-category__icon">
                   {c.image ? <img src={c.image} alt="" loading="lazy" /> : CATEGORY_ICONS[c.key]}
                 </span>
@@ -230,46 +214,10 @@ export default function Giftware() {
                   <span className="gift-category__name">{t(`gifts.cat.${c.key}`)}</span>
                   <span className="gift-category__sub">{t(`gifts.cat.${c.key}.sub`)}</span>
                 </span>
-              </button>
+              </div>
             ))}
           </div>
 
-          {active && (
-            <div ref={resultsRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'var(--space-md)', paddingBottom: 'var(--space-md)', marginBottom: 'var(--space-xl)', borderBottom: '1px solid rgba(233,176,185,0.5)', scrollMarginTop: 'calc(72px + var(--space-lg))' }}>
-              <h3 style={{ fontSize: 'var(--text-h3)', fontWeight: 500, color: 'var(--lavelle-plum-deep)', lineHeight: 1.3 }}>
-                {t(`gifts.cat.${active.key}`)}
-              </h3>
-              <button type="button" onClick={() => setCategory(null)}
-                style={{
-                  fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500,
-                  letterSpacing: '0.1em', textTransform: 'uppercase', padding: '9px 20px',
-                  borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-cream)',
-                  background: 'var(--lavelle-white)', color: 'var(--lavelle-gray-mid)',
-                }}>
-                {t('gifts.cat.all')}
-              </button>
-            </div>
-          )}
-
-          {visible.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 'var(--space-3xl) var(--space-xl)', background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }}>
-              <p style={{ fontSize: '1.8rem', marginBottom: 'var(--space-md)' }} aria-hidden="true">✦</p>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 300, color: 'var(--lavelle-plum-deep)', marginBottom: 'var(--space-sm)' }}>
-                {t('gifts.empty.heading')}
-              </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.75, maxWidth: '420px', margin: '0 auto' }}>
-                {t('gifts.empty.sub')} <a href="tel:+12509928084" style={{ color: 'var(--lavelle-plum-soft)', whiteSpace: 'nowrap' }}>250-992-8084</a>.
-              </p>
-            </div>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--space-xl)' }}>
-              {visible.map((g, i) => (
-                <div key={g.id} className={`slide-in-up-${Math.min(i + 1, 6)}`}>
-                  <GiftCard gift={g} />
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 

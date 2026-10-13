@@ -10,7 +10,6 @@ export const promotions = [
     image: { src: '/images/promos/rivier-royalty.webp', width: 940, height: 788 } },
   { id: 10, title: '5th Saturday Rivier Royalty Event', value: 'Members only',   expiry: 'Every month with a 5th Saturday', description: 'We’re celebrating our Rivier Royalty members! Join us for a sip & shop experience: exclusive discounts and giveaways, a gift bag with purchase for the first 18 purchasers, and a gift basket draw.',
     image: { src: '/images/promos/fifth-saturday.webp', width: 940, height: 788 } },
-  { id: 8, title: 'Fashion Promotion',             value: 'Second one free',  expiry: 'While stocks last', description: 'Buy one sale item at Boutique Rivier and get the second one free. All sales final.' },
 ]
 
 /* The promotions still running on `date`: one with an `until` date shows

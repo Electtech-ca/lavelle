@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import AdminLayout from './AdminLayout'
 import { supabase } from '../../lib/supabase'
-import { giftItems, giftCertificates } from '../../data/giftsData'
+import { giftCertificates } from '../../data/giftsData'
 
 export default function AdminGifts() {
   const [orders, setOrders] = useState([])
@@ -25,10 +25,6 @@ export default function AdminGifts() {
     <AdminLayout title="Gifts & Certificates">
       {/* Static catalogue */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-2xl)' }}>
-        <div style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 300, color: 'var(--lavelle-plum-deep)', lineHeight: 1 }}>{giftItems.length}</p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', marginTop: '6px' }}>Gift Items</p>
-        </div>
         <div style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', textAlign: 'center' }}>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 300, color: 'var(--lavelle-plum-deep)', lineHeight: 1 }}>{giftCertificates.length}</p>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', marginTop: '6px' }}>Certificate Denominations</p>

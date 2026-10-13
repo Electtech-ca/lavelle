@@ -1,23 +1,3 @@
-export const giftItems = [
-  { id: 2,  name: 'Pure Cashmere Throw Blanket',          price: '$264',      priceInCents: 26400, stock: 5,  image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop', description: 'Grade-A Scottish cashmere in champagne. Cloud-soft and endlessly elegant.' },
-  { id: 3,  name: 'Artisan Candle Collection (Set of 3)', price: '$114',      priceInCents: 11400, stock: 18, image: '/images/gifts/voluspa-japonica-set.jpg', description: 'Hand-poured soy wax in Jasmine & Tuberose, Rose Oud, and Champagne & Fig.' },
-  { id: 4,  name: 'Luxury Skincare Ritual Set',           price: '$330',      priceInCents: 33000, stock: 7,  image: '/images/medispa/eminence-strawberry-rhubarb.jpg', description: '5-piece French skincare: cleanser, toner, serum, eye cream, moisturizer in keepsake tray.' },
-  { id: 5,  name: 'Silk Robe & Eye Mask Set',             price: '$198',      priceInCents: 19800, stock: 8,  image: 'https://images.unsplash.com/photo-1583492629548-ae5e58ad0b82?w=400&h=400&fit=crop', description: '22mm mulberry silk robe and matching sleep mask. In champagne, ivory, or blush.' },
-  { id: 6,  name: 'French Linen Napkin Set',              price: '$102',      priceInCents: 10200, stock: 15, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop', description: '6 hand-hemmed stonewashed linen napkins. An everyday luxury for the entertaining woman.' },
-  { id: 7,  name: 'Gold-Dipped Rose',                     price: '$72',       priceInCents: 7200,  stock: 20, image: 'https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400&h=400&fit=crop', description: 'A real rose preserved and dipped in 24k gold. An eternal symbol of beauty.' },
-  { id: 9,  name: 'Monogrammed Leather Cardholder',       price: '$132',      priceInCents: 13200, stock: 9,  image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&h=400&fit=crop', description: 'Italian full-grain leather, 6 cards. Personalized with 2-letter initials in gold.' },
-  { id: 12, name: 'Gold Jewellery Organiser',             price: '$156',      priceInCents: 15600, stock: 8,  image: '/images/boutique/jewellery-case.jpg', description: 'Velvet-lined stackable jewellery case with mirror.' },
-  { id: 13, name: 'Personalised Photo Album',             price: '$108',      priceInCents: 10800, stock: 14, image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=400&fit=crop', description: 'Linen-bound with gold-foil name embossing. Holds 60 photos, 4×6 format.' },
-  { id: 14, name: 'Herbal Tea Ceremony Set',              price: '$138',      priceInCents: 13800, stock: 11, image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop', description: 'Japanese ceramic teapot + 2 cups + 5 artisan loose-leaf blends in a lacquered box.' },
-  { id: 16, name: 'Handmade Truffle Chocolate Box',       price: '$90',       priceInCents: 9000,  stock: 16, image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=400&fit=crop', description: '24 hand-crafted Belgian truffles: champagne, raspberry, dark espresso, salted caramel.' },
-  { id: 17, name: 'Silk Satin Pillowcase Set',            price: '$114',      priceInCents: 11400, stock: 12, image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=400&fit=crop', description: 'Two 22mm silk pillowcases. Reduces hair breakage and skin creasing. Ivory or blush.' },
-  { id: 19, name: 'Wellness Journal & Pen Set',           price: '$78',       priceInCents: 7800,  stock: 20, image: 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=400&h=400&fit=crop', description: 'Gold-foil embossed leather journal + rollerball pen. 240 cream pages with guided prompts.' },
-
-  /* ── Gourmet ──────────────────────────────────────────────────────────────
-     Moved across from the Gourmet page while that page is hidden. */
-  { id: 23, name: 'Gimber N°1 Ginger Concentrate',        price: '$34',       priceInCents: 3400,  stock: 24, image: '/images/gourmet/gimber-ginger.jpg', description: 'Organic Peruvian ginger, lemon and herbs, cold-pressed and unsweetened. Mix with sparkling water, or with champagne.' },
-]
-
 export const giftCertificates = [
   {
     amount: 50,
