@@ -1,29 +1,45 @@
+import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import HeroBanner       from '../components/sections/HeroBanner'
 import BusinessLineGrid from '../components/sections/BusinessLineGrid'
 import TeamSection      from '../components/sections/TeamSection'
 import AwardsSection    from '../components/sections/AwardsSection'
-import NewsletterSignup from '../components/sections/NewsletterSignup'
 import SectionHeader    from '../components/ui/SectionHeader'
 import GoldDivider      from '../components/ui/GoldDivider'
 import { yearsInBusiness } from '../data/business'
 
 const STORY_IMAGE   = '/images/boutique/boutique-interior.jpg'
-const FEATURE_IMGS  = [
-  '/images/spa/bath-ritual.jpg',            // spa
-  '/images/medispa/led-light-therapy.jpg',  // medispa
-  '/images/gourmet/gimber-ginger.jpg',      // gourmet
+
+/* Staff at work, until the client sends a team photo with both the service
+   and the retail side in it. */
+const TEAM_PHOTOS = [
+  { src: '/images/team/donna.jpg',          alt: 'home.team.photo.owner', pos: 'center 20%' },
+  { src: '/images/home/salon-service.jpg',  alt: 'home.team.photo.salon', pos: '70% center' },
+  { src: '/images/home/nail-bar.jpg',       alt: 'home.team.photo.nails', pos: 'center 40%' },
+  { src: '/images/home/spa-treatment.jpg',  alt: 'home.team.photo.spa',   pos: 'center 30%' },
 ]
 
 export default function Home() {
   const { t } = useTranslation()
+  const { hash, key } = useLocation()
   const years = yearsInBusiness()
 
+  // "Our Story" and "Meet the Team" live on this page for now (/#our-story,
+  // /#team). React Router does not scroll to a #hash, so bring the section up.
+  useEffect(() => {
+    if (!hash) return
+    const id = setTimeout(() => {
+      document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+    return () => clearTimeout(id)
+  }, [hash, key])
+
   const stats = [
-    { value: String(years), label: t('home.stats.years') },
-    { value: '5',   label: t('home.stats.experiences') },
-    { value: '12+', label: t('home.stats.awards') },
-    { value: '∞',   label: t('home.stats.moments') },
+    { title: t('home.stats.years', { years }), sub: t('home.stats.years.sub') },
+    { title: t('home.stats.family'),           sub: t('home.stats.family.sub') },
+    { title: t('home.stats.downtown'),         sub: t('home.stats.downtown.sub') },
+    { title: t('home.stats.more'),             sub: t('home.stats.more.sub') },
   ]
 
   return (
@@ -33,11 +49,12 @@ export default function Home() {
       {/* Stats strip */}
       <div style={{ background: 'var(--color-blue)', padding: 'var(--space-2xl) var(--space-xl)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-xl)', textAlign: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 'var(--space-xl)', textAlign: 'center' }}>
             {stats.map(s => (
-              <div key={s.label}>
-                <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 200, color: '#E9B0B9', lineHeight: 1 }}>{s.value}</p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(246,245,237,0.55)', marginTop: 'var(--space-sm)' }}>{s.label}</p>
+              <div key={s.title}>
+                {/* Two lines tall whether it wraps or not, so the lines beneath stay level */}
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.05rem, 1.6vw, 1.3rem)', fontWeight: 300, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#E9B0B9', lineHeight: 1.25, minHeight: '2.5em', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', textWrap: 'balance' }}>{s.title}</p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(246,245,237,0.78)', marginTop: 'var(--space-sm)', lineHeight: 1.5 }}>{s.sub}</p>
               </div>
             ))}
           </div>
@@ -48,7 +65,7 @@ export default function Home() {
       <GoldDivider />
 
       {/* Brand story */}
-      <section style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)', overflow: 'hidden' }}>
+      <section id="our-story" style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)', overflow: 'hidden', scrollMarginTop: '72px' }}>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
             <SectionHeader
@@ -88,88 +105,43 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3-photo feature strip */}
-      <section style={{ background: 'var(--color-blue)', padding: 'var(--space-2xl) var(--space-xl)' }}>
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-lg)' }}>
-            {[
-              { img: FEATURE_IMGS[0], label: t('home.features.spa.label'),     sub: t('home.features.spa.sub'),     href: '/spa' },
-              { img: FEATURE_IMGS[1], label: t('home.features.salon.label'),   sub: t('home.features.salon.sub'),   href: '/medispa' },
-              { img: FEATURE_IMGS[2], label: t('home.features.gourmet.label'), sub: t('home.features.gourmet.sub'), href: '/gourmet' },
-            ].map(f => (
-              <a key={f.label} href={f.href} style={{ textDecoration: 'none', display: 'block', position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', height: '220px' }}>
-                <img src={f.img} alt={f.label} loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', transition: 'transform 0.5s ease', display: 'block' }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)' }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(46,51,80,0.88) 0%, rgba(46,51,80,0.1) 60%, transparent 100%)' }} />
-                <div style={{ position: 'absolute', bottom: 'var(--space-md)', left: 'var(--space-md)' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem', fontWeight: 200, color: '#F6F5ED', lineHeight: 1.2 }}>{f.label}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, color: '#E9B0B9', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: '3px' }}>{f.sub}</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── About Spa Rivier ── */}
-      <section style={{ background: 'var(--color-white)', padding: '57.6px var(--space-xl)' }}>
-        <div className="container">
-          {/* Section label */}
-          <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.about.eyebrow')}</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2 }}>
-              {t('home.about.headline', { years })}
+      {/* ── The people behind Spa Rivier ── */}
+      <section style={{ background: 'var(--color-white)', padding: 'var(--space-3xl) var(--space-xl)' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
+          <div>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.team.eyebrow')}</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2, marginBottom: 'var(--space-xl)' }}>
+              {t('home.team.headline')}
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-body)', fontWeight: 300, color: 'var(--text-muted)', maxWidth: '600px', margin: 'var(--space-md) auto 0', lineHeight: 1.75 }}>
-              {t('home.about.sub')}
-            </p>
-          </div>
-
-          {/* 4-photo gallery */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-2xl)' }}>
-            {[
-              { src: '/images/boutique/autumn-collection.jpg', alt: 'Boutique Rivier seasonal collection' },
-              { src: '/images/salon/colour-care-collection.jpg', alt: 'Professional hair colour services' },
-              { src: '/images/spa/aromatherapy-diffuser.jpg', alt: 'Spa Rivier Spa sanctuary' },
-              { src: '/images/salon/nails-glitter.jpg', alt: 'Nail bar artistry' },
-            ].map(img => (
-              <img key={img.alt} src={img.src} alt={img.alt} loading="lazy"
-                style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', transition: 'transform 0.4s ease, box-shadow 0.4s ease' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)' }}
-              />
+            {['home.team.body1', 'home.team.body2', 'home.team.body3'].map(k => (
+              <p key={k} style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'var(--lavelle-charcoal)', lineHeight: 1.85, marginBottom: 'var(--space-lg)' }}>
+                {t(k)}
+              </p>
             ))}
+            <Link to="/#team" className="btn-primary" style={{ marginTop: 'var(--space-sm)' }}>{t('home.team.cta')}</Link>
           </div>
 
-          {/* Editorial text + quote */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
-            <div>
-              <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 'var(--space-lg)' }}>
-                {t('home.about.body1')}
-              </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 'var(--space-xl)' }}>
-                {t('home.about.body2')}
-              </p>
-              <div className="cta-center">
-                <a href="/spa" className="btn-primary">{t('home.about.cta')}</a>
-              </div>
-            </div>
-            <div style={{ background: 'var(--color-blue)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-2xl)', border: '1px solid rgba(233,176,185,0.18)' }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontStyle: 'italic', color: '#F6F5ED', lineHeight: 1.6, marginBottom: 'var(--space-lg)' }}>
-                {t('home.about.quote')}
-              </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#E9B0B9', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{t('home.about.attrib')}</p>
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 'var(--space-md)' }}>
+            {TEAM_PHOTOS.map(p => (
+              <img key={p.src} src={p.src} alt={t(p.alt)} loading="lazy"
+                style={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', objectPosition: p.pos, borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', display: 'block' }} />
+            ))}
           </div>
         </div>
       </section>
 
       <AwardsSection />
-      <TeamSection preview />
+      <TeamSection preview id="team" />
       <GoldDivider />
-      <NewsletterSignup />
+
+      {/* ── What's new: the What's Happening page in place of the email signup ── */}
+      <section style={{ background: 'var(--lavelle-plum-mid)', padding: 'var(--space-2xl) var(--space-xl)', textAlign: 'center', borderBottom: '1px solid rgba(233,176,185,0.2)' }}>
+        <div style={{ maxWidth: '620px', margin: '0 auto' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h2)', fontWeight: 300, color: 'var(--lavelle-white)', marginBottom: 'var(--space-md)', lineHeight: 1.2 }}>{t('home.whatsNew.headline')}</h2>
+          <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'rgba(255,255,255,0.78)', marginBottom: 'var(--space-xl)', lineHeight: 1.7 }}>{t('home.whatsNew.sub')}</p>
+          <Link to="/blog" className="btn-primary">{t('nav.blog')}</Link>
+        </div>
+      </section>
     </>
   )
 }

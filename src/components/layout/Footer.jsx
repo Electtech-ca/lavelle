@@ -1,19 +1,26 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Instagram, Facebook, Store, MapPin } from 'lucide-react'
+import { Instagram, Facebook, Store, MapPin, Phone } from 'lucide-react'
 
-const navLinks = [
-  { to: '/',                  key: 'nav.home' },
-  { to: '/spa',               key: 'nav.spa' },
-  { to: '/medispa',           key: 'nav.medispa' },
-  { to: '/boutique',          key: 'nav.boutique' },
-  { to: '/haircare',          key: 'nav.haircare' },
-  { to: '/skincare',          key: 'nav.skincare' },
-  { to: '/bath-body',         key: 'nav.bathbody' },
-  /* Gourmet is hidden for now — restore this line to bring it back. */
-  { to: '/giftware',          key: 'nav.giftware' },
-  { to: '/blog',              key: 'nav.blog' },
+/* The client's order. Salon opens the Spa page on its Hair tab; Our Story and
+   Meet the Team are sections of the homepage for now. Gourmet stays hidden. */
+const quickLinks = [
+  { to: '/',                      key: 'nav.home' },
+  { to: '/spa',                   key: 'nav.spa' },
+  { to: '/medispa',               key: 'nav.medispa' },
+  { to: '/spa#hair',              key: 'nav.salon' },
+  { to: '/boutique',              key: 'nav.boutique' },
+  { to: '/haircare',              key: 'nav.haircare' },
+  { to: '/skincare',              key: 'nav.skincare' },
+  { to: '/bath-body',             key: 'nav.bathbody' },
+  { to: '/giftware',              key: 'nav.giftware' },
+  { to: '/giftware#certificates', key: 'nav.certificates' },
+  { to: '/blog',                  key: 'nav.blog' },
+  { to: '/#our-story',            key: 'nav.story' },
+  { to: '/#team',                 key: 'nav.team' },
 ]
+
+const DIRECTIONS = 'https://www.google.com/maps/dir/?api=1&destination=Spa+Rivier%2C+353+Reid+Street%2C+Quesnel%2C+BC'
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -32,6 +39,9 @@ export default function Footer() {
     fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)',
     fontWeight: 300, color: 'rgba(246,245,237,0.65)', lineHeight: 1.8,
   }
+  // Address and phone: brighter than the rest, each a link (directions, call)
+  const contact = { ...body, color: 'rgba(246,245,237,0.92)', display: 'flex', alignItems: 'flex-start', gap: '10px', textDecoration: 'none' }
+  const contactIcon = { color: '#E9B0B9', flexShrink: 0, marginTop: '5px' }
 
   return (
     <footer className="site-footer" style={{ background: '#2E3350', color: '#F6F5ED', paddingTop: '48px' }}>
@@ -69,13 +79,14 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links — a page opens at its top; a #section link scrolls to that section */}
           <div>
             <p style={colHead}>{t('footer.quickLinks')}</p>
-            <ul style={{ marginBottom: 'var(--space-xl)' }}>
-              {navLinks.map(l => (
-                <li key={l.to} style={{ marginBottom: 'var(--space-sm)' }}>
+            <ul style={{ marginBottom: 'var(--space-xl)', columns: 2, columnGap: 'var(--space-lg)' }}>
+              {quickLinks.map(l => (
+                <li key={l.to} style={{ marginBottom: 'var(--space-sm)', breakInside: 'avoid' }}>
                   <NavLink to={l.to} style={{ ...body, textDecoration: 'none', transition: 'color 0.2s' }}
+                    onClick={() => { if (!l.to.includes('#')) window.scrollTo({ top: 0, left: 0, behavior: 'auto' }) }}
                     onMouseEnter={e => { e.currentTarget.style.color = '#E9B0B9' }}
                     onMouseLeave={e => { e.currentTarget.style.color = 'rgba(246,245,237,0.65)' }}>
                     {t(l.key)}
@@ -102,10 +113,14 @@ export default function Footer() {
           <div>
             <p style={colHead}>{t('footer.contact')}</p>
             <address style={{ fontStyle: 'normal' }}>
-              <p style={{ ...body, marginBottom: 'var(--space-md)' }}>353 Reid Street<br />Downtown Quesnel, BC</p>
-              <p style={{ marginBottom: 'var(--space-sm)' }}>
-                <a href="tel:+12509928084" style={{ ...body, textDecoration: 'none' }}>250-992-8084</a>
-              </p>
+              <a href={DIRECTIONS} target="_blank" rel="noreferrer" title={t('footer.directions')} className="footer-contact-link" style={{ ...contact, marginBottom: 'var(--space-md)' }}>
+                <MapPin size={15} style={contactIcon} aria-hidden="true" />
+                <span>353 Reid Street<br />Downtown Quesnel, BC</span>
+              </a>
+              <a href="tel:+12509928084" className="footer-contact-link" style={contact}>
+                <Phone size={15} style={contactIcon} aria-hidden="true" />
+                <span>250-992-8084</span>
+              </a>
             </address>
           </div>
         </div>

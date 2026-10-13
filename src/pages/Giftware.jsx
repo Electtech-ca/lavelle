@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SectionHeader    from '../components/ui/SectionHeader'
 import GiftCard         from '../components/ui/GiftCard'
@@ -130,15 +131,16 @@ export default function Giftware() {
   const [category, setCategory] = useState(null)        // null shows every gift
   const resultsRef = useRef(null)
 
-  // React Router does not honour a #hash on navigation, so a link arriving
-  // from another page at /giftware#certificates would land at the top.
+  // React Router does not honour a #hash on navigation, so a link to
+  // /giftware#certificates — from another page or this one — would not scroll.
+  const { hash, key } = useLocation()
   useEffect(() => {
-    if (window.location.hash !== '#certificates') return
+    if (hash !== '#certificates') return
     const id = setTimeout(() => {
       document.getElementById('certificates')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 100)
     return () => clearTimeout(id)
-  }, [])
+  }, [hash, key])
 
   // The gifts sit below all the boxes, so choosing one brings its gifts up.
   useEffect(() => {

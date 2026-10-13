@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import FAQAccordion     from '../components/ui/FAQAccordion'
 import GoldDivider      from '../components/ui/GoldDivider'
@@ -92,12 +93,42 @@ function MenuNote({ text }) {
   )
 }
 
+/* Each tab has an address (/spa#hair, /spa#waxing …), so a link can open it:
+   Salon in the menu is #hair. Without one the page opens on Waxing, the first
+   spa tab, since Hair and Colour are the salon's. */
+const TAB_IDS = ['hair', 'colour', 'waxing', 'lash', 'nails', 'foot', 'faq']
+const DEFAULT_TAB = 2
+const tabFor = hash => {
+  const i = TAB_IDS.indexOf(hash.replace('#', ''))
+  return i >= 0 ? i : DEFAULT_TAB
+}
+
 export default function Spa() {
   const { t, i18n } = useTranslation()
   const activeLanguage = i18n.resolvedLanguage || i18n.language
   const isFrench = activeLanguage.startsWith('fr')
-  const [tab, setTab] = useState(0)
+  const { hash, key, state } = useLocation()
+  const navigate = useNavigate()
+  const tabBarRef = useRef(null)
+  const [tab, setTab] = useState(() => tabFor(window.location.hash))
   const [modalOpen, setModalOpen] = useState(false)
+
+  // A link to a tab opens it and brings the tab bar up under the navbar;
+  // choosing a tab here only updates the address, so the page stays put.
+  useEffect(() => {
+    setTab(tabFor(hash))
+    if (!TAB_IDS.includes(hash.replace('#', '')) || state?.fromTab) return
+    const id = setTimeout(() => {
+      const bar = tabBarRef.current
+      if (bar) window.scrollTo({ top: bar.getBoundingClientRect().top + window.scrollY - 72, behavior: 'smooth' })
+    }, 100)
+    return () => clearTimeout(id)
+  }, [hash, key])
+
+  const chooseTab = i => {
+    setTab(i)
+    navigate({ hash: TAB_IDS[i] }, { replace: true, state: { fromTab: true } })
+  }
 
   const tabs = [
     t('salon.tabs.hair'), t('salon.tabs.colour'),
@@ -127,10 +158,10 @@ export default function Spa() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ background: '#F6F5ED', borderBottom: '1px solid var(--color-cream)', position: 'sticky', top: '72px', zIndex: 100, overflowX: 'auto' }}>
+      <div ref={tabBarRef} style={{ background: '#F6F5ED', borderBottom: '1px solid var(--color-cream)', position: 'sticky', top: '72px', zIndex: 100, overflowX: 'auto' }}>
         <div className="container balanced-tab-container" style={{ display: 'flex' }}>
           {tabs.map((label, i) => (
-            <button className="balanced-tab" key={label} onClick={() => setTab(i)} style={{
+            <button className="balanced-tab" key={label} onClick={() => chooseTab(i)} aria-pressed={tab === i} style={{
               fontFamily: 'var(--font-body)', fontSize: '0.68rem', fontWeight: 600,
               letterSpacing: '0.1em', textTransform: 'uppercase', padding: '18px 18px',
               border: 'none', borderBottom: tab === i ? '2px solid #E9B0B9' : '2px solid transparent',

@@ -74,7 +74,8 @@ export default function App() {
           <Route path="/" element={<PublicLayout><PageTransition><Home /></PageTransition></PublicLayout>} />
           <Route path="/spa" element={<PublicLayout><PageTransition><Spa /></PageTransition></PublicLayout>} />
           <Route path="/medispa" element={<PublicLayout><PageTransition><MediSpa /></PageTransition></PublicLayout>} />
-          <Route path="/salon" element={<Navigate to="/medispa" replace />} />
+          {/* Salon has no page of its own: its services are the Spa page's Hair and Colour tabs */}
+          <Route path="/salon" element={<Navigate to="/spa#hair" replace />} />
           <Route path="/boutique" element={<PublicLayout><PageTransition><Boutique /></PageTransition></PublicLayout>} />
           <Route path="/haircare" element={<PublicLayout><PageTransition><Haircare /></PageTransition></PublicLayout>} />
           <Route path="/skincare" element={<PublicLayout><PageTransition><Skincare /></PageTransition></PublicLayout>} />

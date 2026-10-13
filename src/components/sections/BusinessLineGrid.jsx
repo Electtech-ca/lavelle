@@ -1,28 +1,26 @@
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SectionHeader from '../ui/SectionHeader'
 
-const LINE_META = [
-  { to: '/spa',               image: '/images/spa/bath-tray.jpg',                 pos: 'center 55%', key: 'spa' },
-  { to: '/medispa',           image: '/images/medispa/led-light-therapy.jpg',     pos: 'center',     key: 'medispa' },
-  { to: '/boutique',          image: '/images/boutique/boutique-interior.jpg',    pos: 'center 30%', key: 'boutique' },
-  /* Gourmet is hidden for now — restore this line to bring it back. */
-  { to: '/giftware',          image: '/images/gifts/candle-collection-linen.jpg', pos: 'center 60%', key: 'gifts' },
-  { to: '/giftware#certificates', image: '/images/gifts/voluspa-mercury-glass.jpg', pos: 'center',   key: 'certs' },
+/* The Spa Rivier Experience: Spa and MediSpa as two equal features across the
+   top, then four smaller boxes (.experience-grid in globals.css). Each whole
+   box links to its page, and the boxes stack in this order on phones. Photos
+   are the client's own services and displays. Salon has no page of its own:
+   it opens the Spa page on its Hair tab. */
+const LINES = [
+  { key: 'spa',      to: '/spa',                   image: '/images/home/spa-treatment.jpg',     pos: 'center 30%', feature: true },
+  { key: 'medispa',  to: '/medispa',               image: '/images/home/medispa-laser.jpg',     pos: 'center 30%', feature: true },
+  { key: 'salon',    to: '/spa#hair',              image: '/images/home/salon-service.jpg',     pos: '65% 58%' },
+  { key: 'boutique', to: '/boutique',              image: '/images/home/boutique-display.jpg',  pos: 'center 32%' },
+  { key: 'gifts',    to: '/giftware',              image: '/images/home/giftware-display.jpg',  pos: 'center 40%' },
+  { key: 'certs',    to: '/giftware#certificates', image: '/images/home/gift-certificates.jpg', pos: 'center 55%' },
 ]
 
 export default function BusinessLineGrid() {
   const { t } = useTranslation()
 
-  const lines = LINE_META.map(m => ({
-    ...m,
-    eyebrow: t(`grid.${m.key}.eyebrow`),
-    title:   t(`grid.${m.key}.title`),
-    desc:    t(`grid.${m.key}.desc`),
-  }))
-
   return (
-    <section style={{ background: 'var(--color-white)', padding: '48px var(--space-xl)' }}>
+    <section id="experience" style={{ background: 'var(--color-white)', padding: '48px var(--space-xl)', scrollMarginTop: '72px' }}>
       <div className="container">
         <SectionHeader
           eyebrow={t('grid.eyebrow')}
@@ -31,50 +29,17 @@ export default function BusinessLineGrid() {
           align="center"
         />
 
-        {/* Featured Spa card — wide cinematic banner */}
-        <div style={{ marginBottom: 'var(--space-xl)' }}>
-          <NavLink to="/spa" style={{ textDecoration: 'none', display: 'block' }}>
-            <div
-              style={{ position: 'relative', height: '360px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-hover)', transition: 'transform 0.4s ease, box-shadow 0.4s ease' }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 32px 90px rgba(46,51,80,0.28)'; e.currentTarget.querySelector('img').style.transform = 'scale(1.05)' }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)'; e.currentTarget.querySelector('img').style.transform = 'scale(1)' }}>
-              <img src={lines[0].image} alt="Spa Rivier Spa" loading="lazy"
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: lines[0].pos || 'center', transition: 'transform 0.7s ease' }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.88) 0%, rgba(46,51,80,0.4) 55%, transparent 100%)' }} />
-              <div style={{ position: 'absolute', top: '50%', left: 'var(--space-3xl)', transform: 'translateY(-50%)', maxWidth: '520px' }}>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-sm)' }}>✦ {lines[0].eyebrow}</p>
-                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,4vw,3.2rem)', fontWeight: 200, color: '#F6F5ED', marginBottom: 'var(--space-sm)', lineHeight: 1.15 }}>{lines[0].title}</h2>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-body)', fontWeight: 300, color: 'rgba(246,245,237,0.82)', lineHeight: 1.7, marginBottom: 'var(--space-lg)' }}>{lines[0].desc}</p>
-                <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {t('cta.explore')} <span style={{ fontSize: '1.1rem' }}>→</span>
-                </span>
+        <div className="experience-grid">
+          {LINES.map(line => (
+            <Link key={line.key} to={line.to} className={`experience-card${line.feature ? ' experience-card--feature' : ''}`}>
+              <img src={line.image} alt="" loading="lazy" style={{ objectPosition: line.pos }} />
+              <div className="experience-card__text">
+                <p className="experience-card__eyebrow">{t(`grid.${line.key}.eyebrow`)}</p>
+                <h3 className="experience-card__title">{t(`grid.${line.key}.title`)}</h3>
+                <p className="experience-card__desc">{t(`grid.${line.key}.desc`)}</p>
+                <span className="experience-card__link">{t(`grid.${line.key}.link`)} <span aria-hidden="true">→</span></span>
               </div>
-            </div>
-          </NavLink>
-        </div>
-
-        {/* Remaining cards — column count follows the list so hiding a line
-            does not leave a gap in the row. */}
-        <div className="tile-grid card-grid business-line-grid" style={{ gridTemplateColumns: `repeat(${lines.length - 1}, minmax(0, 1fr))`, gap: 'var(--space-lg)' }}>
-          {lines.slice(1).map(line => (
-            <NavLink key={line.to} to={line.to} style={{ textDecoration: 'none' }}>
-              <div
-                style={{ position: 'relative', height: '400px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', cursor: 'pointer', boxShadow: 'var(--shadow-card)', transition: 'transform 0.35s ease, box-shadow 0.35s ease' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lifted)'; e.currentTarget.querySelector('img').style.transform = 'scale(1.06)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)'; e.currentTarget.querySelector('img').style.transform = 'scale(1)' }}>
-                <img src={line.image} alt={line.title} loading="lazy"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: line.pos || 'center', transition: 'transform 0.6s ease' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(46,51,80,0.90) 0%, rgba(46,51,80,0.22) 55%, transparent 100%)' }} />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 'var(--space-xl)' }}>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-sm)' }}>{line.eyebrow}</p>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.85rem', fontWeight: 200, color: '#F6F5ED', marginBottom: 'var(--space-sm)', lineHeight: 1.15 }}>{line.title}</h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(246,245,237,0.80)', lineHeight: 1.65, marginBottom: 'var(--space-md)' }}>{line.desc}</p>
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#E9B0B9', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {t('cta.explore')} <span style={{ fontSize: '1rem' }}>→</span>
-                  </span>
-                </div>
-              </div>
-            </NavLink>
+            </Link>
           ))}
         </div>
       </div>

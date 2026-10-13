@@ -1,24 +1,42 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import BookingModal from '../ui/BookingModal'
 
-const SLIDE_META = [
-  { id:1, bgImage:'/branding/Web%20page.svg', bg:'linear-gradient(135deg,#1e2535 0%,#313a4d 40%,#1a2030 100%)', overlay:'rgba(20,25,38,0.52)' },
-  { id:2, bgImage:'/branding/Spa%20page.svg', bg:'linear-gradient(135deg,#313a4d 0%,#1e2a4a 50%,#0f1830 100%)', overlay:'rgba(15,20,35,0.55)', link:'/spa' },
-  { id:3, bgImage:'/branding/Lifestyle.svg', bg:'linear-gradient(135deg,#0f1a0f 0%,#1a2e1a 40%,#0a1a1a 100%)', overlay:'rgba(8,18,8,0.50)' },
-  { id:4, bgImage:'/branding/Gifts.svg', bg:'linear-gradient(135deg,#2e1a0a 0%,#3e2a0a 40%,#1e1a0a 100%)', overlay:'rgba(30,16,5,0.52)', link:'/giftware#certificates' },
-  { id:5, bgImage:'/branding/Fashion.svg', bg:'linear-gradient(135deg,#1e2535 0%,#0f1828 40%,#0a1020 100%)', overlay:'rgba(10,15,28,0.50)', link:'https://maps.google.com/?q=353+Reid+Street+Quesnel+BC' },
+const PLAN_YOUR_VISIT = 'https://www.google.com/maps/search/?api=1&query=Spa+Rivier+353+Reid+Street+Quesnel+BC'
+
+/* The homepage slides, in the client's order. A slide shows either one of the
+   client's heading collages (bgImage) or two photos side by side (photos; the
+   left one sits under the text). Phones show one photo: the one marked
+   `phone`, else the first. `eyebrow` is optional. Each slide lists its own
+   buttons: `to` is a page on the site, `href` opens in a new tab, and
+   `book` opens the booking dialog. The first button is the primary one. */
+const NAVY  = 'linear-gradient(135deg,#313a4d 0%,#1e2a4a 50%,#0f1830 100%)'
+const NIGHT = 'linear-gradient(135deg,#1e2535 0%,#0f1828 40%,#0a1020 100%)'
+
+const SLIDES = [
+  { id: 'welcome', bgImage: '/branding/Web%20page.svg', bg: 'linear-gradient(135deg,#1e2535 0%,#313a4d 40%,#1a2030 100%)', overlay: 'rgba(20,25,38,0.52)', eyebrow: true,
+    buttons: [{ label: 'hero.welcome.cta', to: '/#experience' }, { label: 'cta.book', book: true }] },
+  { id: 'spa', bgImage: '/branding/Spa%20page.svg', bg: NAVY, overlay: 'rgba(15,20,35,0.55)', eyebrow: true,
+    buttons: [{ label: 'hero.btn.exploreSpa', to: '/spa' }, { label: 'cta.book', book: true }] },
+  { id: 'haircare', bgImage: '/branding/Haircare.svg', bg: NIGHT, overlay: 'rgba(15,20,35,0.55)',
+    buttons: [{ label: 'hero.btn.exploreHaircare', to: '/haircare' }] },
+  { id: 'salon', photos: [{ src: '/images/salon/maria-nila-heal.jpg' }, { src: '/images/home/salon-service.jpg', pos: '65% center', phone: true }], bg: NAVY, overlay: 'rgba(15,20,35,0.55)',
+    buttons: [{ label: 'hero.btn.exploreHaircare', to: '/haircare' }, { label: 'hero.btn.bookSalon', book: true }] },
+  { id: 'quesnel', bgImage: '/branding/Fashion.svg', bg: NIGHT, overlay: 'rgba(10,15,28,0.50)', eyebrow: true,
+    buttons: [{ label: 'hero.btn.story', to: '/#our-story' }, { label: 'hero.btn.visit', href: PLAN_YOUR_VISIT }] },
+  { id: 'gift', photos: [{ src: '/images/home/gift-display.jpg' }, { src: '/images/home/gift-certificates.jpg' }], bg: 'linear-gradient(135deg,#2e1a0a 0%,#3e2a0a 40%,#1e1a0a 100%)', overlay: 'rgba(30,16,5,0.52)', eyebrow: true,
+    buttons: [{ label: 'hero.btn.gifts', to: '/giftware' }, { label: 'hero.btn.certs', to: '/giftware#certificates' }] },
 ]
 
 export default function HeroBanner() {
   const { t } = useTranslation()
 
-  const slides = SLIDE_META.map((m, i) => ({
-    ...m,
-    eyebrow: t(`hero.slide${i+1}.eyebrow`),
-    headline: t(`hero.slide${i+1}.headline`),
-    sub:      t(`hero.slide${i+1}.sub`),
-    cta:      t(`hero.slide${i+1}.cta`),
+  const slides = SLIDES.map(s => ({
+    ...s,
+    eyebrow:  s.eyebrow ? t(`hero.${s.id}.eyebrow`) : null,
+    headline: t(`hero.${s.id}.headline`),
+    sub:      t(`hero.${s.id}.sub`),
   }))
   const [current, setCurrent] = useState(0)
   const [fading, setFading] = useState(false)
@@ -49,12 +67,20 @@ export default function HeroBanner() {
         {slides.map((s, i) => (
           <div key={s.id} style={{
             position: 'absolute', inset: 0,
-            backgroundImage: `url(${s.bgImage})`,
-            backgroundSize: 'cover', backgroundPosition: 'center',
+            backgroundImage: s.bgImage ? `url(${s.bgImage})` : undefined,
+            backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#1a2030',
             opacity: i === current ? 1 : 0,
             transition: 'opacity 1.2s ease',
             willChange: 'opacity',
           }}>
+            {s.photos && (
+              <div className="hero-split">
+                {s.photos.map((p, j) => (
+                  <div key={p.src} className={(s.photos.some(q => q.phone) ? p.phone : j === 0) ? 'hero-split__phone' : undefined}
+                    style={{ backgroundImage: `url(${p.src})`, backgroundPosition: p.pos || 'center' }} />
+                ))}
+              </div>
+            )}
             {/* Fallback gradient behind image */}
             <div style={{ position: 'absolute', inset: 0, background: s.bg, opacity: 0.3 }} />
           </div>
@@ -82,15 +108,17 @@ export default function HeroBanner() {
         {/* Text content */}
         <div className="container" style={{ position: 'relative', zIndex: 3, paddingTop: '72px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-2xl)' }}>
           <div style={{ maxWidth: '680px' }}>
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500,
-              letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)',
-              marginBottom: 'var(--space-md)',
-              opacity: fading ? 0 : 1, transform: fading ? 'translateY(12px)' : 'translateY(0)',
-              transition: 'opacity 0.6s ease, transform 0.6s ease',
-            }}>
-              ✦ {slide.eyebrow}
-            </p>
+            {slide.eyebrow && (
+              <p style={{
+                fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500,
+                letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)',
+                marginBottom: 'var(--space-md)',
+                opacity: fading ? 0 : 1, transform: fading ? 'translateY(12px)' : 'translateY(0)',
+                transition: 'opacity 0.6s ease, transform 0.6s ease',
+              }}>
+                ✦ {slide.eyebrow}
+              </p>
+            )}
             <h1 style={{
               fontFamily: 'var(--font-display)', fontSize: 'clamp(2.8rem, 7vw, 5.5rem)',
               fontWeight: 300, lineHeight: 1.1, color: 'var(--lavelle-white)',
@@ -115,14 +143,12 @@ export default function HeroBanner() {
               opacity: fading ? 0 : 1, transform: fading ? 'translateY(8px)' : 'translateY(0)',
               transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
             }}>
-              {slide.link && slide.link.startsWith('http') ? (
-                <a href={slide.link} target="_blank" rel="noreferrer" className="btn-primary">{slide.cta}</a>
-              ) : slide.link ? (
-                <a href={slide.link} className="btn-primary">{slide.cta}</a>
-              ) : (
-                <button className="btn-primary" onClick={() => setModalOpen(true)}>{slide.cta}</button>
-              )}
-              <button className="btn-secondary" onClick={() => setModalOpen(true)}>{t('cta.book')}</button>
+              {slide.buttons.map((b, i) => {
+                const className = i === 0 ? 'btn-primary' : 'btn-secondary'
+                if (b.book) return <button key={b.label} className={className} onClick={() => setModalOpen(true)}>{t(b.label)}</button>
+                if (b.href) return <a key={b.label} href={b.href} target="_blank" rel="noreferrer" className={className}>{t(b.label)}</a>
+                return <Link key={b.label} to={b.to} className={className}>{t(b.label)}</Link>
+              })}
             </div>
           </div>
 
