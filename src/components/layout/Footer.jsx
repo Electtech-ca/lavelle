@@ -2,8 +2,8 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Instagram, Facebook, Store, MapPin, Phone } from 'lucide-react'
 
-/* The client's order. Our Story is a section of the homepage. Gourmet stays
-   hidden. */
+/* The client's order. Our Story is the family story on the Team page, below
+   its header; Meet the Team opens that page at the top. Gourmet stays hidden. */
 const quickLinks = [
   { to: '/',                      key: 'nav.home' },
   { to: '/spa',                   key: 'nav.spa' },
@@ -16,7 +16,7 @@ const quickLinks = [
   { to: '/giftware',              key: 'nav.giftware' },
   { to: '/giftware#certificates', key: 'nav.certificates' },
   { to: '/blog',                  key: 'nav.blog' },
-  { to: '/#our-story',            key: 'nav.story' },
+  { to: '/team#story',            key: 'nav.story' },
   { to: '/team',                  key: 'nav.team' },
 ]
 

@@ -4,12 +4,10 @@ import { useTranslation } from 'react-i18next'
 import HeroBanner       from '../components/sections/HeroBanner'
 import BusinessLineGrid from '../components/sections/BusinessLineGrid'
 import AwardsSection    from '../components/sections/AwardsSection'
-import SectionHeader    from '../components/ui/SectionHeader'
 import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import { yearsInBusiness } from '../data/business'
 
-const STORY_IMAGE   = '/images/boutique/boutique-interior.jpg'
 const FAMILY_PHOTO  = '/images/team/family-smiling.jpg'   // the three women behind Spa Rivier, in the boutique
 
 export default function Home() {
@@ -17,8 +15,8 @@ export default function Home() {
   const { hash, key } = useLocation()
   const years = yearsInBusiness()
 
-  // Links can point at sections here (/#our-story, /#experience). React
-  // Router does not scroll to a #hash, so bring the section up.
+  // Links can point at sections here (/#experience). React Router does not
+  // scroll to a #hash, so bring the section up.
   useEffect(() => {
     if (!hash) return
     const id = setTimeout(() => {
@@ -56,49 +54,8 @@ export default function Home() {
       <BusinessLineGrid />
       <GoldDivider />
 
-      {/* Brand story */}
-      <section id="our-story" style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)', overflow: 'hidden', scrollMarginTop: '72px' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
-          <div>
-            <SectionHeader
-              eyebrow={t('home.story.eyebrow')}
-              headline={t('home.story.headline', { years })}
-              subtext={t('home.story.sub')}
-            />
-            <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-body)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.85, marginBottom: 'var(--space-xl)' }}>
-              {t('home.story.body')}
-            </p>
-            <div className="cta-center">
-              <a href="/spa" className="btn-primary">{t('home.story.cta')}</a>
-            </div>
-          </div>
-
-          {/* Story image — elegant tall crop with gold border accent */}
-          <div style={{ position: 'relative' }}>
-            <div style={{
-              position: 'absolute', top: '-16px', left: '-16px',
-              width: '60%', height: '60%',
-              border: '2px solid #E9B0B9', borderRadius: 'var(--radius-xl)',
-              opacity: 0.35, pointerEvents: 'none',
-            }} />
-            <img src={STORY_IMAGE} alt="Spa Rivier luxury interior — opulence and beauty" loading="lazy"
-              style={{ width: '100%', height: '520px', objectFit: 'cover', objectPosition: 'center', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-hover)', display: 'block' }} />
-            <div style={{
-              position: 'absolute', bottom: 'var(--space-xl)', left: 'var(--space-xl)',
-              background: 'rgba(46,51,80,0.88)', backdropFilter: 'blur(8px)',
-              borderRadius: 'var(--radius-lg)', padding: 'var(--space-md) var(--space-lg)',
-              border: '1px solid rgba(233,176,185,0.30)',
-            }}>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontStyle: 'italic', color: '#E9B0B9', lineHeight: 1.4 }}>
-                {t('home.quote')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── The family behind Spa Rivier: the short story; the full one is on the Team page ── */}
-      <section style={{ background: 'var(--color-white)', padding: 'var(--space-3xl) var(--space-xl)' }}>
+      <section style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)' }}>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
           <div>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.family.eyebrow')}</p>

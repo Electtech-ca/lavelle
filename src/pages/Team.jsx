@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
@@ -29,7 +30,18 @@ const body    = { fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'va
 
 export default function Team() {
   const { t } = useTranslation()
+  const { hash, key } = useLocation()
   const [modalOpen, setModalOpen] = useState(false)
+
+  // "Our Story" links to /team#story. React Router does not scroll to a
+  // #hash, so bring the story up.
+  useEffect(() => {
+    if (hash !== '#story') return
+    const id = setTimeout(() => {
+      document.getElementById('story')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+    return () => clearTimeout(id)
+  }, [hash, key])
 
   return (
     <>
@@ -43,7 +55,7 @@ export default function Team() {
       </div>
 
       {/* The full story, in a comfortable reading column */}
-      <section style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)' }}>
+      <section id="story" style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)', scrollMarginTop: '72px' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto' }}>
           {STORY.map((k, i) => (
             <p key={k} style={i === 0

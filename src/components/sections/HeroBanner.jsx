@@ -24,7 +24,7 @@ const SLIDES = [
   { id: 'salon', photos: [{ src: '/images/salon/maria-nila-heal.jpg' }, { src: '/images/home/salon-service.jpg', pos: '65% center', phone: true }], bg: NAVY, overlay: 'rgba(15,20,35,0.55)',
     buttons: [{ label: 'hero.btn.exploreHaircare', to: '/haircare' }, { label: 'hero.btn.bookSalon', book: true }] },
   { id: 'quesnel', bgImage: '/branding/Fashion.svg', bg: NIGHT, overlay: 'rgba(10,15,28,0.50)', eyebrow: true,
-    buttons: [{ label: 'hero.btn.story', to: '/#our-story' }, { label: 'hero.btn.visit', href: PLAN_YOUR_VISIT }] },
+    buttons: [{ label: 'hero.btn.story', to: '/team#story' }, { label: 'hero.btn.visit', href: PLAN_YOUR_VISIT }] },
   { id: 'gift', photos: [{ src: '/images/home/gift-display.jpg' }, { src: '/images/home/gift-certificates.jpg' }], bg: 'linear-gradient(135deg,#2e1a0a 0%,#3e2a0a 40%,#1e1a0a 100%)', overlay: 'rgba(30,16,5,0.52)', eyebrow: true,
     buttons: [{ label: 'hero.btn.gifts', to: '/giftware' }, { label: 'hero.btn.certs', to: '/giftware#certificates' }] },
 ]
