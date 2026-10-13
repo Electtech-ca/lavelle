@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Search, Menu, X } from 'lucide-react'
 import BookingModal from '../ui/BookingModal'
@@ -9,7 +9,7 @@ const navKeys = [
   { to: '/',                  key: 'nav.home' },
   { to: '/spa',               key: 'nav.spa' },
   { to: '/medispa',           key: 'nav.medispa' },
-  { to: '/spa#hair',          key: 'nav.salon' },     // no Salon page: the Spa page's Hair tab
+  { to: '/salon',             key: 'nav.salon' },
   { to: '/boutique',          key: 'nav.boutique' },
   { to: '/haircare',          key: 'nav.haircare' },
   { to: '/skincare',          key: 'nav.skincare' },
@@ -28,16 +28,6 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef(null)
   const navigate = useNavigate()
-  const location = useLocation()
-
-  // Salon and Spa share the Spa page, so the #hash decides which is lit:
-  // Salon on the Hair and Colour tabs, Spa on the rest.
-  const onSalonTab = location.pathname === '/spa' && ['#hair', '#colour'].includes(location.hash)
-  const isActive = to => {
-    if (to === '/spa#hair') return onSalonTab
-    if (to === '/spa') return location.pathname === '/spa' && !onSalonTab
-    return to === '/' ? location.pathname === '/' : location.pathname.startsWith(to)
-  }
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 80)
@@ -91,7 +81,7 @@ export default function Navbar() {
     { path: '/', label: t('nav.home'), keywords: 'home accueil' },
     { path: '/spa', label: t('nav.spa'), keywords: 'facial visage peel peeling waxing épilation cils sourcils nails ongles manicure manucure pedicure pédicure' },
     { path: '/medispa', label: t('nav.medispa'), keywords: 'oxygeneo laser micro needling tatouage tattoo freezpen peel peeling esthétique' },
-    { path: '/spa#hair', label: t('nav.salon'), keywords: 'salon hair haircut cut colour color highlights balayage perm styling stylist coupe couleur mèches permanente coiffure coiffeuse styliste' },
+    { path: '/salon', label: t('nav.salon'), keywords: 'salon hair haircut cut colour color highlights balayage perm styling stylist coupe couleur mèches permanente coiffure coiffeuse styliste' },
     { path: '/boutique', label: t('nav.boutique'), keywords: 'fashion mode clothing vêtements products produits' },
     { path: '/haircare', label: t('nav.haircare'), keywords: 'hair haircare cheveux capillaires shampoo shampooing conditioner revitalisant styling coiffage scalp cuir chevelu maria nila moroccanoil argan joico redken ag care design.me sebastian nioxin k18 malibu color wow celeb luxury' },
     { path: '/skincare', label: t('nav.skincare'), keywords: 'skin skincare skin care soins peau visage face eminence organic biologique noon aesthetics clinical clinique anti-aging anti-âge jane iredale makeup maquillage mineral minéral spf fps foundation fond de teint' },
@@ -135,8 +125,7 @@ export default function Navbar() {
           <ul style={{ display: 'flex', gap: 'var(--space-lg)', listStyle: 'none', margin: '0 auto', padding: 0, alignItems: 'center' }} className="nav-desktop">
             {navKeys.map(l => (
               <li key={l.to} style={{ whiteSpace: 'nowrap' }}>
-                <Link to={l.to} onClick={handleTabSelection} aria-current={isActive(l.to) ? 'page' : undefined}
-                  style={linkStyle({ isActive: isActive(l.to) })}>{t(l.key)}</Link>
+                <NavLink to={l.to} end={l.to === '/'} onClick={handleTabSelection} style={linkStyle}>{t(l.key)}</NavLink>
               </li>
             ))}
           </ul>
@@ -223,20 +212,20 @@ export default function Navbar() {
           </div>
 
           {navKeys.map(l => (
-            <Link
-              key={l.to} to={l.to} aria-current={isActive(l.to) ? 'page' : undefined}
+            <NavLink
+              key={l.to} to={l.to} end={l.to === '/'}
               onClick={event => { setMenuOpen(false); handleTabSelection(event) }}
-              style={{
+              style={({ isActive }) => ({
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(1.2rem, 4vw, 2rem)',
                 fontWeight: 200,
                 textTransform: 'uppercase',
                 letterSpacing: '0.12em',
-                color: isActive(l.to) ? '#E9B0B9' : 'var(--color-white)',
+                color: isActive ? '#E9B0B9' : 'var(--color-white)',
                 textDecoration: 'none',
-              }}>
+              })}>
               {t(l.key)}
-            </Link>
+            </NavLink>
           ))}
 
           <button className="btn-primary"

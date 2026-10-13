@@ -10,6 +10,7 @@ import PageTransition from './components/layout/PageTransition'
 
 import Home              from './pages/Home'
 import Spa               from './pages/Spa'
+import Salon             from './pages/Salon'
 import MediSpa           from './pages/MediSpa'
 import Boutique          from './pages/Boutique'
 import Haircare          from './pages/Haircare'
@@ -74,8 +75,7 @@ export default function App() {
           <Route path="/" element={<PublicLayout><PageTransition><Home /></PageTransition></PublicLayout>} />
           <Route path="/spa" element={<PublicLayout><PageTransition><Spa /></PageTransition></PublicLayout>} />
           <Route path="/medispa" element={<PublicLayout><PageTransition><MediSpa /></PageTransition></PublicLayout>} />
-          {/* Salon has no page of its own: its services are the Spa page's Hair and Colour tabs */}
-          <Route path="/salon" element={<Navigate to="/spa#hair" replace />} />
+          <Route path="/salon" element={<PublicLayout><PageTransition><Salon /></PageTransition></PublicLayout>} />
           <Route path="/boutique" element={<PublicLayout><PageTransition><Boutique /></PageTransition></PublicLayout>} />
           <Route path="/haircare" element={<PublicLayout><PageTransition><Haircare /></PageTransition></PublicLayout>} />
           <Route path="/skincare" element={<PublicLayout><PageTransition><Skincare /></PageTransition></PublicLayout>} />

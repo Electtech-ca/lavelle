@@ -5,12 +5,11 @@ import SectionHeader from '../ui/SectionHeader'
 /* The Spa Rivier Experience: Spa and MediSpa as two equal features across the
    top, then four smaller boxes (.experience-grid in globals.css). Each whole
    box links to its page, and the boxes stack in this order on phones. Photos
-   are the client's own services and displays. Salon has no page of its own:
-   it opens the Spa page on its Hair tab. */
+   are the client's own services and displays. */
 const LINES = [
   { key: 'spa',      to: '/spa',                   image: '/images/home/spa-treatment.jpg',     pos: 'center 30%', feature: true },
   { key: 'medispa',  to: '/medispa',               image: '/images/home/medispa-laser.jpg',     pos: 'center 30%', feature: true },
-  { key: 'salon',    to: '/spa#hair',              image: '/images/home/salon-service.jpg',     pos: '65% 58%' },
+  { key: 'salon',    to: '/salon',                 image: '/images/home/salon-service.jpg',     pos: '65% 58%' },
   { key: 'boutique', to: '/boutique',              image: '/images/home/boutique-display.jpg',  pos: 'center 32%' },
   { key: 'gifts',    to: '/giftware',              image: '/images/home/giftware-display.jpg',  pos: 'center 40%' },
   { key: 'certs',    to: '/giftware#certificates', image: '/images/home/gift-certificates.jpg', pos: 'center 55%' },

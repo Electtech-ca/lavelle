@@ -43,7 +43,7 @@ export default function Haircare() {
           <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.4)', textWrap: 'balance' }}><Sentences text={t('haircare.hero.headline')} /></h1>
           <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, marginBottom: 'var(--space-xl)' }}>{t('haircare.hero.sub')}</p>
           <div className="slide-in-up-4" style={{ display: 'flex', gap: 'var(--space-md)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/spa" className="btn-secondary">{t('haircare.hero.cta')}</a>
+            <a href="/salon" className="btn-secondary">{t('haircare.hero.cta')}</a>
           </div>
         </div>
       </div>

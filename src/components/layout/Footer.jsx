@@ -2,13 +2,13 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Instagram, Facebook, Store, MapPin, Phone } from 'lucide-react'
 
-/* The client's order. Salon opens the Spa page on its Hair tab; Our Story and
-   Meet the Team are sections of the homepage for now. Gourmet stays hidden. */
+/* The client's order. Our Story and Meet the Team are sections of the homepage
+   for now. Gourmet stays hidden. */
 const quickLinks = [
   { to: '/',                      key: 'nav.home' },
   { to: '/spa',                   key: 'nav.spa' },
   { to: '/medispa',               key: 'nav.medispa' },
-  { to: '/spa#hair',              key: 'nav.salon' },
+  { to: '/salon',                 key: 'nav.salon' },
   { to: '/boutique',              key: 'nav.boutique' },
   { to: '/haircare',              key: 'nav.haircare' },
   { to: '/skincare',              key: 'nav.skincare' },
