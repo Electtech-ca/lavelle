@@ -18,10 +18,9 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 
 const STORY = ['team.story.p1', 'team.story.p2', 'team.story.p3', 'team.story.p4', 'team.story.p5', 'team.story.p6', 'team.story.p7']
 
-/* Donna's own photo is in her profile above, so the team-at-work row shows the rest */
+/* The team at work (Donna's own photo is in her profile above) */
 const TEAM_PHOTOS = [
   { src: '/images/home/salon-service.jpg', alt: 'team.people.photo.salon', pos: '70% center' },
-  { src: '/images/home/nail-bar.jpg',      alt: 'team.people.photo.nails', pos: 'center 40%' },
   { src: '/images/home/spa-treatment.jpg', alt: 'team.people.photo.spa',   pos: 'center 30%' },
 ]
 
@@ -84,7 +83,8 @@ export default function Team() {
             {['team.people.body1', 'team.people.body2', 'team.people.body3'].map(k => <p key={k} style={body}>{t(k)}</p>)}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 'var(--space-lg)', maxWidth: '1040px', margin: '0 auto var(--space-2xl)' }}>
+          {/* Photos keep one size and sit centred, however many there are */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 330px))', justifyContent: 'center', gap: 'var(--space-lg)', maxWidth: '1040px', margin: '0 auto var(--space-2xl)' }}>
             {TEAM_PHOTOS.map(p => (
               <img key={p.src} src={p.src} alt={t(p.alt)} loading="lazy"
                 style={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', objectPosition: p.pos, borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', display: 'block' }} />
