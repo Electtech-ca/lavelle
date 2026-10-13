@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import SectionHeader    from '../components/ui/SectionHeader'
+import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import { boutiqueBrands, clothingTypes, outerwearTypes } from '../data/boutiqueBrands'
@@ -207,7 +208,7 @@ export default function Boutique() {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '35%', background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '700px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)', textShadow: '0 1px 14px rgba(0,0,0,0.55)' }}>
           <p className="slide-in-up-1" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>✦ {t('boutique.hero.eyebrow')}</p>
-          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.5)' }}>{t('boutique.hero.headline')}</h1>
+          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.15, marginBottom: 'var(--space-md)', textShadow: '0 2px 24px rgba(0,0,0,0.5)', textWrap: 'balance' }}><Sentences text={t('boutique.hero.headline')} /></h1>
           <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.75, marginBottom: 'var(--space-md)' }}>{t('boutique.hero.sub')}</p>
           <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.75, marginBottom: 'var(--space-xl)' }}>{t('boutique.hero.tagline')}</p>
           <div className="slide-in-up-4" style={{ display: 'flex', justifyContent: 'center' }}>

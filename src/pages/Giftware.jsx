@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SectionHeader    from '../components/ui/SectionHeader'
+import Sentences        from '../components/ui/Sentences'
 import GiftCard         from '../components/ui/GiftCard'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
@@ -176,8 +177,8 @@ export default function Giftware() {
           <p className="slide-in-up-1" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)', marginBottom: 'var(--space-md)' }}>
             {t('gifts.hero.eyebrow')}
           </p>
-          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 30px rgba(0,0,0,0.5)', whiteSpace: 'pre-line' }}>
-            {t('gifts.hero.headline')}
+          <h1 className="slide-in-up-2" style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: 'var(--lavelle-white)', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 30px rgba(0,0,0,0.5)', whiteSpace: 'pre-line', textWrap: 'balance' }}>
+            <Sentences text={t('gifts.hero.headline')} />
           </h1>
           <p className="slide-in-up-3" style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.15rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.8, marginBottom: 'var(--space-xl)' }}>
             {t('gifts.hero.sub')}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import FAQAccordion     from '../components/ui/FAQAccordion'
+import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import BookingModal     from '../components/ui/BookingModal'
@@ -151,7 +152,7 @@ export default function Spa() {
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,25,38,0.62)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '660px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>✦ {t('spa.hero.eyebrow')}</p>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: '#F6F5ED', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>{t('spa.hero.headline')}</h1>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h1)', fontWeight: 300, color: '#F6F5ED', lineHeight: 1.1, marginBottom: 'var(--space-md)', textShadow: '0 2px 20px rgba(0,0,0,0.4)', textWrap: 'balance' }}><Sentences text={t('spa.hero.headline')} /></h1>
           <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: '1.1rem', color: 'rgba(255,255,255,0.82)', lineHeight: 1.75, marginBottom: 'var(--space-xl)' }}>{t('spa.hero.sub')}</p>
           <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('spa.hero.cta')}</button>
         </div>
