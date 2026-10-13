@@ -55,8 +55,8 @@ export default function Home() {
       <GoldDivider />
 
       {/* ── The family behind Spa Rivier: the short story; the full one is on the Team page ── */}
-      <section style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)' }}>
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-3xl)', alignItems: 'center' }}>
+      <section style={{ background: 'var(--color-cream)', padding: 'var(--space-xl) var(--space-xl)' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-xl)', alignItems: 'center' }}>
           <div>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--color-pink)', marginBottom: 'var(--space-sm)' }}>✦ {t('home.family.eyebrow')}</p>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2, marginBottom: 'var(--space-xl)', textWrap: 'balance' }}>
