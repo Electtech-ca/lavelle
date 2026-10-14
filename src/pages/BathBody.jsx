@@ -5,8 +5,8 @@ import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import { BrandTile, BrandModal } from '../components/ui/BrandShowcase'
-import { bathBodyBrands, bathBodyAccessories } from '../data/bathBodyBrands'
-import { bathBodyBrandsFrench } from '../data/bathBodyBrandsTranslations'
+import useBrandList from '../hooks/useBrandList'
+import { usePhoto } from '../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    Bath & Body — the body care brands we carry, one tile per brand like
@@ -17,24 +17,20 @@ import { bathBodyBrandsFrench } from '../data/bathBodyBrandsTranslations'
    ────────────────────────────────────────────────────────────── */
 
 export default function BathBody() {
-  const { t, i18n } = useTranslation()
-  const french = i18n.language.startsWith('fr') ? bathBodyBrandsFrench : null
-  const [open, setOpen] = useState(null)          // { brand, opener } — opener gets focus back on close
-
-  const copyFor = brand => ({
-    name:    brand.name,
-    tagline: french?.[brand.slug]?.tagline || brand.tagline,
-    body:    french?.[brand.slug]?.body    || brand.body,
-  })
+  const { t } = useTranslation()
+  const photo = usePhoto()
+  const brands = useBrandList('bathbody')
+  const accessories = useBrandList('bathbody_accessories')
+  const [open, setOpen] = useState(null)          // { item, opener } — opener gets focus back on close
   const closeModal = useCallback(() => { const opener = open?.opener; setOpen(null); opener?.focus() }, [open])
 
   // Rows of up to four, centred, so a short last row sits in the middle
-  const tiles = brands => (
+  const tiles = items => (
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'var(--space-xl)' }}>
-      {brands.map(brand => (
-        <div key={brand.slug} style={{ flex: '0 1 270px', display: 'flex' }}>
-          <BrandTile brand={brand} copy={copyFor(brand)} prefix="bathbody"
-            onOpen={(b, opener) => setOpen({ brand: b, opener })} />
+      {items?.map(item => (
+        <div key={item.brand.slug} style={{ flex: '0 1 270px', display: 'flex' }}>
+          <BrandTile brand={item.brand} copy={item.copy} prefix="bathbody"
+            onOpen={(b, opener) => setOpen({ item, opener })} />
         </div>
       ))}
     </div>
@@ -44,7 +40,7 @@ export default function BathBody() {
     <>
       {/* Page hero */}
       <div style={{ position: 'relative', minHeight: 'max(68vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <img src="/branding/Body.svg"
+        <img src={photo('/branding/Body.svg')}
           alt={t('bathbody.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(46,51,80,0.82) 0%, rgba(46,51,80,0.55) 60%, rgba(46,51,80,0.78) 100%)' }} />
@@ -63,15 +59,17 @@ export default function BathBody() {
       <div id="brands" style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-lg) var(--space-xl) var(--space-2xl)', minHeight: '60vh', scrollMarginTop: '72px' }}>
         <div className="container">
           <SectionHeader eyebrow={t('bathbody.section.eyebrow')} headline={t('bathbody.section.headline')} subtext={t('bathbody.section.sub')} />
-          {tiles(bathBodyBrands)}
+          {tiles(brands)}
 
-          <GoldDivider />
-          <SectionHeader eyebrow={t('bathbody.accessories.eyebrow')} headline={t('bathbody.accessories.headline')} subtext={t('bathbody.accessories.sub')} />
-          {tiles(bathBodyAccessories)}
+          {accessories?.length > 0 && <>
+            <GoldDivider />
+            <SectionHeader eyebrow={t('bathbody.accessories.eyebrow')} headline={t('bathbody.accessories.headline')} subtext={t('bathbody.accessories.sub')} />
+            {tiles(accessories)}
+          </>}
         </div>
       </div>
 
-      {open && <BrandModal brand={open.brand} copy={copyFor(open.brand)} prefix="bathbody" onClose={closeModal} />}
+      {open && <BrandModal brand={open.item.brand} copy={open.item.copy} prefix="bathbody" onClose={closeModal} />}
 
       <GoldDivider />
       <NewsletterSignup />

@@ -5,8 +5,8 @@ import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import { BrandTile, BrandModal } from '../components/ui/BrandShowcase'
-import { skincareBrands } from '../data/skincareBrands'
-import { skincareBrandsFrench } from '../data/skincareBrandsTranslations'
+import useBrandList from '../hooks/useBrandList'
+import { usePhoto } from '../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    Skincare — the skincare and makeup brands we carry, one tile per
@@ -16,23 +16,17 @@ import { skincareBrandsFrench } from '../data/skincareBrandsTranslations'
    ────────────────────────────────────────────────────────────── */
 
 export default function Skincare() {
-  const { t, i18n } = useTranslation()
-  const french = i18n.language.startsWith('fr') ? skincareBrandsFrench : null
-  const [open, setOpen] = useState(null)          // { brand, opener } — opener gets focus back on close
-
-  const copyFor = brand => ({
-    name:      brand.name,
-    shortName: brand.shortName,
-    tagline:   french?.[brand.slug]?.tagline || brand.tagline,
-    body:      french?.[brand.slug]?.body    || brand.body,
-  })
+  const { t } = useTranslation()
+  const photo = usePhoto()
+  const brands = useBrandList('skincare')
+  const [open, setOpen] = useState(null)          // { item, opener } — opener gets focus back on close
   const closeModal = useCallback(() => { const opener = open?.opener; setOpen(null); opener?.focus() }, [open])
 
   return (
     <>
       {/* Page hero */}
       <div style={{ position: 'relative', minHeight: 'max(68vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <img src="/branding/Skincare.svg"
+        <img src={photo('/branding/Skincare.svg')}
           alt={t('skincare.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(46,51,80,0.82) 0%, rgba(46,51,80,0.55) 60%, rgba(46,51,80,0.78) 100%)' }} />
@@ -52,17 +46,17 @@ export default function Skincare() {
         <div className="container">
           <SectionHeader eyebrow={t('skincare.section.eyebrow')} headline={t('skincare.section.headline')} subtext={t('skincare.section.sub')} />
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 'var(--space-xl)' }}>
-            {skincareBrands.map(brand => (
-              <div key={brand.slug} style={{ flex: '0 1 300px', display: 'flex' }}>
-                <BrandTile brand={brand} copy={copyFor(brand)} prefix="skincare"
-                  onOpen={(b, opener) => setOpen({ brand: b, opener })} />
+            {brands?.map(item => (
+              <div key={item.brand.slug} style={{ flex: '0 1 300px', display: 'flex' }}>
+                <BrandTile brand={item.brand} copy={item.copy} prefix="skincare"
+                  onOpen={(b, opener) => setOpen({ item, opener })} />
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {open && <BrandModal brand={open.brand} copy={copyFor(open.brand)} prefix="skincare" onClose={closeModal} />}
+      {open && <BrandModal brand={open.item.brand} copy={open.item.copy} prefix="skincare" onClose={closeModal} />}
 
       <GoldDivider />
       <NewsletterSignup />

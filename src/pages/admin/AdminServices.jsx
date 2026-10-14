@@ -6,13 +6,15 @@ import { serviceSections } from '../../data/serviceSections'
 import { Plus, Pencil, Trash2, X, ArrowUp, ArrowDown } from 'lucide-react'
 
 /* ──────────────────────────────────────────────────────────────
-   Admin ▸ Services & Pricing — the price lists on the Salon and Spa
-   pages. Each row of the services table is one line of one list
+   Admin ▸ Services & Pricing — the price lists on the Salon, Spa and
+   MediSpa pages. Each row of the services table is one line of one list
    (`subcategory` = the list's key in data/serviceSections.js), and
-   the pages show them in `sort_order`.
+   the pages show them in `sort_order`. MediSpa lists also have the
+   price of a series of 8 (`price_series`).
    ────────────────────────────────────────────────────────────── */
 
-const PAGES = [{ id: 'salon', label: 'Salon' }, { id: 'spa', label: 'Spa' }]
+const PAGES = [{ id: 'salon', label: 'Salon' }, { id: 'spa', label: 'Spa' }, { id: 'medispa', label: 'MediSpa' }]
+const PAGE_TITLE = { salon: '✂ Salon page', spa: '✦ Spa page', medispa: '✦ MediSpa page' }
 const SECTION = Object.fromEntries(serviceSections.map(s => [s.key, s]))
 const sectionName = s => (s.tab === s.label ? s.label : `${s.tab} — ${s.label}`)
 
@@ -22,6 +24,7 @@ const EMPTY_FORM = {
   name_fr:     '',
   price:       '',
   price_fr:    '',
+  price_series: '',
   active:      true,
 }
 
@@ -82,6 +85,7 @@ export default function AdminServices() {
       name_fr:     svc.name_fr  || '',
       price:       svc.price,
       price_fr:    svc.price_fr || '',
+      price_series: svc.price_series || '',
       active:      svc.active,
     })
     setErrors({})
@@ -124,6 +128,7 @@ export default function AdminServices() {
       name_fr:     form.name_fr.trim(),
       price:       form.price.trim(),
       price_fr:    form.price_fr.trim(),
+      price_series: section.series ? form.price_series.trim() : '',
       active:      form.active,
     }
     // A new service, or one moved to another list, goes to the end of its list.
@@ -219,8 +224,8 @@ export default function AdminServices() {
       )}
 
       <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-charcoal)', lineHeight: 1.7, maxWidth: '760px', marginBottom: 'var(--space-lg)' }}>
-        These are the price lists on the Salon and Spa pages, in the order they appear there.
-        Changes show on the site straight away. MediSpa prices are not listed here.
+        These are the price lists on the Salon, Spa and MediSpa pages, in the order they appear there.
+        Changes show on the site straight away. MediSpa lines also have the price of a series of 8.
       </p>
 
       {notice && (
@@ -279,7 +284,7 @@ export default function AdminServices() {
               {(firstOfPage || !section) && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', margin: `${gi ? 'var(--space-2xl)' : 0} 0 var(--space-lg)` }}>
                   <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 400, color: 'var(--lavelle-plum-deep)' }}>
-                    {!section ? 'Not on the site' : section.page === 'salon' ? '✂ Salon page' : '✦ Spa page'}
+                    {!section ? 'Not on the site' : PAGE_TITLE[section.page]}
                   </h2>
                   <div style={{ flex: 1, height: '1px', background: 'var(--lavelle-cream)' }} />
                 </div>
@@ -312,7 +317,7 @@ export default function AdminServices() {
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
                         <tr>
-                          {['Service', 'French', 'Price', 'Status', 'Actions'].map(h => (
+                          {['Service', 'French', 'Price', ...(section?.series ? ['Series of 8'] : []), 'Status', 'Actions'].map(h => (
                             <th key={h} style={thStyle}>{h}</th>
                           ))}
                         </tr>
@@ -332,6 +337,7 @@ export default function AdminServices() {
                                 {svc.price}
                                 {svc.price_fr && <span style={{ display: 'block', fontWeight: 400, fontSize: '0.72rem', color: 'var(--lavelle-gray-mid)' }}>FR: {svc.price_fr}</span>}
                               </td>
+                              {section?.series && <td style={{ ...tdStyle, whiteSpace: 'nowrap' }}>{svc.price_series || '—'}</td>}
                               <td style={tdStyle}>
                                 <span style={{ display: 'inline-block', padding: '2px 10px', borderRadius: 'var(--radius-full)', fontSize: 'var(--text-micro)', fontWeight: 700, background: svc.active ? 'rgba(46,125,94,0.1)' : 'rgba(192,57,43,0.08)', color: svc.active ? '#2E7D5E' : '#C0392B' }}>
                                   {svc.active ? 'Shown' : 'Hidden'}
@@ -414,11 +420,19 @@ export default function AdminServices() {
                   {errors.name && <p style={errStyle}>{errors.name}</p>}
                 </div>
                 <div>
-                  <label style={labelStyle}>Price <span style={{ color: '#C0392B' }}>*</span></label>
+                  <label style={labelStyle}>{SECTION[form.subcategory]?.series ? 'Single Session' : 'Price'} <span style={{ color: '#C0392B' }}>*</span></label>
                   <input name="price" value={form.price} onChange={handleChange} placeholder="e.g. $59" style={inputStyle(errors.price)} />
                   {errors.price && <p style={errStyle}>{errors.price}</p>}
                 </div>
               </div>
+
+              {SECTION[form.subcategory]?.series && (
+                <div style={{ maxWidth: '240px' }}>
+                  <label style={labelStyle}>Series of 8</label>
+                  <input name="price_series" value={form.price_series} onChange={handleChange} placeholder="e.g. $570" style={inputStyle(false)} />
+                  <p style={hintStyle}>Buy 6 sessions, get 2 free.</p>
+                </div>
+              )}
 
               {/* French */}
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 'var(--space-lg)' }}>

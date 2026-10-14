@@ -11,6 +11,13 @@ These files are copies of what runs on the server; the website build does not us
 | `certificate-link.sql` | applied once to the database (see below) |
 | `admin-content.sql` | applied once to the database (see the end) |
 | `boutique-brands.sql` | applied once to the database (see the end) |
+| `site-editing.sql` | applied once to the database (see the end) |
+| `functions/_shared/admin.ts` | `/opt/supabase/docker/volumes/functions/_shared/admin.ts` |
+| `functions/admin-users/index.ts` | `/opt/supabase/docker/volumes/functions/admin-users/index.ts` |
+| `functions/mailbox-password/index.ts` | `/opt/supabase/docker/volumes/functions/mailbox-password/index.ts` |
+| `functions/studio-gate/index.ts` | `/opt/supabase/docker/volumes/functions/studio-gate/index.ts` |
+| `set-mailcow-key.sh` | `/opt/supabase/docker/set-mailcow-key.sh` |
+| `caddy/studio-gate.caddy` | the `api.sparivier.ca` block of the server's Caddyfile |
 
 **What it does:** Stripe calls `https://api.sparivier.ca/functions/v1/stripe-certificate-webhook`
 when a gift certificate is paid (`checkout.session.completed`). The function checks
@@ -60,3 +67,49 @@ creates the public `boutique` storage bucket for brand photos (admins only may u
 re-run: brands are copied in only while the table is empty.
 
     docker exec -i supabase-db psql -U postgres -d postgres < boutique-brands.sql
+
+**The whole site from the admin** (`site-editing.sql`, written 2026-10-14): everything that
+used to need a code change is edited in the admin.
+
+| Admin page | Table | What it changes |
+|---|---|---|
+| Page Text | `site_text` | any heading, paragraph, button or label, English and French |
+| Contact & Hours | `site_text` (`contact.*`, `footer.hours.*`) | address, phone, hours, social links, used everywhere |
+| Photos | `site_photos` | the page photos listed in `src/data/photoSlots.js` |
+| Services & Prices | `services` | now MediSpa too (category `medispa`, with `price_series`) |
+| Product Brands, Team, What's Happening, Spa FAQ | `site_items` | Haircare, Skincare and Bath & Body brands, team profiles, articles, events, promo of the day, FAQ |
+| Admin Users | `profiles`, auth users | add, reset, remove admins; Supabase Studio access (`profiles.studio_access`) |
+| My Account | auth, mailcow | own portal password (also Studio's), a mailbox's password |
+
+A changed text or photo is stored as an override; the wording and photos in the code stay the
+default, and "Restore original" deletes the override. The file copies in the brands, profiles,
+FAQ, articles and MediSpa prices the site showed on 2026-10-14, and creates the public `site`
+storage bucket for uploaded photos. Safe to re-run: a list is copied in only while it is empty.
+The site falls back to the copy in code until the file has run, so either order is safe, but run
+the SQL first so the admin pages work as soon as the site is deployed.
+
+    docker exec -i supabase-db psql -U postgres -d postgres < site-editing.sql
+
+**Admin accounts and passwords** (functions `admin-users`, `mailbox-password`, `studio-gate`,
+all sharing `_shared/admin.ts`). Copy the four folders to `volumes/functions/`, then reload the
+functions container (above). They need nothing new except the mailcow key:
+
+- `admin-users`: Admin Users. Creates and deletes accounts with the service role; roles and
+  Studio access are written as the calling admin, so the database's own checks apply.
+- `mailbox-password`: My Account ▸ Email password. Checks the mailbox's current password by
+  signing in to SMTP, then sets the new one through mailcow's API. Make a read-write API key in
+  mailcow (System ▸ Configuration ▸ Access ▸ API), allow API access from the server's own
+  address, then store the key with `set-mailcow-key.sh` (it prompts; the key stays off screen).
+  Without the key the form says to use the mail server's own page, which also changes passwords.
+- `studio-gate`: Supabase Studio opens with the admin portal's login instead of the shared
+  dashboard password. Replace the `api.sparivier.ca` block of the Caddyfile with
+  `caddy/studio-gate.caddy`, put `STUDIO_BASIC_AUTH` (base64 of `DASHBOARD_USERNAME:DASHBOARD_PASSWORD`)
+  in Caddy's environment, and reload Caddy. Then set `DASHBOARD_PASSWORD` to a long random value
+  (and update `STUDIO_BASIC_AUTH`): nobody types it any more. Who may open Studio is
+  `profiles.studio_access`, given on Admin Users by someone who has it; `site-editing.sql` gives
+  it to the admins of 2026-10-14. Until Caddy is changed, Studio keeps its old password prompt.
+
+"Forgot your password?" on the admin login sends GoTrue's recovery email, which links to
+`/admin/reset-password`. It needs GoTrue's SMTP settings and `https://sparivier.ca/admin/reset-password`
+among its allowed redirect URLs (`ADDITIONAL_REDIRECT_URLS`). Without them, another admin sets a
+new password on Admin Users.

@@ -6,6 +6,7 @@ import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import { outerwearTypes } from '../data/boutiqueBrands'
 import useBoutiqueBrands from '../hooks/useBoutiqueBrands'
+import { usePhoto, telHref } from '../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    Boutique Rivier — the brands we carry, browsable by clothing type.
@@ -155,7 +156,7 @@ function BrandModal({ brand, copy, onClose, t }) {
             <TypeTags types={brand.types} t={t} />
             <div style={{ marginTop: 'var(--space-sm)', background: NAVY, borderRadius: 'var(--radius-lg)', padding: 'var(--space-lg)' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.85)', lineHeight: 1.7, marginBottom: 'var(--space-md)' }}>{t('boutique.brand.visit')}</p>
-              <a href="tel:+12509928084" className="btn-primary" style={{ display: 'inline-flex' }}>{t('boutique.brand.call')}</a>
+              <a href={telHref(t('contact.phone'))} className="btn-primary" style={{ display: 'inline-flex' }}>{t('boutique.brand.call')}</a>
             </div>
           </div>
         </div>
@@ -166,6 +167,7 @@ function BrandModal({ brand, copy, onClose, t }) {
 
 export default function Boutique() {
   const { t, i18n } = useTranslation()
+  const photo = usePhoto()
   const isFrench = i18n.language.startsWith('fr')
   const [filter, setFilter] = useState('all')
   const [open, setOpen] = useState(null)          // { brand, opener } — opener gets focus back on close
@@ -184,7 +186,7 @@ export default function Boutique() {
     <>
       {/* Page hero */}
       <div style={{ position: 'relative', minHeight: 'max(68vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <img src="/branding/Fashion.svg"
+        <img src={photo('/branding/Fashion.svg')}
           alt={t('boutique.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         {/* Lighter than the other heroes so the photos show, with a soft shadow under the lettering instead */}
@@ -239,7 +241,7 @@ export default function Boutique() {
             <div style={{ maxWidth: '560px', margin: '0 auto', textAlign: 'center', padding: 'var(--space-xl)', background: 'var(--lavelle-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-charcoal)', lineHeight: 1.7 }}>
                 {t('boutique.filter.empty', { type: t(`boutique.filter.${filter}`) })}{' '}
-                <a href="tel:+12509928084" style={{ color: 'var(--lavelle-plum-soft)' }}>250-992-8084</a>.
+                <a href={telHref(t('contact.phone'))} style={{ color: 'var(--lavelle-plum-soft)' }}>{t('contact.phone')}</a>.
               </p>
             </div>
           )}

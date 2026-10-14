@@ -9,6 +9,7 @@ import { TabBar, TabBanner, SidePanel, PriceList, MenuNote } from '../components
 import useHashTab from '../hooks/useHashTab'
 import useServiceLists from '../hooks/useServiceLists'
 import { yearsInBusiness } from '../data/business'
+import { usePhoto } from '../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    Salon — cuts, styling, colour, perms and treatments, with their
@@ -25,6 +26,7 @@ const TABS = [
 
 export default function Salon() {
   const { t, i18n } = useTranslation()
+  const photo = usePhoto()
   const isFrench = (i18n.resolvedLanguage || i18n.language).startsWith('fr')
   const [tab, chooseTab, tabBarRef] = useHashTab(TABS.map(x => x.id))
   const [modalOpen, setModalOpen] = useState(false)
@@ -42,7 +44,7 @@ export default function Salon() {
     <>
       {/* Page hero */}
       <div style={{ position: 'relative', minHeight: 'max(70vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <img src="/images/salon/salon-hero.jpg"
+        <img src={photo('/images/salon/salon-hero.jpg')}
           alt={t('salon.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,25,38,0.62)' }} />

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { telHref } from '../../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    Brand tiles and their detail view, shared by the Haircare and
@@ -146,7 +147,7 @@ export function BrandModal({ brand, copy, onClose, prefix }) {
             )}
             <div style={{ marginTop: 'var(--space-sm)', background: NAVY, borderRadius: 'var(--radius-lg)', padding: 'var(--space-lg)' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.85)', lineHeight: 1.7, marginBottom: 'var(--space-md)' }}>{t(`${prefix}.brand.visit`)}</p>
-              <a href="tel:+12509928084" className="btn-primary" style={{ display: 'inline-flex' }}>{t(`${prefix}.brand.call`)}</a>
+              <a href={telHref(t('contact.phone'))} className="btn-primary" style={{ display: 'inline-flex' }}>{t(`${prefix}.brand.call`)}</a>
             </div>
           </div>
         </div>

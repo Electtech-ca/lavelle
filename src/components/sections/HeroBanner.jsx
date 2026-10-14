@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import BookingModal from '../ui/BookingModal'
+import { usePhoto } from '../../lib/siteContent'
 
-const PLAN_YOUR_VISIT = 'https://www.google.com/maps/search/?api=1&query=Spa+Rivier+353+Reid+Street+Quesnel+BC'
+// Opens Google Maps on the address in the admin's Contact & Hours
+const PLAN_YOUR_VISIT = 'plan-your-visit'
 
 /* The homepage slides, in the client's order. A slide shows either one of the
    client's heading collages (bgImage) or two photos side by side (photos; the
@@ -31,9 +33,14 @@ const SLIDES = [
 
 export default function HeroBanner() {
   const { t } = useTranslation()
+  const photo = usePhoto()
+  const mapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t('contact.mapAddress'))}`
 
   const slides = SLIDES.map(s => ({
     ...s,
+    bgImage:  s.bgImage && photo(s.bgImage),
+    photos:   s.photos?.map(p => ({ ...p, src: photo(p.src) })),
+    buttons:  s.buttons.map(b => (b.href === PLAN_YOUR_VISIT ? { ...b, href: mapLink } : b)),
     eyebrow:  s.eyebrow ? t(`hero.${s.id}.eyebrow`) : null,
     headline: t(`hero.${s.id}.headline`),
     sub:      t(`hero.${s.id}.sub`),

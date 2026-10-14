@@ -14,6 +14,7 @@ import { Gift } from 'lucide-react'
 import SectionHeader from '../ui/SectionHeader'
 import { formatAmount } from '../ui/CertificateSheet'
 import { supabase }  from '../../lib/supabase'
+import { telHref }   from '../../lib/siteContent'
 import { certificatePaymentUrl, hasCertificatePaymentLink,
          customCertificatePaymentUrl, hasCustomCertificateLink } from '../../lib/stripe'
 import { newCertificateCode, newViewToken, paymentReference } from '../../lib/certificates'
@@ -52,7 +53,7 @@ function CustomAmountCard({ onPurchase }) {
   )
   return online
     ? <button type="button" className="cert-card cert-card--custom" onClick={() => onPurchase({ amount: 0, custom: true })}>{inner}</button>
-    : <a href="tel:+12509928084" className="cert-card cert-card--custom">{inner}</a>
+    : <a href={telHref(t('contact.phone'))} className="cert-card cert-card--custom">{inner}</a>
 }
 
 /* ── Purchase modal ── */

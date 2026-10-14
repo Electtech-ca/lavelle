@@ -6,6 +6,7 @@ import GoldDivider      from '../components/ui/GoldDivider'
 import BookingModal     from '../components/ui/BookingModal'
 import TeamSection      from '../components/sections/TeamSection'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
+import { usePhoto } from '../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    Meet the Team — the client's full story, "Three Women. One Shared
@@ -29,6 +30,7 @@ const body    = { fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'va
 
 export default function Team() {
   const { t } = useTranslation()
+  const photo = usePhoto()
   const { hash, key } = useLocation()
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -56,7 +58,7 @@ export default function Team() {
       {/* The full story, in a comfortable reading column */}
       <section id="story" style={{ background: 'var(--color-cream)', padding: 'var(--space-3xl) var(--space-xl)', scrollMarginTop: '72px' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto' }}>
-          {STORY.map((k, i) => (
+          {STORY.filter(k => t(k).trim()).map((k, i) => (
             <p key={k} style={i === 0
               ? { ...body, fontFamily: 'var(--font-display)', fontSize: 'clamp(1.15rem, 2vw, 1.35rem)', lineHeight: 1.7, color: 'var(--color-blue)' }
               : body}>
@@ -80,13 +82,13 @@ export default function Team() {
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 200, color: 'var(--color-blue)', lineHeight: 1.2, marginBottom: 'var(--space-xl)', textAlign: 'center', textWrap: 'balance' }}>
               <Sentences text={t('team.people.headline')} />
             </h2>
-            {['team.people.body1', 'team.people.body2', 'team.people.body3'].map(k => <p key={k} style={body}>{t(k)}</p>)}
+            {['team.people.body1', 'team.people.body2', 'team.people.body3'].filter(k => t(k).trim()).map(k => <p key={k} style={body}>{t(k)}</p>)}
           </div>
 
           {/* Photos keep one size and sit centred, however many there are */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 330px))', justifyContent: 'center', gap: 'var(--space-lg)', maxWidth: '1040px', margin: '0 auto var(--space-2xl)' }}>
             {TEAM_PHOTOS.map(p => (
-              <img key={p.src} src={p.src} alt={t(p.alt)} loading="lazy"
+              <img key={p.src} src={photo(p.src)} alt={t(p.alt)} loading="lazy"
                 style={{ width: '100%', aspectRatio: '4 / 5', objectFit: 'cover', objectPosition: p.pos, borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-card)', display: 'block' }} />
             ))}
           </div>

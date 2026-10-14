@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { telHref } from '../lib/siteContent'
 import { Printer, Home } from 'lucide-react'
 import CertificateSheet from '../components/ui/CertificateSheet'
 import { certificateTier } from '../data/giftsData'
@@ -69,7 +70,7 @@ export default function CertificateView() {
           {note && (
             <div className="no-print" role="status" style={{ border: '1px solid var(--lavelle-cream)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', marginBottom: shown ? 'var(--space-xl)' : 0 }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.75 }}>
-                {note}{!shown && state.status !== 'loading' && <> <a href="tel:+12509928084" style={{ color: 'var(--lavelle-plum-soft)' }}>250-992-8084</a>.</>}
+                {note}{!shown && state.status !== 'loading' && <> <a href={telHref(t('contact.phone'))} style={{ color: 'var(--lavelle-plum-soft)' }}>{t('contact.phone')}</a>.</>}
               </p>
             </div>
           )}
@@ -90,7 +91,7 @@ export default function CertificateView() {
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-charcoal)', lineHeight: 1.75 }}>
                 <strong style={{ color: 'var(--lavelle-plum-deep)' }}>{t('certConfirm.redeem.label')}</strong>{' '}
                 {t('certConfirm.redeem.note')}{' '}
-                <a href="tel:+12509928084" style={{ color: 'var(--lavelle-plum-soft)' }}>250-992-8084</a>.
+                <a href={telHref(t('contact.phone'))} style={{ color: 'var(--lavelle-plum-soft)' }}>{t('contact.phone')}</a>.
               </p>
             </div>
           )}

@@ -4,12 +4,18 @@ import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import BookingModal     from '../components/ui/BookingModal'
 import PricingTable     from '../components/ui/PricingTable'
-import { medispaFrench } from '../data/medispaTranslations'
-import {
-  facialPricing, oxygeneoPricing, clinicalFacialPricing, microNeedlingPricing,
-  skinRejuvenationPricing, cryotherapyPricing, trilipoPricing,
-  laserFacePricing, laserBodyPricing, laserLegPricing, laserSkinPricing,
-} from '../data/medispaData'
+import { TabBanner as Banner } from '../components/ui/ServiceMenu'
+import useServiceLists from '../hooks/useServiceLists'
+import { lineList } from '../data/siteLists'
+import { usePhoto } from '../lib/siteContent'
+
+/* ──────────────────────────────────────────────────────────────
+   MediSpa — one tab per treatment. The prices are the services table's
+   medispa_* lists (the admin's Services page, with a "Series of 8"
+   price); every other word is page text the admin can change. Lists of
+   features are one item per line; a treatment option is "Name: what it
+   does".
+   ────────────────────────────────────────────────────────────── */
 
 /* ── Tab banner images — Spa Rivier clinic photography ── */
 const TAB_IMAGES = {
@@ -23,19 +29,7 @@ const TAB_IMAGES = {
   7: { src: '/images/medispa/laser-before-after.jpg',               pos: 'center 32%' }, // laser
 }
 
-function TabBanner({ tab, title, sub }) {
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '320px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 'var(--space-2xl)' }}>
-      <img src={TAB_IMAGES[tab].src} alt={title} loading="lazy"
-        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: TAB_IMAGES[tab].pos, display: 'block' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.85) 0%, rgba(46,51,80,0.4) 55%, transparent 100%)' }} />
-      <div style={{ position: 'absolute', top: '50%', left: 'var(--space-2xl)', transform: 'translateY(-50%)', maxWidth: '500px' }}>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem,3vw,2.2rem)', fontWeight: 200, color: '#F6F5ED', lineHeight: 1.2, marginBottom: 'var(--space-sm)' }}>{title}</h2>
-        {sub && <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.82)', lineHeight: 1.65, fontWeight: 300 }}>{sub}</p>}
-      </div>
-    </div>
-  )
-}
+const TabBanner = ({ tab, title, sub }) => <Banner image={TAB_IMAGES[tab].src} pos={TAB_IMAGES[tab].pos} title={title} sub={sub} />
 
 function ConsultNote({ text }) {
   return (
@@ -45,14 +39,31 @@ function ConsultNote({ text }) {
   )
 }
 
-/* ── Single-session + series-of-8 pricing table ── */
-function SeriesTable({ headers, rows, names }) {
+/* ── Single-session + series-of-8 pricing table, from a services list ── */
+function SeriesTable({ headers, list, french }) {
+  if (!list?.items.length) return null
   return (
     <PricingTable
       headers={headers}
-      rows={rows.map((r, i) => [names?.[i] || r.name, r.single, r.series])}
+      rows={list.items.map((r, i) => [(french && list.fr[i]?.service) || r.service, r.price, r.series])}
     />
   )
+}
+
+/* ── Short points, one per line of their text ── */
+function Points({ text, dark, mark = '✦', pad = '8px 0', size = 'var(--text-small)', rule }) {
+  return lineList(text).map(item => (
+    <div key={item} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: pad, borderBottom: dark ? '1px solid rgba(246,245,237,0.08)' : rule ? '1px solid var(--color-cream)' : 'none' }}>
+      <span style={{ color: '#E9B0B9', fontWeight: 700, fontSize: dark ? '0.8rem' : undefined }}>{mark}</span>
+      <span style={{ fontFamily: 'var(--font-body)', fontSize: size, color: dark ? 'rgba(246,245,237,0.82)' : '#2E3350', fontWeight: 300 }}>{item}</span>
+    </div>
+  ))
+}
+
+/* ── "Name: what it does" ── */
+const option = line => {
+  const at = line.indexOf(':')
+  return at < 0 ? [line, ''] : [line.slice(0, at).trim(), line.slice(at + 1).trim()]
 }
 
 /* ── "Buy 6, get 2 free" badge shown above every series table ── */
@@ -66,8 +77,9 @@ function SeriesBadge({ text }) {
 
 export default function MediSpa() {
   const { t, i18n } = useTranslation()
-  const isFrench = i18n.language.startsWith('fr')
-  const french = isFrench ? medispaFrench : null
+  const french = i18n.language.startsWith('fr')
+  const photo = usePhoto()
+  const lists = useServiceLists()
   const [tab, setTab] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -92,8 +104,8 @@ export default function MediSpa() {
       {/* ── Page Hero ── */}
       <div style={{ position: 'relative', minHeight: 'max(70vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
-          src="/branding/Skincare.svg"
-          alt="Spa Rivier MediSpa — advanced aesthetic treatments"
+          src={photo('/branding/Skincare.svg')}
+          alt={t('medispa.hero.imageAlt')}
           loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
         />
@@ -135,30 +147,24 @@ export default function MediSpa() {
           {/* ── Tab 0: Facials ── */}
           {tab === 0 && (
             <>
-              <TabBanner tab={0} title={french?.banner.facials.title || 'Facials & Skin Health'}
-                sub={french?.banner.facials.sub || 'Professional expertise, advanced technology, and results-driven treatments for ageing, pigmentation, redness, acne, and overall skin health.'} />
+              <TabBanner tab={0} title={t('medispa.facials.title')} sub={t('medispa.facials.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={facialPricing} names={french?.facials.names} />
-                  <ConsultNote text={french?.facials.note || 'Every facial includes the neck and décolleté. Your skin deserves more than a one-size-fits-all approach — we begin with a consultation to match the treatment to your skin.'} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_facials} french={french} />
+                  <ConsultNote text={t('medispa.facials.note')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('medispa.hero.cta')}</button>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="/images/medispa/noon-aesthetics-collection.png"
-                    alt="Noon Aesthetics professional skincare used in our facials" loading="lazy"
+                  <img src={photo('/images/medispa/noon-aesthetics-collection.png')}
+                    alt={t('medispa.facials.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '300px', objectFit: 'contain', background: '#F6F5ED', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
-                    {(french?.facials.features || ['Neck & décolleté included', 'Personalized skin consultation', 'Medical-grade technology', 'Buy 6 sessions, get 2 free', 'Zero downtime options']).map(feat => (
-                      <div key={feat} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(246,245,237,0.08)' }}>
-                        <span style={{ color: '#E9B0B9', fontWeight: 700, fontSize: '0.8rem' }}>✦</span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.82)', fontWeight: 300 }}>{feat}</span>
-                      </div>
-                    ))}
+                    <Points text={t('medispa.facials.features')} dark />
                   </div>
                 </div>
               </div>
@@ -168,39 +174,33 @@ export default function MediSpa() {
           {/* ── Tab 1: OxyGeneo ── */}
           {tab === 1 && (
             <>
-              <TabBanner tab={1} title={french?.banner.oxygeneo.title || 'OxyGeneo® Facial Technology'}
-                sub={french?.banner.oxygeneo.sub || "The world's first OxyPod technology — oxygenate, exfoliate, and infuse in one transformative treatment."} />
+              <TabBanner tab={1} title={t('medispa.oxygeneo.title')} sub={t('medispa.oxygeneo.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={oxygeneoPricing} names={french?.oxygeneo.names} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_oxygeneo} french={french} />
 
                   <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-xl)', background: '#F4ECDF', borderRadius: 'var(--radius-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-                      {french?.oxygeneo.what || 'What is OxyGeneo?'}
+                      {t('medispa.oxygeneo.what')}
                     </p>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--color-blue)', lineHeight: 1.8, fontWeight: 300 }}>
-                      {french?.oxygeneo.explanation || 'OxyGeneo® uses patented OxyPod technology to exfoliate the upper skin layer, restore optimal pH balance, and stimulate skin oxygenation from within. Combined with Tripollar RF energy and ultrasound, it tightens, brightens, and rejuvenates skin in a single session.'}
+                      {t('medispa.oxygeneo.explanation')}
                     </p>
                   </div>
 
                   <button className="btn-primary" style={{ display: 'flex', margin: 'var(--space-xl) auto 0' }} onClick={() => setModalOpen(true)}>
-                    {french?.oxygeneo.book || 'Book OxyGeneo Treatment'}
+                    {t('medispa.oxygeneo.book')}
                   </button>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="/images/medispa/eminence-strawberry-rhubarb.jpg"
-                    alt="Eminence Organics facial collection" loading="lazy"
+                  <img src={photo('/images/medispa/eminence-strawberry-rhubarb.jpg')}
+                    alt={t('medispa.oxygeneo.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '280px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
-                    {(french?.oxygeneo.features || ['Exfoliation & Skin Renewal', 'Oxygenation from Within', 'Deep Hydration Infusion', 'Radiofrequency Tightening', 'Zero Downtime']).map(feat => (
-                      <div key={feat} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(246,245,237,0.08)' }}>
-                        <span style={{ color: '#E9B0B9', fontWeight: 700, fontSize: '0.8rem' }}>✦</span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.82)', fontWeight: 300 }}>{feat}</span>
-                      </div>
-                    ))}
+                    <Points text={t('medispa.oxygeneo.features')} dark />
                   </div>
                 </div>
               </div>
@@ -210,36 +210,29 @@ export default function MediSpa() {
           {/* ── Tab 2: Clinical Facials ── */}
           {tab === 2 && (
             <>
-              <TabBanner tab={2} title={french?.banner.peels.title || 'Clinical Facials'}
-                sub={french?.banner.peels.sub || 'Science-backed clinical treatments delivering visible, lasting improvements — tailored to every skin type and concern.'} />
+              <TabBanner tab={2} title={t('medispa.peels.title')} sub={t('medispa.peels.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={clinicalFacialPricing} names={french?.peels.names} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_clinical} french={french} />
 
                   <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-xl)', background: '#F4ECDF', borderRadius: 'var(--radius-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-                      {french?.peels.optionsLabel || 'Treatment Options'}
+                      {t('medispa.peels.optionsLabel')}
                     </p>
-                    {[
-                      { name: 'The Perfect Derma Peel', desc: 'All-in-one medical-grade peel. Brightens, tightens, and reduces pigmentation.' },
-                      { name: 'Retinol Peel', desc: 'Stimulates cellular renewal. Ideal for fine lines, uneven texture, and dullness.' },
-                      { name: 'Brightening Peel', desc: 'Targets hyperpigmentation, melasma, and sun damage with vitamin C complex.' },
-                      { name: 'Acne Clear Peel', desc: 'Salicylic-based formula to clear congestion and prevent breakouts.' },
-                      { name: 'Sensitive Skin Peel', desc: 'Gentle lactic acid blend — safe for rosacea-prone and reactive skin.' },
-                    ].map((p, index) => {
-                      const option = french?.peels.options[index]
+                    {lineList(t('medispa.peels.options')).map(line => {
+                      const [name, desc] = option(line)
                       return (
-                      <div key={p.name} style={{ marginBottom: 'var(--space-md)', paddingBottom: 'var(--space-md)', borderBottom: '1px solid rgba(46,51,80,0.1)' }}>
-                        <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350', marginBottom: '4px' }}>{option?.[0] || p.name}</p>
-                        <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.65)', lineHeight: 1.6, fontWeight: 300 }}>{option?.[1] || p.desc}</p>
+                      <div key={line} style={{ marginBottom: 'var(--space-md)', paddingBottom: 'var(--space-md)', borderBottom: '1px solid rgba(46,51,80,0.1)' }}>
+                        <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350', marginBottom: '4px' }}>{name}</p>
+                        {desc && <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.65)', lineHeight: 1.6, fontWeight: 300 }}>{desc}</p>}
                       </div>
                       )
                     })}
                   </div>
 
-                  <ConsultNote text={french?.peels.consult || 'A complimentary skin consultation is required before your first clinical facial. Results are progressive — a series is recommended for optimal outcomes.'} />
+                  <ConsultNote text={t('medispa.peels.consult')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>
                       {t('medispa.hero.cta')}
@@ -248,11 +241,11 @@ export default function MediSpa() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="/images/medispa/noon-anti-aging-range.png"
-                    alt="Noon Aesthetics anti-ageing clinical range" loading="lazy"
+                  <img src={photo('/images/medispa/noon-anti-aging-range.png')}
+                    alt={t('medispa.peels.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '300px', objectFit: 'contain', background: '#F6F5ED', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
-                  <img src="/images/medispa/skin-rejuvenation-before-after.jpg"
-                    alt="Clinical facial results — before and after" loading="lazy"
+                  <img src={photo('/images/medispa/skin-rejuvenation-before-after.jpg')}
+                    alt={t('medispa.peels.resultsAlt')} loading="lazy"
                     style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                 </div>
               </div>
@@ -262,15 +255,14 @@ export default function MediSpa() {
           {/* ── Tab 3: Micro-Needling ── */}
           {tab === 3 && (
             <>
-              <TabBanner tab={3} title={french?.banner.needling.title || 'Micro-Needling'}
-                sub={french?.banner.needling.sub || 'Stimulate collagen, resurface skin, and restore youthful density.'} />
+              <TabBanner tab={3} title={t('medispa.needling.title')} sub={t('medispa.needling.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={microNeedlingPricing} names={french?.needling.names} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_needling} french={french} />
 
-                  <ConsultNote text={french?.needling.consult || 'A consultation is included with your first micro-needling treatment. Topical anaesthetic is applied 30 minutes prior — minimal discomfort.'} />
+                  <ConsultNote text={t('medispa.needling.consult')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>
                       {t('medispa.hero.cta')}
@@ -279,19 +271,14 @@ export default function MediSpa() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="/images/medispa/micro-needling-before-after.jpg"
-                    alt="Micro-needling results — before and after" loading="lazy"
+                  <img src={photo('/images/medispa/micro-needling-before-after.jpg')}
+                    alt={t('medispa.needling.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#F4ECDF', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-                      {french?.needling.treats || 'Treats'}
+                      {t('medispa.needling.treats')}
                     </p>
-                    {(french?.needling.treated || ['Fine Lines & Wrinkles', 'Acne Scarring', 'Uneven Skin Texture', 'Enlarged Pores', 'Hair Loss & Scalp Thinning', 'Stretch Marks']).map(item => (
-                      <div key={item} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: '6px 0' }}>
-                        <span style={{ color: '#E9B0B9', fontWeight: 700 }}>✦</span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#2E3350', fontWeight: 300 }}>{item}</span>
-                      </div>
-                    ))}
+                    <Points text={t('medispa.needling.treated')} pad="6px 0" />
                   </div>
                 </div>
               </div>
@@ -301,15 +288,14 @@ export default function MediSpa() {
           {/* ── Tab 4: Skin Rejuvenation ── */}
           {tab === 4 && (
             <>
-              <TabBanner tab={4} title={french?.banner.skinRejuv.title || 'Skin Rejuvenation'}
-                sub={french?.banner.skinRejuv.sub || 'Photo facial light therapy that evens tone, softens pigmentation, and restores a healthy glow.'} />
+              <TabBanner tab={4} title={t('medispa.skinRejuv.title')} sub={t('medispa.skinRejuv.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={skinRejuvenationPricing} names={french?.skinRejuv.names} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_skin_rejuv} french={french} />
 
-                  <ConsultNote text={french?.skinRejuv.consult || 'A complimentary consultation is required before your first photo facial. Sessions are typically spaced 3–4 weeks apart.'} />
+                  <ConsultNote text={t('medispa.skinRejuv.consult')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>
                       {t('medispa.hero.cta')}
@@ -318,19 +304,14 @@ export default function MediSpa() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="/images/medispa/skin-rejuvenation-before-after.jpg"
-                    alt="Photo facial skin rejuvenation — before and after" loading="lazy"
+                  <img src={photo('/images/medispa/skin-rejuvenation-before-after.jpg')}
+                    alt={t('medispa.skinRejuv.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#F4ECDF', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-                      {french?.skinRejuv.treats || 'Treats'}
+                      {t('medispa.skinRejuv.treats')}
                     </p>
-                    {(french?.skinRejuv.treated || ['Sun Damage & Pigmentation', 'Redness & Rosacea', 'Uneven Skin Tone', 'Visible Capillaries', 'Dull, Tired Skin']).map(item => (
-                      <div key={item} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: '6px 0' }}>
-                        <span style={{ color: '#E9B0B9', fontWeight: 700 }}>✦</span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#2E3350', fontWeight: 300 }}>{item}</span>
-                      </div>
-                    ))}
+                    <Points text={t('medispa.skinRejuv.treated')} pad="6px 0" />
                   </div>
                 </div>
               </div>
@@ -340,15 +321,14 @@ export default function MediSpa() {
           {/* ── Tab 5: TriLipo ── */}
           {tab === 5 && (
             <>
-              <TabBanner tab={5} title={french?.banner.trilipo.title || 'TriLipo® Body Contouring'}
-                sub={french?.banner.trilipo.sub || 'Small changes. Real results. Non-invasive body shaping and skin tightening, session by session.'} />
+              <TabBanner tab={5} title={t('medispa.trilipo.title')} sub={t('medispa.trilipo.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={trilipoPricing} names={french?.trilipo.names} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_trilipo} french={french} />
 
-                  <ConsultNote text={french?.trilipo.consult || 'A complimentary consultation is required before your first TriLipo session. Results build progressively — a series of 8 delivers the most noticeable contouring.'} />
+                  <ConsultNote text={t('medispa.trilipo.consult')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>
                       {t('medispa.hero.cta')}
@@ -357,16 +337,11 @@ export default function MediSpa() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="/images/medispa/trilipo-face-before-after.jpg"
-                    alt="TriLipo facial contouring — before and after" loading="lazy"
+                  <img src={photo('/images/medispa/trilipo-face-before-after.jpg')}
+                    alt={t('medispa.trilipo.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
-                    {(french?.trilipo.features || ['Non-invasive body shaping', 'Skin tightening & firming', 'Cellulite reduction', 'No downtime', 'Buy 6 sessions, get 2 free']).map(feat => (
-                      <div key={feat} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(246,245,237,0.08)' }}>
-                        <span style={{ color: '#E9B0B9', fontWeight: 700 }}>✦</span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.82)', fontWeight: 300 }}>{feat}</span>
-                      </div>
-                    ))}
+                    <Points text={t('medispa.trilipo.features')} dark />
                   </div>
                 </div>
               </div>
@@ -376,34 +351,19 @@ export default function MediSpa() {
           {/* ── Tab 6: Cryotherapy ── */}
           {tab === 6 && (
             <>
-              <TabBanner tab={6} title={french?.banner.freezpen.title || 'Cryotherapy — FreezPen® & CryoProbe XP'}
-                sub={french?.banner.freezpen.sub || 'Precision cryotherapy for the safe, effective removal of benign skin lesions — no surgery, no scarring.'} />
+              <TabBanner tab={6} title={t('medispa.cryo.title')} sub={t('medispa.cryo.sub')} />
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
                   <SeriesBadge text={seriesBadge} />
-                  <SeriesTable headers={seriesHeaders} rows={cryotherapyPricing} names={french?.freezpen.names} />
+                  <SeriesTable headers={seriesHeaders} list={lists?.medispa_cryo} french={french} />
 
                   <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginTop: 'var(--space-xl)', marginBottom: 'var(--space-lg)' }}>
-                    {french?.freezpen.treats || 'What It Treats'}
+                    {t('medispa.cryo.treats')}
                   </h3>
-                  {(french?.freezpen.items || [
-                    'Skin Tags',
-                    'Seborrheic Keratosis',
-                    'Age Spots & Sun Spots',
-                    'Warts & Verrucas',
-                    'Milia',
-                    'Cherry Angiomas (Blood Spots)',
-                    'Dermatofibromas',
-                    'Benign Skin Lesions',
-                  ]).map(item => (
-                    <div key={item} style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid var(--color-cream)' }}>
-                      <span style={{ color: '#E9B0B9', fontWeight: 700 }}>✦</span>
-                      <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-body)', color: '#2E3350', fontWeight: 300 }}>{item}</span>
-                    </div>
-                  ))}
+                  <Points text={t('medispa.cryo.items')} pad="10px 0" size="var(--text-body)" rule />
 
-                  <ConsultNote text={french?.freezpen.explanation || 'FreezPen® cryotherapy uses medical-grade N₂O to freeze and eliminate benign lesions in seconds. Most treatments require just one session. Healing time is 1–2 weeks.'} />
+                  <ConsultNote text={t('medispa.cryo.explanation')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>
                       {t('medispa.hero.cta')}
@@ -412,15 +372,15 @@ export default function MediSpa() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=700&h=440&fit=crop&q=80"
-                    alt="FreezPen cryotherapy treatment" loading="lazy"
+                  <img src={photo('https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=700&h=440&fit=crop&q=80')}
+                    alt={t('medispa.cryo.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#F4ECDF', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-                      {french?.freezpen.why || 'Why FreezPen?'}
+                      {t('medispa.cryo.why')}
                     </p>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#2E3350', lineHeight: 1.8, fontWeight: 300 }}>
-                      {french?.freezpen.whyText || "FreezPen® delivers a precise microjet of Nitrous Oxide (N₂O) at –89°C directly to the lesion, with no damage to surrounding skin. It's fast (seconds per lesion), highly effective, and virtually pain-free with no anaesthetic required for most cases."}
+                      {t('medispa.cryo.whyText')}
                     </p>
                   </div>
                 </div>
@@ -431,37 +391,36 @@ export default function MediSpa() {
           {/* ── Tab 7: Laser Treatments ── */}
           {tab === 7 && (
             <>
-              <TabBanner tab={7} title={french?.banner.laser.title || 'SharpLight™ Laser Treatments'}
-                sub={french?.banner.laser.sub || 'FDA-cleared laser technology for hair reduction, skin rejuvenation, vascular therapy, and more.'} />
+              <TabBanner tab={7} title={t('medispa.laser.title')} sub={t('medispa.laser.sub')} />
 
               {/* Skin Treatments */}
               <div style={{ marginBottom: 'var(--space-2xl)' }}>
                 <h3 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.72rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-lg)' }}>
-                  {french?.laser.skin || 'Skin Treatments'}
+                  {t('medispa.laser.skin')}
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: 'var(--space-md)', marginBottom: 'var(--space-xl)' }}>
-                  {laserSkinPricing.map((item, index) => (
-                    <div key={item.treatment} style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: 'var(--space-lg)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid #E9B0B9' }}>
-                      <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350', marginBottom: 'var(--space-sm)' }}>{french?.laser.skinNames[index] || item.treatment}</h4>
-                      <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '1rem', color: '#2E3350' }}>{item.price}</p>
+                  {lists?.medispa_laser_skin?.items.map((item, index) => (
+                    <div key={item.service} style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: 'var(--space-lg)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid #E9B0B9' }}>
+                      <h4 style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350', marginBottom: 'var(--space-sm)' }}>{(french && lists.medispa_laser_skin.fr[index]?.service) || item.service}</h4>
+                      <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '1rem', color: '#2E3350' }}>{(french && lists.medispa_laser_skin.fr[index]?.price) || item.price}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Hair Removal Tables */}
-              <h3 style={laserHeading}>{french?.laser.hair || 'Laser Hair Removal'}</h3>
+              <h3 style={laserHeading}>{t('medispa.laser.hair')}</h3>
               <SeriesBadge text={seriesBadge} />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(440px, 100%), 1fr))', gap: 'var(--space-2xl)', marginBottom: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div>
-                  <h3 style={laserHeading}>{french?.laser.face || 'Face'}</h3>
-                  <SeriesTable headers={laserHeaders} rows={laserFacePricing} names={french?.laser.faceNames} />
-                  <h3 style={laserHeading}>{french?.laser.legs || 'Bikini & Legs'}</h3>
-                  <SeriesTable headers={laserHeaders} rows={laserLegPricing} names={french?.laser.legNames} />
+                  <h3 style={laserHeading}>{t('medispa.laser.face')}</h3>
+                  <SeriesTable headers={laserHeaders} list={lists?.medispa_laser_face} french={french} />
+                  <h3 style={laserHeading}>{t('medispa.laser.legs')}</h3>
+                  <SeriesTable headers={laserHeaders} list={lists?.medispa_laser_legs} french={french} />
                 </div>
                 <div>
-                  <h3 style={laserHeading}>{french?.laser.body || 'Arms & Body'}</h3>
-                  <SeriesTable headers={laserHeaders} rows={laserBodyPricing} names={french?.laser.bodyNames} />
+                  <h3 style={laserHeading}>{t('medispa.laser.body')}</h3>
+                  <SeriesTable headers={laserHeaders} list={lists?.medispa_laser_body} french={french} />
                   <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
                     {[
                       t('salon.laser.feat1'),
@@ -478,7 +437,7 @@ export default function MediSpa() {
                 </div>
               </div>
 
-              <ConsultNote text={french?.laser.consult || 'A complimentary consultation and patch test is required before your first laser session. Packages never expire and can be shared with a family member.'} />
+              <ConsultNote text={t('medispa.laser.consult')} />
               <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                 <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.laser.bookBtn')}</button>
               </div>

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Instagram, Facebook, Store, MapPin, Phone } from 'lucide-react'
+import { telHref } from '../../lib/siteContent'
 
 /* The client's order. Our Story is the family story on the Team page, below
    its header; Meet the Team opens that page at the top. Gourmet stays hidden. */
@@ -20,10 +21,11 @@ const quickLinks = [
   { to: '/team',                  key: 'nav.team' },
 ]
 
-const DIRECTIONS = 'https://www.google.com/maps/dir/?api=1&destination=Spa+Rivier%2C+353+Reid+Street%2C+Quesnel%2C+BC'
-
 export default function Footer() {
   const { t } = useTranslation()
+  // Address, phone, hours and social links are the admin's Contact & Hours
+  const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(t('contact.mapAddress'))}`
+  const mapSearch  = `https://maps.google.com/?q=${encodeURIComponent(t('contact.mapAddress'))}`
 
   const hours = [
     { days: t('footer.hours.monSat'), time: t('footer.hours.open') },
@@ -60,14 +62,14 @@ export default function Footer() {
             <p style={{ ...body, fontStyle: 'italic', marginBottom: 'var(--space-lg)' }}>{t('footer.tagline')}</p>
             <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
               {[
-                { Icon: Instagram, label: 'Instagram',   href: 'https://www.instagram.com/sparivier/' },
-                { Icon: Facebook,  label: 'Facebook',    href: 'https://www.facebook.com/Sparivierquesnel/' },
+                { Icon: Instagram, label: 'Instagram',   href: t('contact.instagram') },
+                { Icon: Facebook,  label: 'Facebook',    href: t('contact.facebook') },
                 /* Plain http on purpose: downtownquesnel.com's HTTPS certificate
                    expired in 2019, so an https link opens on a browser security
                    warning. Switch to https once their certificate is renewed. */
                 { Icon: Store,     label: 'Downtown Quesnel', href: 'http://www.downtownquesnel.com/businesses/profile/45/spa_rivier/' },
-                { Icon: MapPin,    label: 'Google Maps', href: 'https://maps.google.com/?q=353+Reid+Street+Quesnel+BC' },
-              ].map(({ Icon, label, href }) => (
+                { Icon: MapPin,    label: 'Google Maps', href: mapSearch },
+              ].filter(l => l.href).map(({ Icon, label, href }) => (
                 <a key={label} href={href} aria-label={label}
                   target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer"
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', border: '1px solid rgba(233,176,185,0.4)', color: '#E9B0B9', transition: 'all 0.2s ease' }}
@@ -113,13 +115,13 @@ export default function Footer() {
           <div>
             <p style={colHead}>{t('footer.contact')}</p>
             <address style={{ fontStyle: 'normal' }}>
-              <a href={DIRECTIONS} target="_blank" rel="noreferrer" title={t('footer.directions')} className="footer-contact-link" style={{ ...contact, marginBottom: 'var(--space-md)' }}>
+              <a href={directions} target="_blank" rel="noreferrer" title={t('footer.directions')} className="footer-contact-link" style={{ ...contact, marginBottom: 'var(--space-md)' }}>
                 <MapPin size={15} style={contactIcon} aria-hidden="true" />
-                <span>353 Reid Street<br />Downtown Quesnel, BC</span>
+                <span>{t('contact.street')}<br />{t('contact.area')}</span>
               </a>
-              <a href="tel:+12509928084" className="footer-contact-link" style={contact}>
+              <a href={telHref(t('contact.phone'))} className="footer-contact-link" style={contact}>
                 <Phone size={15} style={contactIcon} aria-hidden="true" />
-                <span>250-992-8084</span>
+                <span>{t('contact.phone')}</span>
               </a>
             </address>
           </div>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { usePhoto } from '../../lib/siteContent'
 import SectionHeader from '../ui/SectionHeader'
 
 /* The Spa Rivier Experience: Spa and MediSpa as two equal features across the
@@ -17,6 +18,7 @@ const LINES = [
 
 export default function BusinessLineGrid() {
   const { t } = useTranslation()
+  const photo = usePhoto()
 
   return (
     <section id="experience" style={{ background: 'var(--color-white)', padding: '48px var(--space-xl)', scrollMarginTop: '72px' }}>
@@ -31,7 +33,7 @@ export default function BusinessLineGrid() {
         <div className="experience-grid">
           {LINES.map(line => (
             <Link key={line.key} to={line.to} className={`experience-card${line.feature ? ' experience-card--feature' : ''}`}>
-              <img src={line.image} alt="" loading="lazy" style={{ objectPosition: line.pos }} />
+              <img src={photo(line.image)} alt="" loading="lazy" style={{ objectPosition: line.pos }} />
               <div className="experience-card__text">
                 <p className="experience-card__eyebrow">{t(`grid.${line.key}.eyebrow`)}</p>
                 <h3 className="experience-card__title">{t(`grid.${line.key}.title`)}</h3>

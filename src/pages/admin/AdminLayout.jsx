@@ -1,8 +1,9 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import '../../lib/studioSession'   // keeps an open Supabase Studio session in step
 import {
-  LayoutDashboard, Scissors, Gift,
-  Tag, Inbox, LogOut, ExternalLink, Shirt
+  LayoutDashboard, Scissors, Gift, Tag, Inbox, LogOut, ExternalLink, Shirt,
+  Type, Image, MapPin, Sparkles, Users, Newspaper, HelpCircle, UserCog, KeyRound,
 } from 'lucide-react'
 
 /* Bookings, Payments & Orders and Products are left out: appointments are
@@ -10,13 +11,28 @@ import {
    products. Members and Newsletter are hidden at the client's request.
    Their pages still exist at /admin/bookings, /admin/payments,
    /admin/products, /admin/members and /admin/newsletter. */
-const navItems = [
-  { to: '/admin',             label: 'Dashboard',         Icon: LayoutDashboard, end: true },
-  { to: '/admin/gifts',       label: 'Gift Certificates', Icon: Gift },
-  { to: '/admin/services',    label: 'Services',          Icon: Scissors },
-  { to: '/admin/promotions',  label: 'Promotions',        Icon: Tag },
-  { to: '/admin/boutique',    label: 'Boutique Brands',   Icon: Shirt },
-  { to: '/admin/webmail',     label: 'Webmail',           Icon: Inbox },
+const navGroups = [
+  { label: null, items: [
+    { to: '/admin',             label: 'Dashboard',         Icon: LayoutDashboard, end: true },
+    { to: '/admin/gifts',       label: 'Gift Certificates', Icon: Gift },
+  ] },
+  { label: 'Website', items: [
+    { to: '/admin/text',        label: 'Page Text',         Icon: Type },
+    { to: '/admin/photos',      label: 'Photos',            Icon: Image },
+    { to: '/admin/contact',     label: 'Contact & Hours',   Icon: MapPin },
+    { to: '/admin/services',    label: 'Services & Prices', Icon: Scissors },
+    { to: '/admin/promotions',  label: 'Promotions',        Icon: Tag },
+    { to: '/admin/boutique',    label: 'Boutique Brands',   Icon: Shirt },
+    { to: '/admin/brands',      label: 'Product Brands',    Icon: Sparkles },
+    { to: '/admin/team',        label: 'Team',              Icon: Users },
+    { to: '/admin/happening',   label: "What's Happening",  Icon: Newspaper },
+    { to: '/admin/faq',         label: 'Spa FAQ',           Icon: HelpCircle },
+  ] },
+  { label: 'Accounts', items: [
+    { to: '/admin/users',       label: 'Admin Users',       Icon: UserCog },
+    { to: '/admin/account',     label: 'My Account',        Icon: KeyRound },
+    { to: '/admin/webmail',     label: 'Webmail',           Icon: Inbox },
+  ] },
 ]
 
 export default function AdminLayout({ children, title }) {
@@ -52,11 +68,18 @@ export default function AdminLayout({ children, title }) {
         </div>
 
         <nav style={{ padding: 'var(--space-md)', flex: 1 }}>
-          {navItems.map(({ to, label, Icon, end }) => (
-            <NavLink key={to} to={to} end={end} style={linkStyle}>
-              <Icon size={16} />
-              {label}
-            </NavLink>
+          {navGroups.map(group => (
+            <div key={group.label || 'main'} style={{ marginBottom: 'var(--space-sm)' }}>
+              {group.label && (
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(233,176,185,0.5)', padding: 'var(--space-sm) 16px 4px' }}>{group.label}</p>
+              )}
+              {group.items.map(({ to, label, Icon, end }) => (
+                <NavLink key={to} to={to} end={end} style={linkStyle}>
+                  <Icon size={16} />
+                  {label}
+                </NavLink>
+              ))}
+            </div>
           ))}
         </nav>
 

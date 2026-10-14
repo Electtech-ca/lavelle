@@ -6,38 +6,57 @@ import GoldDivider      from '../components/ui/GoldDivider'
 import SectionHeader    from '../components/ui/SectionHeader'
 import BookingModal     from '../components/ui/BookingModal'
 import PromotionFeature from '../components/ui/PromotionFeature'
-import { blogPosts, blogCategories } from '../data/blogData'
-import { blogTranslations, blogCategoryTranslations } from '../data/blogTranslations'
 import usePromotions from '../hooks/usePromotions'
-import { events } from '../data/eventsData'
-import { promoOfTheDay } from '../data/dailyPromos'
+import useSiteList from '../hooks/useSiteList'
+import { pick, articleBlocks } from '../data/siteLists'
+import { usePhoto } from '../lib/siteContent'
 
-/* ── Category colour map ── */
-const CAT_COLOURS = {
-  MediSpa:  '#E9B0B9',
-  Skincare: '#E9B0B9',
-  Wellness: '#E9B0B9',
-  Gourmet:  '#E9B0B9',
-  Gifts:    '#E9B0B9',
+/* ──────────────────────────────────────────────────────────────
+   What's Happening: the promo of the day, Current Promotions, events
+   and articles. All four are edited in the admin (Promotions, and
+   What's Happening for the rest); see data/siteLists.js.
+   ────────────────────────────────────────────────────────────── */
+
+/* One promo shows each day and they take turns, by the visitor's date. */
+function promoOfTheDay(promos, date = new Date()) {
+  if (!promos?.length) return null
+  const day = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000)
+  return promos[day % promos.length]
 }
+
+/* An article in the visitor's language, shaped for the cards below. */
+const articleFor = ({ slug, data }, french) => ({
+  id:       slug,
+  title:    pick(data, 'title', french),
+  category: pick(data, 'category', french),
+  categoryKey: data.category || '',
+  date:     pick(data, 'date', french),
+  readTime: pick(data, 'read_time', french),
+  author:   pick(data, 'author', french),
+  excerpt:  pick(data, 'excerpt', french),
+  image:    data.image || '',
+  featured: Boolean(data.featured),
+  body:     articleBlocks(pick(data, 'body', french)),
+})
 
 /* ──────────────────────────────────────────────
    ARTICLE VIEW — full post expanded inline
 ──────────────────────────────────────────────── */
 function ArticleView({ post, onBack, onBook }) {
+  const { t } = useTranslation()
   return (
     <article>
       {/* Back button */}
       <button
         onClick={onBack}
         style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-blue)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: 'var(--space-2xl)', padding: 0 }}>
-        <ArrowLeft size={16} /> {post.isFrench ? 'Tous les articles' : 'All Articles'}
+        <ArrowLeft size={16} /> {t('blog.allArticles')}
       </button>
 
       {/* Article hero */}
       <div style={{ position: 'relative', width: '100%', height: '420px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 'var(--space-2xl)' }}>
-        <img src={post.image} alt={post.title} loading="lazy"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+        {post.image && <img src={post.image} alt={post.title} loading="lazy"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(46,51,80,0.92) 0%, rgba(46,51,80,0.62) 58%, rgba(46,51,80,0.28) 100%)' }} />
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 'var(--space-2xl)' }}>
           <span style={{ display: 'inline-block', fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#2E3350', background: '#E9B0B9', borderRadius: 'var(--radius-full)', padding: '4px 14px', marginBottom: 'var(--space-md)' }}>
@@ -80,7 +99,7 @@ function ArticleView({ post, onBack, onBook }) {
           if (block.type === 'cta') return (
             <div key={i} style={{ marginTop: 'var(--space-2xl)', padding: 'var(--space-xl)', background: '#2E3350', borderRadius: 'var(--radius-xl)', textAlign: 'center' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', fontWeight: 300, color: 'rgba(246,245,237,0.75)', marginBottom: 'var(--space-lg)' }}>
-                {post.isFrench ? 'Prête à vivre cette expérience chez Spa Rivier ?' : 'Ready to experience this at Spa Rivier?'}
+                {t('blog.articleCta')}
               </p>
               <a href={block.href} className="btn-primary">{block.text}</a>
             </div>
@@ -95,7 +114,7 @@ function ArticleView({ post, onBack, onBook }) {
           </div>
           <div>
             <p style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 'var(--text-small)', color: '#2E3350' }}>{post.author}</p>
-            <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.55)' }}>Spa Rivier — Quesnel, BC</p>
+            <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, fontSize: 'var(--text-small)', color: 'rgba(46,51,80,0.55)' }}>{t('blog.authorPlace')}</p>
           </div>
           <div style={{ marginLeft: 'auto' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-body)', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#2E3350' }}>
@@ -112,6 +131,7 @@ function ArticleView({ post, onBack, onBook }) {
    POST CARD — grid tile
 ──────────────────────────────────────────────── */
 function PostCard({ post, onClick }) {
+  const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -122,8 +142,8 @@ function PostCard({ post, onClick }) {
       style={{ all: 'unset', cursor: 'pointer', display: 'block', background: 'white', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: hovered ? 'var(--shadow-hover)' : 'var(--shadow-card)', transform: hovered ? 'translateY(-6px)' : 'none', transition: 'all 0.3s ease', textAlign: 'left' }}>
       {/* Image */}
       <div style={{ height: '220px', overflow: 'hidden', position: 'relative' }}>
-        <img src={post.image} alt={post.title} loading="lazy"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
+        {post.image && <img src={post.image} alt={post.title} loading="lazy"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.5s ease' }} />}
         <span style={{ position: 'absolute', top: 'var(--space-md)', left: 'var(--space-md)', fontFamily: 'var(--font-body)', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#2E3350', background: '#E9B0B9', borderRadius: 'var(--radius-full)', padding: '3px 12px' }}>
           {post.category}
         </span>
@@ -143,7 +163,7 @@ function PostCard({ post, onClick }) {
           {post.excerpt}
         </p>
         <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#2E3350', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          {post.isFrench ? 'Lire l’article' : 'Read Article'} <span>→</span>
+          {t('blog.readArticle')} <span>→</span>
         </span>
       </div>
     </button>
@@ -154,6 +174,7 @@ function PostCard({ post, onClick }) {
    FEATURED POST — wide cinematic card
 ──────────────────────────────────────────────── */
 function FeaturedCard({ post, onClick }) {
+  const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -162,14 +183,14 @@ function FeaturedCard({ post, onClick }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ all: 'unset', cursor: 'pointer', display: 'block', width: '100%', position: 'relative', height: '460px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-hover)', marginBottom: 'var(--space-2xl)', transition: 'transform 0.4s ease, box-shadow 0.4s ease', transform: hovered ? 'translateY(-4px)' : 'none' }}>
-      <img src={post.image} alt={post.title} loading="eager"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.6s ease' }} />
+      {post.image && <img src={post.image} alt={post.title} loading="eager"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: hovered ? 'scale(1.03)' : 'scale(1)', transition: 'transform 0.6s ease' }} />}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.90) 0%, rgba(46,51,80,0.55) 50%, rgba(46,51,80,0.15) 100%)' }} />
 
       <div style={{ position: 'absolute', top: '50%', left: 'var(--space-3xl)', transform: 'translateY(-50%)', maxWidth: '560px', textAlign: 'left' }}>
         <div style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'center', marginBottom: 'var(--space-lg)' }}>
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#2E3350', background: '#E9B0B9', borderRadius: 'var(--radius-full)', padding: '4px 14px' }}>
-            {post.isFrench ? 'À la une' : 'Featured'}
+            {t('blog.featured')}
           </span>
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(233,176,185,0.75)' }}>
             {post.category}
@@ -183,7 +204,7 @@ function FeaturedCard({ post, onClick }) {
         </p>
         <div style={{ display: 'flex', gap: 'var(--space-xl)', alignItems: 'center' }}>
           <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#E9B0B9', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {post.isFrench ? 'Lire l’article' : 'Read Article'} <span style={{ fontSize: '1.1rem' }}>→</span>
+            {t('blog.readArticle')} <span style={{ fontSize: '1.1rem' }}>→</span>
           </span>
           <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 300, color: 'rgba(246,245,237,0.50)' }}>
             {post.readTime}
@@ -203,16 +224,22 @@ export default function Blog() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [selectedPost, setSelectedPost] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const photo = usePhoto()
   const promos = usePromotions()
+  const events = useSiteList('events') || []
+  const dailyPromos = useSiteList('daily_promos')
+  const posts = (useSiteList('articles') || []).map(item => articleFor(item, isFrench))
 
-  const featured = blogPosts.find(p => p.featured)
-  const filtered = activeCategory === 'All'
-    ? blogPosts
-    : blogPosts.filter(p => p.category === activeCategory)
-  const localizePost = post => isFrench ? { ...post, ...blogTranslations[post.id], isFrench: true } : post
-  const localizedFeatured = featured ? localizePost(featured) : null
-  const localizedFiltered = filtered.map(localizePost)
-  const dailyPromo = promoOfTheDay()
+  // Filter chips: "All", then each category in the order the articles first use it
+  const categories = posts.reduce((list, p) => (p.categoryKey && !list.some(c => c.key === p.categoryKey)
+    ? [...list, { key: p.categoryKey, label: p.category }] : list), [{ key: 'All', label: t('blog.allCategories') }])
+  const localizedFeatured = posts.find(p => p.featured) || null
+  const localizedFiltered = activeCategory === 'All' ? posts : posts.filter(p => p.categoryKey === activeCategory)
+  const promo = promoOfTheDay(dailyPromos)
+  const dailyPromo = promo && {
+    image: promo.data.image, width: promo.data.width, height: promo.data.height,
+    alt: pick(promo.data, 'alt', isFrench),
+  }
 
   // If a post is selected, show article view
   if (selectedPost) {
@@ -239,8 +266,8 @@ export default function Blog() {
       {/* ── Page Hero ── */}
       <div style={{ position: 'relative', minHeight: 'max(52vh, 380px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
-          src="/images/salon/moroccanoil-collection.jpg"
-          alt="Spa Rivier Journal"
+          src={photo('/images/salon/moroccanoil-collection.jpg')}
+          alt={t('blog.hero.imageAlt')}
           loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
         />
@@ -267,7 +294,7 @@ export default function Blog() {
                 headline={t('featured.daily.headline')}
                 align="center"
               />
-              <img className="daily-promo" src={dailyPromo.image} alt={isFrench ? dailyPromo.alt.fr : dailyPromo.alt.en}
+              <img className="daily-promo" src={dailyPromo.image} alt={dailyPromo.alt}
                 width={dailyPromo.width} height={dailyPromo.height} loading="lazy" />
               <GoldDivider />
             </>
@@ -332,7 +359,11 @@ export default function Blog() {
             </div>
           ) : (
             <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
-              {events.map(ev => (
+              {events.map(({ slug, data }) => ({
+                id: slug, title: pick(data, 'title', isFrench), when: pick(data, 'when', isFrench),
+                where: pick(data, 'where', isFrench), detail: pick(data, 'detail', isFrench),
+                cta: data.cta_href && pick(data, 'cta_text', isFrench) ? { text: pick(data, 'cta_text', isFrench), href: data.cta_href } : null,
+              })).map(ev => (
                 <div key={ev.id} style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', borderTop: '3px solid var(--lavelle-plum-soft)' }}>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)', marginBottom: 'var(--space-sm)' }}>
                     {ev.when}
@@ -368,7 +399,7 @@ export default function Blog() {
 
           {/* Category filter */}
           <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap', marginBottom: 'var(--space-2xl)', justifyContent: activeCategory === 'All' ? 'flex-start' : 'flex-start' }}>
-            {blogCategories.map(cat => (
+            {categories.map(({ key: cat, label }) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
@@ -382,7 +413,7 @@ export default function Blog() {
                   color: activeCategory === cat ? '#2E3350' : 'rgba(46,51,80,0.55)',
                   cursor: 'pointer', transition: 'all 0.2s ease',
                 }}>
-                {isFrench ? blogCategoryTranslations[cat] : cat}
+                {label}
               </button>
             ))}
           </div>
@@ -390,7 +421,7 @@ export default function Blog() {
           {/* Post grid */}
           {localizedFiltered.length === 0 ? (
             <p style={{ fontFamily: 'var(--font-body)', fontWeight: 300, color: 'rgba(46,51,80,0.45)', textAlign: 'center', padding: 'var(--space-3xl) 0' }}>
-              {isFrench ? 'Aucun article dans cette catégorie pour le moment — revenez bientôt.' : 'No articles in this category yet — check back soon.'}
+              {t('blog.noArticles')}
             </p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 'var(--space-xl)' }}>
@@ -403,7 +434,7 @@ export default function Blog() {
           {/* Bottom CTA strip */}
           <div style={{ marginTop: 'var(--space-xl)', textAlign: 'center', padding: 'var(--space-2xl)', background: '#2E3350', borderRadius: 'var(--radius-xl)' }}>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>
-              ✦ {isFrench ? 'Prête à nous rendre visite ?' : 'Ready to Visit?'}
+              ✦ {t('blog.readyToVisit')}
             </p>
             <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem,3vw,2rem)', fontWeight: 200, color: '#F6F5ED', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 'var(--space-md)' }}>
               {t('blog.cta.headline')}

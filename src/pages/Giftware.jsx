@@ -8,6 +8,7 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GiftCertificateSection from '../components/sections/GiftCertificateSection'
 import PromotionFeature from '../components/ui/PromotionFeature'
 import usePromotions from '../hooks/usePromotions'
+import { usePhoto } from '../lib/siteContent'
 
 const PROMO_IMAGES = [
   '/images/gifts/voluspa-holiday-set.jpg',
@@ -124,6 +125,7 @@ const CATEGORIES = [
 export default function Giftware() {
   const { t, i18n } = useTranslation()
   const isFrench = i18n.language.startsWith('fr')
+  const photo = usePhoto()
   const promos = usePromotions()
   // Promotions without a graphic of their own take the PROMO_IMAGES photos in turn.
   const stockPromos = (promos || []).filter(p => !p.image)
@@ -144,8 +146,8 @@ export default function Giftware() {
       {/* ── Page hero ── */}
       <div style={{ position: 'relative', minHeight: 'max(68vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <img
-          src="/branding/Gifts.svg"
-          alt="Spa Rivier Gifts & Hampers" loading="eager"
+          src={photo('/branding/Gifts.svg')}
+          alt={t('gifts.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
         />
         {/* Multi-layer overlay for depth */}
@@ -208,7 +210,7 @@ export default function Giftware() {
             {CATEGORIES.map(c => (
               <div key={c.key} className="gift-category">
                 <span className="gift-category__icon">
-                  {c.image ? <img src={c.image} alt="" loading="lazy" /> : CATEGORY_ICONS[c.key]}
+                  {c.image ? <img src={photo(c.image)} alt="" loading="lazy" /> : CATEGORY_ICONS[c.key]}
                 </span>
                 <span className="gift-category__text">
                   <span className="gift-category__name">{t(`gifts.cat.${c.key}`)}</span>

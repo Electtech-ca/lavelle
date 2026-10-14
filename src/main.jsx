@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client'
 import './i18n/index.js'
 import './styles/globals.css'
 import App from './App'
+import { loadSiteContent } from './lib/siteContent'
+
+loadSiteContent()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

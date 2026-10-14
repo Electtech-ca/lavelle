@@ -149,7 +149,7 @@ export default function CertificateSheet({ cert, amount, code, recipientName, se
             <span style={{ whiteSpace: 'nowrap' }}>{t('giftCert.card.valid')}</span> · <span style={{ whiteSpace: 'nowrap' }}>{t('giftCert.card.services')}</span>
           </p>
           <p style={{ ...label, marginBottom: 0 }}>
-            <span style={{ whiteSpace: 'nowrap' }}>353 Reid Street, Quesnel</span> · <span style={{ whiteSpace: 'nowrap' }}>250-992-8084</span>
+            <span style={{ whiteSpace: 'nowrap' }}>{t('contact.street')}, Quesnel</span> · <span style={{ whiteSpace: 'nowrap' }}>{t('contact.phone')}</span>
           </p>
         </div>
       </div>

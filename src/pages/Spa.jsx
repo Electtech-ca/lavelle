@@ -9,7 +9,9 @@ import BookingModal     from '../components/ui/BookingModal'
 import { TabBar, TabBanner, SidePanel, PriceList, MenuNote } from '../components/ui/ServiceMenu'
 import useHashTab from '../hooks/useHashTab'
 import useServiceLists from '../hooks/useServiceLists'
-import { faqItems } from '../data/spaData'
+import useSiteList from '../hooks/useSiteList'
+import { pick } from '../data/siteLists'
+import { usePhoto, telHref } from '../lib/siteContent'
 
 /* Each tab has an address (/spa#waxing, /spa#nails …), so a link can open it.
    Hair and Colour moved to the Salon page; their old addresses lead there.
@@ -35,6 +37,8 @@ export default function Spa() {
   const [tab, chooseTab, tabBarRef] = useHashTab(TABS.map(x => x.id))
   const [modalOpen, setModalOpen] = useState(false)
   const lists = useServiceLists()
+  const photo = usePhoto()
+  const faq = useSiteList('spa_faq')
 
   if (SALON_TABS.includes(hash)) return <Navigate to={`/salon${hash}`} replace />
 
@@ -50,8 +54,8 @@ export default function Spa() {
     <>
       {/* Page hero */}
       <div style={{ position: 'relative', minHeight: 'max(70vh, 480px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-        <img src="/branding/Spa-page-no-nail-bar.svg"
-          alt="Spa Rivier Spa — serene luxury treatment room" loading="eager"
+        <img src={photo('/branding/Spa-page-no-nail-bar.svg')}
+          alt={t('spa.hero.imageAlt')} loading="eager"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,25,38,0.62)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '660px', padding: 'calc(72px + var(--space-xl)) var(--space-xl) var(--space-xl)' }}>
@@ -143,15 +147,15 @@ export default function Spa() {
               <TabBanner image={TABS[4].banner} title={t('spa.faq.title')} sub={t('spa.faq.sub')} />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }}>
                 <div style={{ maxWidth: '720px' }}>
-                  <FAQAccordion items={faqItems} />
+                  <FAQAccordion items={(faq || []).map(({ data }) => ({ q: pick(data, 'q', isFrench), a: pick(data, 'a', isFrench) }))} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-                  <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=360&fit=crop&q=80"
-                    alt="Spa Rivier Spa sanctuary" loading="lazy"
+                  <img src={photo('https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=360&fit=crop&q=80')}
+                    alt={t('spa.faq.imageAlt')} loading="lazy"
                     style={{ width: '100%', height: '220px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
                   <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
                     <p style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontStyle: 'italic', color: '#E9B0B9', marginBottom: 'var(--space-md)' }}>{t('spa.faq.readyTitle')}</p>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.75)', lineHeight: 1.7, marginBottom: 'var(--space-lg)' }}>{t('spa.faq.readySub1')} <a href="tel:+12509928084" style={{ color: '#E9B0B9' }}>250-992-8084</a> {t('spa.faq.readySub2')}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'rgba(246,245,237,0.75)', lineHeight: 1.7, marginBottom: 'var(--space-lg)' }}>{t('spa.faq.readySub1')} <a href={telHref(t('contact.phone'))} style={{ color: '#E9B0B9' }}>{t('contact.phone')}</a> {t('spa.faq.readySub2')}</p>
                     <div className="cta-center">
                       <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('spa.faq.bookBtn')}</button>
                     </div>

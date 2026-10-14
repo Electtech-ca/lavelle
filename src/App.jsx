@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from './hooks/useAuth'
@@ -37,6 +37,14 @@ import AdminPayments   from './pages/admin/AdminPayments'
 import AdminProducts   from './pages/admin/AdminProducts'
 import AdminBoutique   from './pages/admin/AdminBoutique'
 import AdminWebmail    from './pages/admin/AdminWebmail'
+import AdminText       from './pages/admin/AdminText'
+import AdminPhotos     from './pages/admin/AdminPhotos'
+import AdminContact    from './pages/admin/AdminContact'
+import AdminUsers      from './pages/admin/AdminUsers'
+import AdminAccount    from './pages/admin/AdminAccount'
+import AdminStudio     from './pages/admin/AdminStudio'
+import AdminResetPassword from './pages/admin/AdminResetPassword'
+import { AdminBrands, AdminTeam, AdminHappening, AdminFaq } from './pages/admin/AdminLists'
 
 function ProtectedRoute({ children }) {
   const { t } = useTranslation()
@@ -48,8 +56,10 @@ function ProtectedRoute({ children }) {
 function AdminRoute({ children }) {
   const { t } = useTranslation()
   const { user, isAdmin, loading } = useAuth()
+  const { pathname, search } = useLocation()
   if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--lavelle-ivory)' }}><p style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--lavelle-plum-soft)' }}>{t('app.loading')}</p></div>
-  if (!user) return <Navigate to="/admin/login" replace />
+  // Back to the page that was asked for after signing in
+  if (!user) return <Navigate to={pathname === '/admin' ? '/admin/login' : `/admin/login?next=${encodeURIComponent(pathname + search)}`} replace />
   if (!isAdmin) return <Navigate to="/" replace />
   return children
 }
@@ -120,6 +130,17 @@ export default function App() {
           <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
           <Route path="/admin/products" element={<AdminRoute><ProductsProvider><AdminProducts /></ProductsProvider></AdminRoute>} />
           <Route path="/admin/boutique" element={<AdminRoute><AdminBoutique /></AdminRoute>} />
+          <Route path="/admin/text" element={<AdminRoute><AdminText /></AdminRoute>} />
+          <Route path="/admin/photos" element={<AdminRoute><AdminPhotos /></AdminRoute>} />
+          <Route path="/admin/contact" element={<AdminRoute><AdminContact /></AdminRoute>} />
+          <Route path="/admin/brands" element={<AdminRoute><AdminBrands /></AdminRoute>} />
+          <Route path="/admin/team" element={<AdminRoute><AdminTeam /></AdminRoute>} />
+          <Route path="/admin/happening" element={<AdminRoute><AdminHappening /></AdminRoute>} />
+          <Route path="/admin/faq" element={<AdminRoute><AdminFaq /></AdminRoute>} />
+          <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
+          <Route path="/admin/account" element={<AdminRoute><AdminAccount /></AdminRoute>} />
+          <Route path="/admin/studio" element={<AdminRoute><AdminStudio /></AdminRoute>} />
+          <Route path="/admin/reset-password" element={<AdminResetPassword />} />
 
           {/* 404 */}
           <Route path="*" element={

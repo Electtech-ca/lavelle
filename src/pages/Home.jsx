@@ -7,11 +7,13 @@ import AwardsSection    from '../components/sections/AwardsSection'
 import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import { yearsInBusiness } from '../data/business'
+import { usePhoto } from '../lib/siteContent'
 
 const FAMILY_PHOTO  = '/images/team/family-smiling.jpg'   // the three women behind Spa Rivier, in the boutique
 
 export default function Home() {
   const { t } = useTranslation()
+  const photo = usePhoto()
   const { hash, key } = useLocation()
   const years = yearsInBusiness()
 
@@ -72,7 +74,7 @@ export default function Home() {
             </div>
           </div>
 
-          <img src={FAMILY_PHOTO} alt={t('home.family.photoAlt')} loading="lazy"
+          <img src={photo(FAMILY_PHOTO)} alt={t('home.family.photoAlt')} loading="lazy"
             style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', objectPosition: 'center 30%', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-hover)', display: 'block' }} />
         </div>
       </section>

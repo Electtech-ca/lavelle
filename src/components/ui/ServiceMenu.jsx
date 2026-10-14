@@ -1,4 +1,5 @@
 import PricingTable from './PricingTable'
+import { usePhoto } from '../../lib/siteContent'
 
 /* ──────────────────────────────────────────────────────────────
    The pieces of a service menu page, shared by Spa and Salon: the
@@ -27,12 +28,14 @@ export function TabBar({ labels, active, onChoose, barRef }) {
   )
 }
 
-/* ── Tab banner — same proportions and overlay as MediSpa ── */
-export function TabBanner({ image, title, sub }) {
+/* ── Tab banner, shared with MediSpa; `pos` places the photo in the crop.
+   Photos here and in the side panel can be replaced in the admin. ── */
+export function TabBanner({ image, title, sub, pos = 'center' }) {
+  const photo = usePhoto()
   return (
     <div style={{ position: 'relative', width: '100%', height: '320px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', marginBottom: 'var(--space-2xl)' }}>
-      <img src={image} alt={title} loading="lazy"
-        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }} />
+      <img src={photo(image)} alt={title} loading="lazy"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: pos, display: 'block' }} />
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(46,51,80,0.85) 0%, rgba(46,51,80,0.4) 55%, transparent 100%)' }} />
       <div style={{ position: 'absolute', top: '50%', left: 'var(--space-2xl)', transform: 'translateY(-50%)', maxWidth: '500px' }}>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem,3vw,2.2rem)', fontWeight: 200, color: '#F6F5ED', lineHeight: 1.2, marginBottom: 'var(--space-sm)' }}>{title}</h2>
@@ -44,9 +47,10 @@ export function TabBanner({ image, title, sub }) {
 
 /* ── Right-hand column, as on MediSpa: a photo, then the department's description ── */
 export function SidePanel({ image, alt, text }) {
+  const photo = usePhoto()
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-      <img src={image} alt={alt} loading="lazy"
+      <img src={photo(image)} alt={alt} loading="lazy"
         style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-card)' }} />
       <div style={{ background: '#2E3350', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)' }}>
         <p style={{ color: '#E9B0B9', fontWeight: 700, fontSize: '0.8rem', marginBottom: 'var(--space-sm)' }}>✦</p>
