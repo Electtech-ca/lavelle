@@ -102,12 +102,19 @@ functions container (above). They need nothing new except the mailcow key:
   address, then store the key with `set-mailcow-key.sh` (it prompts; the key stays off screen).
   Without the key the form says to use the mail server's own page, which also changes passwords.
 - `studio-gate`: Supabase Studio opens with the admin portal's login instead of the shared
-  dashboard password. Replace the `api.sparivier.ca` block of the Caddyfile with
-  `caddy/studio-gate.caddy`, put `STUDIO_BASIC_AUTH` (base64 of `DASHBOARD_USERNAME:DASHBOARD_PASSWORD`)
-  in Caddy's environment, and reload Caddy. Then set `DASHBOARD_PASSWORD` to a long random value
-  (and update `STUDIO_BASIC_AUTH`): nobody types it any more. Who may open Studio is
-  `profiles.studio_access`, given on Admin Users by someone who has it; `site-editing.sql` gives
-  it to the admins of 2026-10-14. Until Caddy is changed, Studio keeps its old password prompt.
+  dashboard password. Switch it on from your own computer with
+
+      ssh electTechOVH 'bash -s' < supabase/switch-studio-login.sh
+
+  It backs up `.env` and the Caddyfile, gives `DASHBOARD_PASSWORD` a new random value nobody
+  types, binds the gateway (Envoy, service `api-gw`) to `127.0.0.1:8000` so Studio cannot be
+  reached around Caddy, writes the credential to `/etc/caddy/studio-auth.caddy` (root:caddy, 640),
+  installs `caddy/studio-gate.caddy` as the `api.sparivier.ca` block, and checks the result,
+  restoring both files if any check fails. Who may open Studio is `profiles.studio_access`,
+  given on Admin Users by someone who has it; `site-editing.sql` gives it to the admins of
+  2026-10-14. The script runs once: it stops, changing nothing, if the block is already switched.
+  To change the dashboard password later, update `DASHBOARD_PASSWORD` in `.env` and the line in
+  `studio-auth.caddy` together, recreate `api-gw`, and reload Caddy.
 
 "Forgot your password?" on the admin login sends GoTrue's recovery email, which links to
 `/admin/reset-password`. It needs GoTrue's SMTP settings and `https://sparivier.ca/admin/reset-password`

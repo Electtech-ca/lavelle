@@ -74,7 +74,7 @@ function TextRow({ textKey, label, saved, onSaved }) {
         )}
         <span style={{ marginLeft: 'auto' }} />
         {done && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: '#2E7D5E' }}><Check size={13} /> Saved</span>}
-        {dirty && <button type="button" onClick={() => setDraft({ en: current('en'), fr: current('fr') })} disabled={busy} style={pillButton('var(--lavelle-gray-mid)')}>Undo</button>}
+        {dirty && <button type="button" onClick={() => setDraft({ en: current('en'), fr: current('fr') })} disabled={busy} style={pillButton()}>Undo</button>}
         {changed && !dirty && (
           <button type="button" onClick={() => save({ en: '', fr: '' })} disabled={busy} title="Put back the wording the site was built with" style={pillButton()}>
             <RotateCcw size={12} /> Restore original

@@ -1,34 +1,31 @@
 # Spa Rivier — Supabase Studio behind the admin portal's login.
 #
-# Replaces the api.sparivier.ca site block in the server's Caddyfile. The
-# public API (auth, rest, storage, functions, realtime, graphql, pg) passes
-# straight through as before. Everything else is Studio: Caddy first asks
-# the studio-gate function (functions/studio-gate) whether the browser's
-# sr_studio cookie belongs to an admin with Studio access, then adds
-# Studio's internal username and password (Kong's basic-auth, the
-# DASHBOARD_USERNAME and DASHBOARD_PASSWORD in Supabase's .env) so nobody
-# types them.
+# The api.sparivier.ca block of the server's Caddyfile (/etc/caddy/Caddyfile),
+# as switch-studio-login.sh installs it. The public API passes straight
+# through as before. Everything else is Studio: Caddy first asks the
+# studio-gate function (functions/studio-gate) whether the browser's
+# sr_studio cookie belongs to an admin with Studio access, then adds Studio's
+# own credential (the gateway's basic auth, DASHBOARD_USERNAME and
+# DASHBOARD_PASSWORD in Supabase's .env) so nobody types it.
 #
-# STUDIO_BASIC_AUTH is base64 of "DASHBOARD_USERNAME:DASHBOARD_PASSWORD",
-# kept in Caddy's environment, never in this file. With the gate on, give
-# DASHBOARD_PASSWORD a long random value: nobody needs to know it any more.
-#
-# localhost:8000 is Kong, as in the rest of the Caddyfile; change it if
-# Kong listens elsewhere.
+# That credential is in /etc/caddy/studio-auth.caddy (root:caddy, mode 640),
+# one line: header_up Authorization "Basic <base64 of user:password>". It is
+# never in this repo. The gateway (Envoy, service api-gw) listens only on
+# 127.0.0.1:8000, so Studio cannot be reached around this check.
 
 api.sparivier.ca {
-	@api path /auth/v1/* /rest/v1/* /storage/v1/* /functions/v1/* /realtime/v1/* /graphql/v1/* /pg/*
+	@api path /auth/v1/* /rest/v1/* /storage/v1/* /functions/v1/* /realtime/v1/* /graphql/v1* /pg/* /.well-known/*
 	handle @api {
-		reverse_proxy localhost:8000
+		reverse_proxy 127.0.0.1:8000
 	}
 
 	handle {
-		forward_auth localhost:8000 {
+		forward_auth 127.0.0.1:8000 {
 			uri /functions/v1/studio-gate
 			copy_headers X-Studio-User
 		}
-		reverse_proxy localhost:8000 {
-			header_up Authorization "Basic {$STUDIO_BASIC_AUTH}"
+		reverse_proxy 127.0.0.1:8000 {
+			import /etc/caddy/studio-auth.caddy
 		}
 	}
 }

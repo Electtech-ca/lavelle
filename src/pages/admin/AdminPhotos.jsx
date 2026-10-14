@@ -65,7 +65,7 @@ function PhotoCard({ slot, label, replaced, onChange }) {
             <input type="file" accept={IMAGE_TYPES} onChange={replace} disabled={busy || !supabase} style={{ display: 'none' }} />
           </label>
           {replaced && (
-            <button type="button" onClick={restore} disabled={busy} style={pillButton('var(--lavelle-gray-mid)')}>
+            <button type="button" onClick={restore} disabled={busy} style={pillButton()}>
               <RotateCcw size={12} /> Restore original
             </button>
           )}
