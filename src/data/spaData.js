@@ -1,5 +1,8 @@
 /* ──────────────────────────────────────────────────────────────
    Spa service menu — source of truth: WEB PRICING.xlsx
+   The Spa page shows the waxing list in the database, which the
+   admin's Services page edits; this one is its fallback (see
+   serviceSections.js).
    ────────────────────────────────────────────────────────────── */
 
 /* ── Waxing (sheet: WAXING) ── */

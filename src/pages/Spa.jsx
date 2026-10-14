@@ -8,12 +8,8 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import BookingModal     from '../components/ui/BookingModal'
 import { TabBar, TabBanner, SidePanel, PriceList, MenuNote } from '../components/ui/ServiceMenu'
 import useHashTab from '../hooks/useHashTab'
-import { waxingServices, faqItems } from '../data/spaData'
-import { lashBrow, nailBar } from '../data/salonData'
-import {
-  lashExtensionsTranslations, browsTranslations, enhancementsTranslations,
-  nailExtensionsTranslations, nailHandTranslations, nailFootTranslations, waxingTranslations,
-} from '../data/salonTranslations'
+import useServiceLists from '../hooks/useServiceLists'
+import { faqItems } from '../data/spaData'
 
 /* Each tab has an address (/spa#waxing, /spa#nails …), so a link can open it.
    Hair and Colour moved to the Salon page; their old addresses lead there.
@@ -38,12 +34,17 @@ export default function Spa() {
   const { hash } = useLocation()
   const [tab, chooseTab, tabBarRef] = useHashTab(TABS.map(x => x.id))
   const [modalOpen, setModalOpen] = useState(false)
+  const lists = useServiceLists()
 
   if (SALON_TABS.includes(hash)) return <Navigate to={`/salon${hash}`} replace />
 
   const TWO_COL = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }
   const listHeaders = [t('spa.col.service'), t('spa.col.price')]
   const fr = table => (isFrench ? table : null)
+  // A price list from the services table (the admin's Services page);
+  // nothing while it loads, or when the list is empty.
+  const priceList = (key, title) => lists?.[key]?.items.length > 0 &&
+    <PriceList headers={listHeaders} title={title} items={lists[key].items} translations={fr(lists[key].fr)} />
 
   return (
     <>
@@ -73,7 +74,7 @@ export default function Spa() {
               <TabBanner image={TABS[0].banner} title={t('spa.waxing.title')} sub={t('spa.waxing.sub')} />
               <div style={TWO_COL}>
                 <div>
-                  <PriceList headers={listHeaders} title={t('spa.tabs.waxing')} items={waxingServices} translations={fr(waxingTranslations)} />
+                  {priceList('waxing', t('spa.tabs.waxing'))}
                   <MenuNote text={t('spa.waxing.note')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('spa.waxing.bookBtn')}</button>
@@ -90,9 +91,9 @@ export default function Spa() {
               <TabBanner image={TABS[1].banner} title={t('salon.lash.title')} sub={t('salon.lash.sub')} />
               <div style={TWO_COL}>
                 <div>
-                  <PriceList headers={listHeaders} title={t('salon.lash.lashTitle')} items={lashBrow.lashExtensions} translations={fr(lashExtensionsTranslations)} />
-                  <PriceList headers={listHeaders} title={t('salon.lash.browTitle')} items={lashBrow.brows} translations={fr(browsTranslations)} />
-                  <PriceList headers={listHeaders} title={t('salon.lash.enhanceTitle')} items={lashBrow.enhancements} translations={fr(enhancementsTranslations)} />
+                  {priceList('lash_extensions', t('salon.lash.lashTitle'))}
+                  {priceList('brows', t('salon.lash.browTitle'))}
+                  {priceList('enhancements', t('salon.lash.enhanceTitle'))}
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.lash.bookBtn')}</button>
                   </div>
@@ -108,8 +109,8 @@ export default function Spa() {
               <TabBanner image={TABS[2].banner} title={t('salon.nails.title')} sub={t('salon.nails.sub')} />
               <div style={TWO_COL}>
                 <div>
-                  <PriceList headers={listHeaders} title={t('salon.nails.maniTitle')} items={nailBar.hand} translations={fr(nailHandTranslations)} />
-                  <PriceList headers={listHeaders} title={t('salon.nails.extensionsTitle')} items={nailBar.extensions} translations={fr(nailExtensionsTranslations)} />
+                  {priceList('nail_hand', t('salon.nails.maniTitle'))}
+                  {priceList('nail_extensions', t('salon.nails.extensionsTitle'))}
                   <MenuNote text={t('salon.nails.artNote')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.nails.bookBtn')}</button>
@@ -126,7 +127,7 @@ export default function Spa() {
               <TabBanner image={TABS[3].banner} title={t('spa.foot.title')} sub={t('spa.foot.sub')} />
               <div style={TWO_COL}>
                 <div>
-                  <PriceList headers={listHeaders} title={t('spa.foot.listTitle')} items={nailBar.foot} translations={fr(nailFootTranslations)} />
+                  {priceList('foot', t('spa.foot.listTitle'))}
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('spa.foot.bookBtn')}</button>
                   </div>

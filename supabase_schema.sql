@@ -263,23 +263,26 @@ CREATE INDEX IF NOT EXISTS idx_gift_orders_status          ON public.gift_orders
 
 
 -- =============================================================================
--- 8. SERVICES  (Spa & Salon — currently static in spaData.js / salonData.js)
---    Read by:    AdminServices.jsx (currently static; will be live once seeded)
---    Public:     Spa.jsx, Salon.jsx (still use static data until context is wired)
+-- 8. SERVICES  (the Salon and Spa price lists)
+--    Written by: AdminServices.jsx
+--    Read by:    Salon.jsx, Spa.jsx via hooks/useServiceLists.js
 --
---    category:    'spa' | 'salon'
---    subcategory: 'package' | 'waxing' | 'organic_facial' |
---                 'cuts_styles' | 'colour' | 'nails' | 'lashes' | 'makeup'
+--    One row per line of a price list. subcategory is the list's key in
+--    src/data/serviceSections.js ('cuts_styles', 'waxing', 'foot' …);
+--    category is the page it is on. The rows are copied in by
+--    supabase/admin-content.sql; run it after this file.
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.services (
   id           uuid    PRIMARY KEY DEFAULT gen_random_uuid(),
   category     text    NOT NULL CHECK (category IN ('spa','salon')),
   subcategory  text    NOT NULL,
   name         text    NOT NULL,
-  price        text    NOT NULL,          -- display string e.g. "$90+"
-  price_cents  integer,                   -- base price in cents; NULL = "from" price
-  description  text    NOT NULL DEFAULT '',
-  duration     text,                      -- e.g. "60 min"
+  name_fr      text    NOT NULL DEFAULT '',   -- blank = the French site shows `name`
+  price        text    NOT NULL,              -- display string e.g. "$59"
+  price_fr     text    NOT NULL DEFAULT '',   -- only for prices with words, e.g. "À partir de 15 $"
+  price_cents  integer,                       -- unused by the site
+  description  text    NOT NULL DEFAULT '',   -- unused by the site
+  duration     text,                          -- unused by the site
   active       boolean NOT NULL DEFAULT true,
   sort_order   integer NOT NULL DEFAULT 0,
   created_at   timestamptz NOT NULL DEFAULT now()
@@ -288,64 +291,33 @@ CREATE TABLE IF NOT EXISTS public.services (
 CREATE INDEX IF NOT EXISTS idx_services_category ON public.services(category);
 CREATE INDEX IF NOT EXISTS idx_services_active   ON public.services(active);
 
--- ── Seed with existing static data ───────────────────────────────────────────
-INSERT INTO public.services (category, subcategory, name, price, price_cents, description, sort_order) VALUES
-  -- Spa Packages
-  ('spa','package','Berries With a Twist',  '$144', 14400, 'Berries & Cream Manicure + Winter Delight Pedicure', 1),
-  ('spa','package','Uplift & Refresh',       '$162', 16200, 'Berry Delight Pedicure + Arctic Berry Fresh Facial', 2),
-  ('spa','package','Time Out',               '$180', 18000, 'Arctic Berry Fresh Facial', 3),
-  ('spa','package','Refresh & Delight',      '$162', 16200, 'Berry Delight Pedicure', 4),
-  ('spa','package','Me TIME',                '$228', 22800, 'Arctic Berry Fresh Facial + Berries & Cream Manicure + Berry Delight Pedicure', 5),
-  ('spa','package','Rebalance & Rejuvenate', '$252', 25200, 'Arctic Berry Fresh Facial + Berry Delight Pedicure', 6),
-  -- Organic Facials
-  ('spa','organic_facial','Personalized Eminence Organic Facial', '$90+',  9000,  'A deeply cleansing journey through nature''s most powerful botanicals.', 20),
-  ('spa','organic_facial','Anti-Aging Custom Facial',             '$112+', 11200, 'Turn back the clock — beautifully. This transformative facial.', 21),
-  -- Waxing (abbreviated — extend as needed)
-  ('spa','waxing','Eyebrow Shaping', '$18', 1800, '', 30),
-  ('spa','waxing','Lip Wax',         '$12', 1200, '', 31),
-  ('spa','waxing','Full Leg Wax',    '$60', 6000, '', 32),
-  -- Salon — Cuts & Styles
-  ('salon','cuts_styles','Women''s Haircut & Style',     '$55+', 5500,  '', 1),
-  ('salon','cuts_styles','Ladies Cut',                   '$47+', 4700,  '', 2),
-  ('salon','cuts_styles','Men''s Haircut',               '$29+', 2900,  '', 3),
-  ('salon','cuts_styles','Male Student / Senior',        '$22+', 2200,  '', 4),
-  ('salon','cuts_styles','Child''s Haircut (under 7)',   '$14+', 1400,  '', 5),
-  ('salon','cuts_styles','Special Occasion Style',       '$66+', 6600,  '', 6),
-  ('salon','cuts_styles','Shampoo & Blow-Dry',           '$32+', 3200,  '', 7),
-  -- Salon — Colour
-  ('salon','colour','Colour Retouch',                    '$73+',  7300,  '', 10),
-  ('salon','colour','Colour with End Refresher',         '$89+',  8900,  '', 11),
-  ('salon','colour','Lighten & Tone',                    '$132+', 13200, '', 12),
-  ('salon','colour','Colour with Highlights',            '$144+', 14400, '', 13),
-  ('salon','colour','Balayage & Highlights',             '$180+', 18000, '', 14),
-  ('salon','colour','Keratin Smoothing',                 '$240+', 24000, '', 15)
-ON CONFLICT DO NOTHING;
-
 
 -- =============================================================================
--- 9. PROMOTIONS  (currently static in promotionsData.js)
---    Read by: AdminPromotions.jsx, Gifts.jsx
+-- 9. PROMOTIONS  (Current Promotions on Giftware and What's Happening)
+--    Written by: AdminPromotions.jsx
+--    Read by:    Giftware.jsx, Blog.jsx via hooks/usePromotions.js
+--
+--    Graphics are uploaded to the public "promotions" storage bucket, which
+--    supabase/admin-content.sql creates along with the first rows.
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.promotions (
-  id          uuid    PRIMARY KEY DEFAULT gen_random_uuid(),
-  title       text    NOT NULL,
-  description text    NOT NULL,
-  value       text    NOT NULL,     -- display string: '20% off', '$75 value', etc.
-  expiry      text    NOT NULL,     -- display string: 'Birthday month', 'Weekly', etc.
-  active      boolean NOT NULL DEFAULT true,
-  sort_order  integer NOT NULL DEFAULT 0,
-  created_at  timestamptz NOT NULL DEFAULT now()
+  id             uuid    PRIMARY KEY DEFAULT gen_random_uuid(),
+  title          text    NOT NULL,
+  description    text    NOT NULL,
+  value          text    NOT NULL,              -- the badge: '20% off', 'Members only', etc.
+  expiry         text    NOT NULL DEFAULT '',   -- shown as "Valid: …"; blank = no Valid line
+  title_fr       text    NOT NULL DEFAULT '',   -- the French fields: blank = show the English
+  value_fr       text    NOT NULL DEFAULT '',
+  expiry_fr      text    NOT NULL DEFAULT '',
+  description_fr text    NOT NULL DEFAULT '',
+  image          text    NOT NULL DEFAULT '',   -- the graphic's address; blank = a small card
+  image_width    integer,
+  image_height   integer,
+  until          date,                          -- comes off the site after this day
+  active         boolean NOT NULL DEFAULT true,
+  sort_order     integer NOT NULL DEFAULT 0,
+  created_at     timestamptz NOT NULL DEFAULT now()
 );
-
--- ── Seed with existing static data ───────────────────────────────────────────
-INSERT INTO public.promotions (title, description, value, expiry, sort_order) VALUES
-  ('New Member Welcome Gift',    'First-time clients receive a complimentary La Velle Mini Gift Set with first booking over $144.',  '$75 value',         'Ongoing',        1),
-  ('The Birthday Ritual',        'Celebrate your birthday month with 20% off any spa or salon service.',                             '20% off',           'Birthday month', 2),
-  ('Refer a Friend',             'When a friend books their first visit using your referral code, you both receive $60 credit.',     '$60 credit each',   'Ongoing',        3),
-  ('Wednesday Women''s Luncheon','Every Wednesday, a 3-course prix fixe lunch for the La Velle Woman. Reserve by Tuesday.',         '$66 fixed menu',    'Weekly',         4),
-  ('Spa & Salon Bundle',         'Book a signature facial + hair service in one visit and save $72 off the combined price.',         'Save $72',          'Monthly',        5),
-  ('Bridal Inner Circle Package','Complete bridal preparation: bridal shower high tea, pre-wedding spa day, wedding hair & makeup.', 'Bespoke pricing',   'Year-round',     7)
-ON CONFLICT DO NOTHING;
 
 
 -- =============================================================================

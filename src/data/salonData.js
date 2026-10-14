@@ -1,6 +1,9 @@
 /* ──────────────────────────────────────────────────────────────
    Salon & spa service menu — source of truth: WEB PRICING.xlsx
    Sheets: HAIR SERVICES, Enhancements, Nail Department, Foot Department
+   The Salon and Spa pages show the copy in the database, which the
+   admin's Services page edits; these lists are its fallback (see
+   serviceSections.js) and the booking form's service list.
    ────────────────────────────────────────────────────────────── */
 
 /* ── Hair Cuts & Styling (sheet: HAIR SERVICES) ── */

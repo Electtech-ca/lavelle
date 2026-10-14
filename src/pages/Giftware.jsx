@@ -7,8 +7,7 @@ import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
 import GiftCertificateSection from '../components/sections/GiftCertificateSection'
 import PromotionFeature from '../components/ui/PromotionFeature'
-import { promotions, currentPromotions } from '../data/promotionsData'
-import { promotionTranslations } from '../data/promotionTranslations'
+import usePromotions from '../hooks/usePromotions'
 
 const PROMO_IMAGES = [
   '/images/gifts/voluspa-holiday-set.jpg',
@@ -19,8 +18,6 @@ const PROMO_IMAGES = [
   '/images/gifts/voluspa-cherry-gloss.jpg',
   '/images/gifts/candle-diffuser-tray.jpg',
 ]
-// Promotions without a graphic of their own take these photos in turn.
-const STOCK_PROMOS = promotions.filter(p => !p.image)
 
 // Line icons for the banner strip under the hero, drawn in currentColor.
 const iconProps = {
@@ -127,6 +124,9 @@ const CATEGORIES = [
 export default function Giftware() {
   const { t, i18n } = useTranslation()
   const isFrench = i18n.language.startsWith('fr')
+  const promos = usePromotions()
+  // Promotions without a graphic of their own take the PROMO_IMAGES photos in turn.
+  const stockPromos = (promos || []).filter(p => !p.image)
 
   // React Router does not honour a #hash on navigation, so a link to
   // /giftware#certificates — from another page or this one — would not scroll.
@@ -228,7 +228,9 @@ export default function Giftware() {
 
       <GoldDivider />
 
-      {/* ── What's Happening at Rivier: promotions, events and features ── */}
+      {/* ── What's Happening at Rivier: promotions, events and features ──
+          Left out while the promotions load, and when none are running. */}
+      {promos?.length > 0 && <>
       <section style={{ background: 'var(--lavelle-ivory)', padding: 'var(--space-md) var(--space-xl)' }}>
         <div className="container">
           <SectionHeader
@@ -237,12 +239,12 @@ export default function Giftware() {
             align="center"
           />
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)' }}>
-            {currentPromotions().map(promo => {
-              const translation = isFrench ? promotionTranslations[promo.id] : null
-              const displayTitle = translation?.[0] || promo.title
-              const displayValue = translation?.[1] || promo.value
-              const displayExpiry = translation?.[2] || promo.expiry
-              const displayDescription = translation?.[3] || promo.description
+            {promos.map(promo => {
+              const translation = isFrench ? promo.fr : null
+              const displayTitle = translation?.title || promo.title
+              const displayValue = translation?.value || promo.value
+              const displayExpiry = translation?.expiry || promo.expiry
+              const displayDescription = translation?.description || promo.description
               if (promo.image) return (
                 <PromotionFeature key={promo.id} image={promo.image} title={displayTitle} value={displayValue}
                   description={displayDescription} valid={displayExpiry && `${t('gifts.promos.valid')}: ${displayExpiry}`} />
@@ -253,7 +255,7 @@ export default function Giftware() {
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)' }}>
                 <div style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
-                  <img src={PROMO_IMAGES[STOCK_PROMOS.indexOf(promo) % PROMO_IMAGES.length]} alt={displayTitle} loading="lazy"
+                  <img src={PROMO_IMAGES[stockPromos.indexOf(promo) % PROMO_IMAGES.length]} alt={displayTitle} loading="lazy"
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
                     onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)' }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }} />
@@ -264,7 +266,7 @@ export default function Giftware() {
                 <div style={{ padding: 'var(--space-xl)' }}>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 400, color: 'var(--lavelle-plum-deep)', marginBottom: 'var(--space-sm)', lineHeight: 1.3 }}>{displayTitle}</h3>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.75, marginBottom: 'var(--space-md)' }}>{displayDescription}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)' }}>{t('gifts.promos.valid')}: {displayExpiry}</p>
+                  {displayExpiry && <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-gold-champagne)' }}>{t('gifts.promos.valid')}: {displayExpiry}</p>}
                 </div>
               </div>
               )
@@ -274,6 +276,7 @@ export default function Giftware() {
       </section>
 
       <GoldDivider />
+      </>}
       <NewsletterSignup />
     </>
   )

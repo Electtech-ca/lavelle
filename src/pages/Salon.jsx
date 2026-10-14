@@ -7,8 +7,7 @@ import NewsletterSignup from '../components/sections/NewsletterSignup'
 import BookingModal     from '../components/ui/BookingModal'
 import { TabBar, TabBanner, SidePanel, PriceList, MenuNote } from '../components/ui/ServiceMenu'
 import useHashTab from '../hooks/useHashTab'
-import { cutsStyles, colourServices, permsAndTreatments } from '../data/salonData'
-import { cutsStylesTranslations, colourTranslations, permTranslations, treatmentTranslations } from '../data/salonTranslations'
+import useServiceLists from '../hooks/useServiceLists'
 import { yearsInBusiness } from '../data/business'
 
 /* ──────────────────────────────────────────────────────────────
@@ -29,10 +28,15 @@ export default function Salon() {
   const isFrench = (i18n.resolvedLanguage || i18n.language).startsWith('fr')
   const [tab, chooseTab, tabBarRef] = useHashTab(TABS.map(x => x.id))
   const [modalOpen, setModalOpen] = useState(false)
+  const lists = useServiceLists()
 
   const TWO_COL = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: 'var(--space-2xl)', alignItems: 'start' }
   const listHeaders = [t('spa.col.service'), t('spa.col.price')]
   const fr = table => (isFrench ? table : null)
+  // A price list from the services table (the admin's Services page);
+  // nothing while it loads, or when the list is empty.
+  const priceList = (key, title) => lists?.[key]?.items.length > 0 &&
+    <PriceList headers={listHeaders} title={title} items={lists[key].items} translations={fr(lists[key].fr)} />
 
   return (
     <>
@@ -66,7 +70,7 @@ export default function Salon() {
               <TabBanner image={TABS[0].banner} title={t('salon.hair.title')} sub={t('salon.hair.sub')} />
               <div style={TWO_COL}>
                 <div>
-                  <PriceList headers={listHeaders} title={t('salon.hair.listTitle')} items={cutsStyles} translations={fr(cutsStylesTranslations)} />
+                  {priceList('cuts_styles', t('salon.hair.listTitle'))}
                   <MenuNote text={t('salon.hair.note')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.hair.bookBtn')}</button>
@@ -86,9 +90,9 @@ export default function Salon() {
               <TabBanner image={TABS[1].banner} title={t('salon.colour.title')} sub={t('salon.colour.sub')} />
               <div style={TWO_COL}>
                 <div>
-                  <PriceList headers={listHeaders} title={t('salon.colour.listTitle')} items={colourServices} translations={fr(colourTranslations)} />
-                  <PriceList headers={listHeaders} title={t('salon.perms.permsTitle')} items={permsAndTreatments.perms} translations={fr(permTranslations)} />
-                  <PriceList headers={listHeaders} title={t('salon.perms.treatTitle')} items={permsAndTreatments.treatments} translations={fr(treatmentTranslations)} />
+                  {priceList('colour', t('salon.colour.listTitle'))}
+                  {priceList('perms', t('salon.perms.permsTitle'))}
+                  {priceList('treatments', t('salon.perms.treatTitle'))}
                   <MenuNote text={t('salon.hair.note')} />
                   <div className="cta-center" style={{ marginTop: 'var(--space-xl)' }}>
                     <button className="btn-primary" onClick={() => setModalOpen(true)}>{t('salon.colour.bookBtn')}</button>

@@ -68,7 +68,6 @@ export default function App() {
   const { t } = useTranslation()
   return (
     <BrowserRouter>
-      <ProductsProvider>
       <CartProvider>
       <AnimatePresence mode="wait">
         <Routes>
@@ -119,7 +118,7 @@ export default function App() {
           <Route path="/admin/newsletter" element={<AdminRoute><AdminNewsletter /></AdminRoute>} />
           <Route path="/admin/webmail" element={<AdminRoute><AdminWebmail /></AdminRoute>} />
           <Route path="/admin/payments" element={<AdminRoute><AdminPayments /></AdminRoute>} />
-          <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
+          <Route path="/admin/products" element={<AdminRoute><ProductsProvider><AdminProducts /></ProductsProvider></AdminRoute>} />
           <Route path="/admin/boutique" element={<AdminRoute><AdminBoutique /></AdminRoute>} />
 
           {/* 404 */}
@@ -136,7 +135,6 @@ export default function App() {
         </Routes>
       </AnimatePresence>
       </CartProvider>
-      </ProductsProvider>
     </BrowserRouter>
   )
 }

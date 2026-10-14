@@ -8,8 +8,7 @@ import BookingModal     from '../components/ui/BookingModal'
 import PromotionFeature from '../components/ui/PromotionFeature'
 import { blogPosts, blogCategories } from '../data/blogData'
 import { blogTranslations, blogCategoryTranslations } from '../data/blogTranslations'
-import { currentPromotions } from '../data/promotionsData'
-import { promotionTranslations } from '../data/promotionTranslations'
+import usePromotions from '../hooks/usePromotions'
 import { events } from '../data/eventsData'
 import { promoOfTheDay } from '../data/dailyPromos'
 
@@ -204,6 +203,7 @@ export default function Blog() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [selectedPost, setSelectedPost] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const promos = usePromotions()
 
   const featured = blogPosts.find(p => p.featured)
   const filtered = activeCategory === 'All'
@@ -273,7 +273,8 @@ export default function Blog() {
             </>
           )}
 
-          {/* ── Promotions ── */}
+          {/* ── Promotions: left out while they load, and when none are running ── */}
+          {promos?.length > 0 && <>
           <SectionHeader
             eyebrow={t('featured.promos.eyebrow')}
             headline={t('featured.promos.headline')}
@@ -281,13 +282,13 @@ export default function Blog() {
             align="center"
           />
           <div className="promotion-grid" style={{ gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
-            {currentPromotions().map(promo => {
-              const tr = isFrench ? promotionTranslations[promo.id] : null
-              const expiry = tr?.[2] || promo.expiry
+            {promos.map(promo => {
+              const tr = isFrench ? promo.fr : null
+              const expiry = tr?.expiry || promo.expiry
               if (promo.image) return (
                 <PromotionFeature key={promo.id} image={promo.image}
-                  title={tr?.[0] || promo.title} value={tr?.[1] || promo.value}
-                  description={tr?.[3] || promo.description}
+                  title={tr?.title || promo.title} value={tr?.value || promo.value}
+                  description={tr?.description || promo.description}
                   valid={expiry && `${t('featured.promos.valid')}: ${expiry}`} />
               )
               return (
@@ -296,23 +297,24 @@ export default function Blog() {
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = 'var(--shadow-hover)' }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-card)' }}>
                   <p style={{ display: 'inline-block', background: 'var(--lavelle-gold-champagne)', color: 'var(--lavelle-plum-deep)', padding: '4px 12px', borderRadius: 'var(--radius-full)', fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 700, marginBottom: 'var(--space-md)' }}>
-                    {tr?.[1] || promo.value}
+                    {tr?.value || promo.value}
                   </p>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', fontWeight: 400, color: 'var(--lavelle-plum-deep)', marginBottom: 'var(--space-sm)', lineHeight: 1.3 }}>
-                    {tr?.[0] || promo.title}
+                    {tr?.title || promo.title}
                   </h3>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', lineHeight: 1.7, marginBottom: 'var(--space-md)' }}>
-                    {tr?.[3] || promo.description}
+                    {tr?.description || promo.description}
                   </p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)' }}>
+                  {expiry && <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--lavelle-plum-soft)' }}>
                     {t('featured.promos.valid')}: {expiry}
-                  </p>
+                  </p>}
                 </div>
               )
             })}
           </div>
 
           <GoldDivider />
+          </>}
 
           {/* ── Events ── */}
           <SectionHeader

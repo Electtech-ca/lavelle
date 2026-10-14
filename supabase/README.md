@@ -9,6 +9,7 @@ These files are copies of what runs on the server; the website build does not us
 | `docker-compose.override.yml` | `/opt/supabase/docker/docker-compose.override.yml` |
 | `set-certificate-secrets.sh` | `/opt/supabase/docker/set-certificate-secrets.sh` |
 | `certificate-link.sql` | applied once to the database (see below) |
+| `admin-content.sql` | applied once to the database (see the end) |
 
 **What it does:** Stripe calls `https://api.sparivier.ca/functions/v1/stripe-certificate-webhook`
 when a gift certificate is paid (`checkout.session.completed`). The function checks
@@ -38,3 +39,14 @@ in `/opt/supabase/docker/.env.certificates` (mode 600), written by running
 **After changing the function, a secret or the override**, reload only the functions container:
 
     cd /opt/supabase/docker && docker compose up -d --no-deps --force-recreate functions
+
+**Services and promotions from the admin** (`admin-content.sql`, applied 2026-10-14): the
+Salon and Spa price lists and the Current Promotions are read from the `services` and
+`promotions` tables, which the admin's Services and Promotions pages edit. The file adds
+their French columns, a promotion's graphic and end date, copies in the lists and
+promotions the site showed on 2026-10-14, and creates the public `promotions` storage
+bucket (admins only may upload). The copy in `src/data/` is now only the fallback the
+pages show when the database can't be read. Re-running the file is safe: rows are copied
+in only while the tables still hold the old template data.
+
+    docker exec -i supabase-db psql -U postgres -d postgres < admin-content.sql

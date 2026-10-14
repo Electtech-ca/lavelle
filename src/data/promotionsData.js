@@ -1,3 +1,5 @@
+// The site shows the promotions in the database, which the admin's Promotions
+// page edits (hooks/usePromotions.js); this list is the fallback.
 export const promotions = [
   // `image` is the promotion's own graphic: it then takes a whole row of Current Promotions (PromotionFeature).
   // A promotion with an `image` may leave out `expiry` when there is no end date; its Valid line is then left off.
@@ -12,10 +14,10 @@ export const promotions = [
     image: { src: '/images/promos/fifth-saturday.webp', width: 940, height: 788 } },
 ]
 
-/* The promotions still running on `date`: one with an `until` date shows
-   through the end of that day, in the visitor's time zone. */
-export function currentPromotions(date = new Date()) {
-  return promotions.filter(p => !p.until || date <= new Date(`${p.until}T23:59:59.999`))
+/* The promotions in `list` still running on `date`: one with an `until`
+   date shows through the end of that day, in the visitor's time zone. */
+export function currentPromotions(date = new Date(), list = promotions) {
+  return list.filter(p => !p.until || date <= new Date(`${p.until}T23:59:59.999`))
 }
 
 export const loyaltyTiers = [
