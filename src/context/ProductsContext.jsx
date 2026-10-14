@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { boutiqueProducts } from '../data/boutiqueData'
 
@@ -21,10 +21,7 @@ function normalize(row) {
 export function ProductsProvider({ children }) {
   const [products, setProducts] = useState([])
   const [loading,  setLoading]  = useState(true)
-
-  // True while the bundled catalogue is on screen instead of live rows, so the
-  // real-time handlers below know not to patch placeholder data.
-  const usingFallback = useRef(false)
+  const [error,    setError]    = useState('')
 
   const load = useCallback(() => {
     if (!supabase) return
@@ -33,27 +30,22 @@ export function ProductsProvider({ children }) {
       .select('*')
       .order('created_at', { ascending: true })
       .then(({ data, error }) => {
+        // Only real rows are listed: the bundled catalogue's numeric ids can't
+        // be edited or deleted in the uuid-keyed table.
         if (error) {
           console.error('[ProductsContext] initial load error:', error.message)
-          usingFallback.current = true
-          setProducts(boutiqueProducts) // graceful fallback
-        } else if (!data || data.length === 0) {
-          // No rows came back — the table is empty, or RLS hides every row from
-          // this visitor. Either way an empty grid reads as a broken page, so
-          // show the bundled catalogue until real products exist.
-          console.info('[ProductsContext] products table returned no rows — showing bundled catalogue')
-          usingFallback.current = true
-          setProducts(boutiqueProducts)
+          setError(error.message)
+          setProducts([])
         } else {
-          usingFallback.current = false
-          setProducts(data.map(normalize))
+          setError('')
+          setProducts((data || []).map(normalize))
         }
         setLoading(false)
       })
       .catch(err => {
         console.error('[ProductsContext] fetch threw:', err)
-        usingFallback.current = true
-        setProducts(boutiqueProducts)
+        setError(err.message || String(err))
+        setProducts([])
         setLoading(false)
       })
   }, [])
@@ -61,7 +53,6 @@ export function ProductsProvider({ children }) {
   useEffect(() => {
     if (!supabase) {
       // No DB — use bundled static data; still "real-time" within the session
-      usingFallback.current = true
       setProducts(boutiqueProducts)
       setLoading(false)
       return
@@ -78,9 +69,6 @@ export function ProductsProvider({ children }) {
         { event: '*', schema: 'public', table: 'products' },
         payload => {
           const { eventType, new: newRow, old: oldRow } = payload
-          // Patching the bundled catalogue would mix placeholders with real
-          // rows, so the first live change re-reads the table instead.
-          if (usingFallback.current) { load(); return }
           if (eventType === 'INSERT') {
             setProducts(prev => [...prev, normalize(newRow)])
           } else if (eventType === 'UPDATE') {
@@ -150,7 +138,7 @@ export function ProductsProvider({ children }) {
   }, [])
 
   return (
-    <ProductsContext.Provider value={{ products, loading, addProduct, updateProduct, deleteProduct }}>
+    <ProductsContext.Provider value={{ products, loading, error, addProduct, updateProduct, deleteProduct }}>
       {children}
     </ProductsContext.Provider>
   )

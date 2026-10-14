@@ -25,7 +25,7 @@ function validate(f) {
 }
 
 export default function AdminProducts() {
-  const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts()
+  const { products, loading, error: loadError, addProduct, updateProduct, deleteProduct } = useProducts()
 
   const [modalOpen,   setModalOpen]   = useState(false)
   const [editTarget,  setEditTarget]  = useState(null)   // null = new
@@ -159,6 +159,14 @@ export default function AdminProducts() {
         <div style={{ background: 'rgba(228,62,45,0.1)', border: '1px solid rgba(228,62,45,0.35)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-md) var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#b83020' }}>
             <strong>Dev mode:</strong> Changes are reflected live in this session but are not persisted to a database. Connect Supabase to enable permanent storage and real-time sync across all sessions.
+          </p>
+        </div>
+      )}
+
+      {loadError && (
+        <div style={{ background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.25)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-md) var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#C0392B' }}>
+            <strong>Products could not be loaded:</strong> {loadError}
           </p>
         </div>
       )}
