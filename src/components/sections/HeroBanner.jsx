@@ -17,7 +17,7 @@ const NIGHT = 'linear-gradient(135deg,#1e2535 0%,#0f1828 40%,#0a1020 100%)'
 const SLIDES = [
   { id: 'welcome', bgImage: '/branding/Web%20page.svg', bg: 'linear-gradient(135deg,#1e2535 0%,#313a4d 40%,#1a2030 100%)', overlay: 'rgba(20,25,38,0.52)', eyebrow: true,
     buttons: [{ label: 'hero.welcome.cta', to: '/#experience' }, { label: 'cta.book', book: true }] },
-  { id: 'spa', bgImage: '/branding/Spa%20page.svg', bg: NAVY, overlay: 'rgba(15,20,35,0.55)', eyebrow: true,
+  { id: 'spa', bgImage: '/branding/Spa-page-no-nail-bar.svg', bg: NAVY, overlay: 'rgba(15,20,35,0.55)', eyebrow: true,
     buttons: [{ label: 'hero.btn.exploreSpa', to: '/spa' }, { label: 'cta.book', book: true }] },
   { id: 'haircare', bgImage: '/branding/Haircare.svg', bg: NIGHT, overlay: 'rgba(15,20,35,0.55)',
     buttons: [{ label: 'hero.btn.exploreHaircare', to: '/haircare' }] },
