@@ -1,6 +1,12 @@
 /* ──────────────────────────────────────────────────────────────
    Boutique Rivier — the fashion brands we carry.
 
+   The Boutique page shows the brands in the database
+   (public.boutique_brands), which the admin's Boutique Brands page
+   adds, edits and deletes. This list is the fallback shown when the
+   database can't be read, and where the table's first rows came from
+   (supabase/boutique-brands.sql).
+
    Write-ups are the client's own (notes/docs/writeup.md, public
    sections only), in the order the client listed them. French is
    in boutiqueBrandsTranslations.js, keyed by slug.

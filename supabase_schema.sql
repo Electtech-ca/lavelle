@@ -492,6 +492,8 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.gift_orders;
 --     in Admin ▸ Boutique Brands. Outerwear is not stored: it is jackets +
 --     cardigans. Brand names, write-ups and photos stay in the site code.
 -- =============================================================================
+-- No longer read by the site: the brands, with their tags, are in
+-- public.boutique_brands (supabase/boutique-brands.sql, run after this file).
 CREATE TABLE IF NOT EXISTS public.boutique_brand_tags (
   slug        text        PRIMARY KEY,
   types       text[]      NOT NULL DEFAULT '{}',

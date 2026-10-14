@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import AdminLayout from './AdminLayout'
 import { supabase } from '../../lib/supabase'
 import { forgetSiteRows } from '../../hooks/useSiteRows'
+import { uploadImage, IMAGE_TYPES } from '../../lib/uploadImage'
 import { Plus, Pencil, Trash2, X, ArrowUp, ArrowDown, ImagePlus } from 'lucide-react'
 
 /* ──────────────────────────────────────────────────────────────
@@ -43,24 +44,6 @@ function statusOf(p) {
   if (!p.active)                     return { label: 'Hidden', color: '#C0392B', bg: 'rgba(192,57,43,0.08)' }
   if (p.until && p.until < today()) return { label: 'Ended',  color: 'var(--lavelle-gray-mid)', bg: 'var(--lavelle-cream)' }
   return { label: 'Shown', color: '#2E7D5E', bg: 'rgba(46,125,94,0.1)' }
-}
-
-/* A graphic is scaled to at most 1600px wide and saved as WebP (PNG where
-   the browser can't write WebP) before upload, so the page stays quick to
-   load. A GIF goes up as it is, so an animation survives. */
-const MAX_WIDTH = 1600
-const EXTENSIONS = { 'image/webp': 'webp', 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif' }
-
-async function prepareImage(file) {
-  if (file.type === 'image/gif') return file
-  const bitmap = await createImageBitmap(file)
-  const scale  = Math.min(1, MAX_WIDTH / bitmap.width)
-  const canvas = document.createElement('canvas')
-  canvas.width  = Math.round(bitmap.width * scale)
-  canvas.height = Math.round(bitmap.height * scale)
-  canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height)
-  return new Promise((resolve, reject) => canvas.toBlob(
-    blob => (blob ? resolve(blob) : reject(new Error('the image could not be read'))), 'image/webp', 0.86))
 }
 
 const bySortOrder = (a, b) => a.sort_order - b.sort_order || String(a.created_at).localeCompare(String(b.created_at))
@@ -139,12 +122,8 @@ export default function AdminPromotions() {
     setUploading(true)
     setUploadError('')
     try {
-      const blob = await prepareImage(file)
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${EXTENSIONS[blob.type] || 'img'}`
-      const { error } = await supabase.storage.from('promotions').upload(path, blob, { contentType: blob.type, cacheControl: '31536000' })
-      if (error) throw error
-      const { data } = supabase.storage.from('promotions').getPublicUrl(path)
-      setForm(f => ({ ...f, image: data.publicUrl, image_width: null, image_height: null }))
+      const image = await uploadImage('promotions', file)
+      setForm(f => ({ ...f, image, image_width: null, image_height: null }))
     } catch (err) {
       setUploadError('Upload failed: ' + (err.message || err))
     }
@@ -381,7 +360,7 @@ export default function AdminPromotions() {
                     <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
                       <label className="btn-secondary" style={{ fontSize: '0.72rem', padding: '9px 20px', cursor: uploading || !supabase ? 'default' : 'pointer', opacity: uploading || !supabase ? 0.6 : 1 }}>
                         {uploading ? 'Uploading…' : form.image ? 'Replace graphic' : 'Upload graphic'}
-                        <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleImageFile} disabled={uploading || !supabase} style={{ display: 'none' }} />
+                        <input type="file" accept={IMAGE_TYPES} onChange={handleImageFile} disabled={uploading || !supabase} style={{ display: 'none' }} />
                       </label>
                       {form.image && !uploading && (
                         <button type="button" onClick={() => setForm(f => ({ ...f, image: '', image_width: null, image_height: null }))}

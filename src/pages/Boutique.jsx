@@ -4,9 +4,8 @@ import SectionHeader    from '../components/ui/SectionHeader'
 import Sentences        from '../components/ui/Sentences'
 import GoldDivider      from '../components/ui/GoldDivider'
 import NewsletterSignup from '../components/sections/NewsletterSignup'
-import { boutiqueBrands, clothingTypes, outerwearTypes } from '../data/boutiqueBrands'
-import { boutiqueBrandsFrench } from '../data/boutiqueBrandsTranslations'
-import { supabase } from '../lib/supabase'
+import { outerwearTypes } from '../data/boutiqueBrands'
+import useBoutiqueBrands from '../hooks/useBoutiqueBrands'
 
 /* ──────────────────────────────────────────────────────────────
    Boutique Rivier — the brands we carry, browsable by clothing type.
@@ -167,33 +166,18 @@ function BrandModal({ brand, copy, onClose, t }) {
 
 export default function Boutique() {
   const { t, i18n } = useTranslation()
-  const french = i18n.language.startsWith('fr') ? boutiqueBrandsFrench : null
+  const isFrench = i18n.language.startsWith('fr')
   const [filter, setFilter] = useState('all')
   const [open, setOpen] = useState(null)          // { brand, opener } — opener gets focus back on close
 
-  // Clothing-type tags are edited in Admin ▸ Boutique Brands. Until they load —
-  // or if the database is unreachable — the built-in tags are used.
-  const [savedTags, setSavedTags] = useState(null)
-  useEffect(() => {
-    if (!supabase) return
-    let alive = true
-    supabase.from('boutique_brand_tags').select('slug, types')
-      .then(({ data, error }) => {
-        if (error) { console.error('[Boutique] brand tags:', error.message); return }
-        if (alive && data) setSavedTags(Object.fromEntries(data.map(r => [r.slug, r.types])))
-      })
-    return () => { alive = false }
-  }, [])
-  const brands = boutiqueBrands.map(b => {
-    const types = savedTags?.[b.slug]
-    return types ? { ...b, types: clothingTypes.filter(t => types.includes(t)) } : b
-  })
+  // Brands are added and edited in Admin ▸ Boutique Brands; null while they load.
+  const brands = useBoutiqueBrands()
 
   const copyFor = brand => ({
-    tagline: french?.[brand.slug]?.tagline || brand.tagline,
-    body: french?.[brand.slug]?.body || brand.body,
+    tagline: (isFrench && brand.fr?.tagline) || brand.tagline,
+    body: isFrench && brand.fr?.body?.length ? brand.fr.body : brand.body,
   })
-  const visible = brands.filter(b => matches(b, filter))
+  const visible = (brands || []).filter(b => matches(b, filter))
   const closeModal = useCallback(() => { const opener = open?.opener; setOpen(null); opener?.focus() }, [open])
 
   return (
@@ -239,6 +223,7 @@ export default function Boutique() {
               ))}
             </div>
           )}
+          {brands && <>
           <p aria-live="polite" style={{ textAlign: 'center', fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)', marginBottom: 'var(--space-xl)' }}>
             {t('boutique.filter.count', { count: visible.length })}
           </p>
@@ -258,6 +243,7 @@ export default function Boutique() {
               </p>
             </div>
           )}
+          </>}
         </div>
       </div>
 

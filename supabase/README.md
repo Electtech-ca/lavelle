@@ -10,6 +10,7 @@ These files are copies of what runs on the server; the website build does not us
 | `set-certificate-secrets.sh` | `/opt/supabase/docker/set-certificate-secrets.sh` |
 | `certificate-link.sql` | applied once to the database (see below) |
 | `admin-content.sql` | applied once to the database (see the end) |
+| `boutique-brands.sql` | applied once to the database (see the end) |
 
 **What it does:** Stripe calls `https://api.sparivier.ca/functions/v1/stripe-certificate-webhook`
 when a gift certificate is paid (`checkout.session.completed`). The function checks
@@ -50,3 +51,12 @@ pages show when the database can't be read. Re-running the file is safe: rows ar
 in only while the tables still hold the old template data.
 
     docker exec -i supabase-db psql -U postgres -d postgres < admin-content.sql
+
+**Boutique brands from the admin** (`boutique-brands.sql`, applied 2026-10-14): the Boutique
+page reads its brands from `boutique_brands`, which the admin's Boutique Brands page adds to,
+edits and deletes from. The file creates the table, copies in the ten brands the site showed
+on 2026-10-14 (with the tags saved in `boutique_brand_tags`, which nothing reads any more), and
+creates the public `boutique` storage bucket for brand photos (admins only may upload). Safe to
+re-run: brands are copied in only while the table is empty.
+
+    docker exec -i supabase-db psql -U postgres -d postgres < boutique-brands.sql
