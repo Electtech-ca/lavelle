@@ -14,7 +14,7 @@ export default function AdminWebmail() {
           @sparivier.ca Mailboxes
         </h2>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', marginBottom: 'var(--space-xl)' }}>
-          Mailboxes for this domain are hosted on our own mail server. Sign in with your full email address (e.g. hello@sparivier.ca) and mailbox password.
+          Mailboxes for this domain are hosted on our own mail server. Sign in with your full email address (e.g. info@sparivier.ca) and mailbox password.
         </p>
         <a
           href={WEBMAIL_URL}
