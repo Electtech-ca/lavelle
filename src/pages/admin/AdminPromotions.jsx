@@ -336,7 +336,7 @@ export default function AdminPromotions() {
                     <ArrowDown size={14} />
                   </button>
                   <button onClick={() => openEdit(promo)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '6px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-soft)', background: 'none', color: 'var(--lavelle-plum-soft)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                    style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '6px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-deep)', background: 'none', color: 'var(--lavelle-plum-deep)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                     <Pencil size={12} /> Edit
                   </button>
                   <button onClick={() => setDeleteId(promo.id)}

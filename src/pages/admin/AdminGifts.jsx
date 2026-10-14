@@ -61,13 +61,6 @@ export default function AdminGifts() {
     (!q || [o.cert_code, o.item_name, o.sender_name, o.sender_email, o.recipient_name, o.recipient_email]
       .some(v => (v || '').toLowerCase().includes(q))))
 
-  const count = status => orders.filter(o => o.status === status).length
-  const stats = [
-    { label: 'Active certificates',  value: count('active'),   sub: `${money(orders.filter(o => o.status === 'active').reduce((s, o) => s + (valueOf(o) || 0), 0))} still to spend` },
-    { label: 'Redeemed',             value: count('redeemed') },
-    { label: 'Awaiting payment',     value: count('pending'),  sub: 'Started, not paid' },
-  ]
-
   const thStyle = { fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--lavelle-gray-mid)', padding: '10px 16px', textAlign: 'left', borderBottom: '1px solid var(--lavelle-cream)', whiteSpace: 'nowrap' }
   const tdStyle = { fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-charcoal)', padding: '12px 16px', borderBottom: '1px solid var(--lavelle-cream)', verticalAlign: 'top' }
   const subText = { display: 'block', fontSize: '0.72rem', color: 'var(--lavelle-gray-mid)', marginTop: '2px' }
@@ -81,17 +74,6 @@ export default function AdminGifts() {
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: '#C0392B' }}>{notice}</p>
         </div>
       )}
-
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-lg)', marginBottom: 'var(--space-xl)' }}>
-        {stats.map(s => (
-          <div key={s.label} style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 300, color: 'var(--lavelle-plum-deep)', lineHeight: 1 }}>{s.value}</p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-gray-mid)', marginTop: '6px' }}>{s.label}</p>
-            {s.sub && <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.7rem', color: 'var(--lavelle-gray-mid)', marginTop: '2px' }}>{s.sub}</p>}
-          </div>
-        ))}
-      </div>
 
       {/* Filters + search */}
       <div style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', marginBottom: 'var(--space-lg)', alignItems: 'center' }}>

@@ -1,37 +1,8 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AdminLayout from './AdminLayout'
 import { supabase } from '../../lib/supabase'
-import { BadgeCheck, Gift } from 'lucide-react'
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ active: 0, activeValue: 0, redeemed: 0 })
-
-  useEffect(() => {
-    if (!supabase) return
-    async function load() {
-      try {
-        // Paid certificates only: an order stays "pending" until Stripe confirms payment.
-        const { data } = await supabase.from('gift_orders').select('status, cert_amount, amount').in('status', ['active', 'redeemed'])
-        const certs  = data || []
-        const active = certs.filter(c => c.status === 'active')
-        setStats({
-          active:      active.length,
-          activeValue: active.reduce((sum, c) => sum + ((c.cert_amount ?? c.amount) || 0), 0),
-          redeemed:    certs.length - active.length,
-        })
-      } catch (err) {
-        console.error('[AdminDashboard] stats load failed:', err)
-      }
-    }
-    load()
-  }, [])
-
-  const cards = [
-    { label: 'Active Gift Certificates', sub: `$${(stats.activeValue / 100).toFixed(0)} still to spend`, value: stats.active, Icon: Gift, color: '#6b8cba' },
-    { label: 'Certificates Redeemed', value: stats.redeemed, Icon: BadgeCheck, color: 'var(--lavelle-plum-mid)' },
-  ]
-
   return (
     <AdminLayout title="Dashboard">
       {!supabase && (
@@ -41,21 +12,6 @@ export default function AdminDashboard() {
           </p>
         </div>
       )}
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-xl)', marginBottom: 'var(--space-2xl)' }}>
-        {cards.map(({ label, sub, value, Icon, color }) => (
-          <div key={label} style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', gap: 'var(--space-lg)' }}>
-            <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-md)', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Icon size={22} color="white" />
-            </div>
-            <div>
-              <p style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 300, color: 'var(--lavelle-charcoal)', lineHeight: 1 }}>{value}</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)', marginTop: '4px' }}>{label}</p>
-              {sub && <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.7rem', color: 'var(--lavelle-gray-mid)', marginTop: '2px' }}>{sub}</p>}
-            </div>
-          </div>
-        ))}
-      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-xl)' }}>
         <div style={{ background: 'var(--lavelle-white)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-xl)', boxShadow: 'var(--shadow-card)' }}>

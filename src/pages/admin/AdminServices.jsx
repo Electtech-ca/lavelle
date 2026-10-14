@@ -296,7 +296,7 @@ export default function AdminServices() {
                     <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-micro)', color: 'var(--lavelle-gray-mid)' }}>{items.length} service{items.length !== 1 ? 's' : ''}</span>
                     {section && (
                       <button onClick={() => openAdd(section.key)} title={`Add a service to ${section.label}`}
-                        style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '4px 10px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-soft)', background: 'none', color: 'var(--lavelle-plum-soft)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '4px 10px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-deep)', background: 'none', color: 'var(--lavelle-plum-deep)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                         <Plus size={12} /> Add
                       </button>
                     )}
@@ -346,7 +346,7 @@ export default function AdminServices() {
                                     <ArrowDown size={13} />
                                   </button>
                                   <button onClick={() => openEdit(svc)}
-                                    style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '5px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-soft)', background: 'none', color: 'var(--lavelle-plum-soft)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                                    style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '5px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-deep)', background: 'none', color: 'var(--lavelle-plum-deep)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                                     <Pencil size={12} /> Edit
                                   </button>
                                   <button onClick={() => setDeleteId(svc.id)}

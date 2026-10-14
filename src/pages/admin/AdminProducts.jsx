@@ -269,7 +269,7 @@ export default function AdminProducts() {
                         <button
                           onClick={() => openEdit(product)}
                           title="Edit product"
-                          style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '5px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-soft)', background: 'none', color: 'var(--lavelle-plum-soft)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
+                          style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.72rem', padding: '5px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--lavelle-plum-deep)', background: 'none', color: 'var(--lavelle-plum-deep)', cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                           <Pencil size={12} /> Edit
                         </button>
                         <button
