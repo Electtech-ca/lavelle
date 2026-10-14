@@ -2,21 +2,20 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import {
   LayoutDashboard, Scissors, Gift,
-  Tag, Users, Mail, Inbox, LogOut, ExternalLink, Shirt
+  Tag, Inbox, LogOut, ExternalLink, Shirt
 } from 'lucide-react'
 
 /* Bookings, Payments & Orders and Products are left out: appointments are
    made in Meevo, the site's checkout is switched off, and no page lists
-   products. Their pages still exist at /admin/bookings, /admin/payments
-   and /admin/products. */
+   products. Members and Newsletter are hidden at the client's request.
+   Their pages still exist at /admin/bookings, /admin/payments,
+   /admin/products, /admin/members and /admin/newsletter. */
 const navItems = [
   { to: '/admin',             label: 'Dashboard',         Icon: LayoutDashboard, end: true },
   { to: '/admin/gifts',       label: 'Gift Certificates', Icon: Gift },
   { to: '/admin/services',    label: 'Services',          Icon: Scissors },
   { to: '/admin/promotions',  label: 'Promotions',        Icon: Tag },
   { to: '/admin/boutique',    label: 'Boutique Brands',   Icon: Shirt },
-  { to: '/admin/members',     label: 'Members',           Icon: Users },
-  { to: '/admin/newsletter',  label: 'Newsletter',        Icon: Mail },
   { to: '/admin/webmail',     label: 'Webmail',           Icon: Inbox },
 ]
 

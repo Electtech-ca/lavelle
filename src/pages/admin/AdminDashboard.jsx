@@ -2,29 +2,23 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AdminLayout from './AdminLayout'
 import { supabase } from '../../lib/supabase'
-import { BadgeCheck, Users, Gift, TrendingUp } from 'lucide-react'
+import { BadgeCheck, Gift } from 'lucide-react'
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ active: 0, activeValue: 0, redeemed: 0, members: 0, subscribers: 0 })
+  const [stats, setStats] = useState({ active: 0, activeValue: 0, redeemed: 0 })
 
   useEffect(() => {
     if (!supabase) return
     async function load() {
       try {
         // Paid certificates only: an order stays "pending" until Stripe confirms payment.
-        const [g, m, n] = await Promise.all([
-          supabase.from('gift_orders').select('status, cert_amount, amount').in('status', ['active', 'redeemed']),
-          supabase.from('profiles').select('id', { count: 'exact', head: true }),
-          supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true }),
-        ])
-        const certs  = g.data || []
+        const { data } = await supabase.from('gift_orders').select('status, cert_amount, amount').in('status', ['active', 'redeemed'])
+        const certs  = data || []
         const active = certs.filter(c => c.status === 'active')
         setStats({
           active:      active.length,
           activeValue: active.reduce((sum, c) => sum + ((c.cert_amount ?? c.amount) || 0), 0),
           redeemed:    certs.length - active.length,
-          members:     m.count || 0,
-          subscribers: n.count || 0,
         })
       } catch (err) {
         console.error('[AdminDashboard] stats load failed:', err)
@@ -36,8 +30,6 @@ export default function AdminDashboard() {
   const cards = [
     { label: 'Active Gift Certificates', sub: `$${(stats.activeValue / 100).toFixed(0)} still to spend`, value: stats.active, Icon: Gift, color: '#6b8cba' },
     { label: 'Certificates Redeemed', value: stats.redeemed, Icon: BadgeCheck, color: 'var(--lavelle-plum-mid)' },
-    { label: 'Members', value: stats.members, Icon: Users, color: 'var(--lavelle-gold-deep)' },
-    { label: 'Newsletter Subscribers', value: stats.subscribers, Icon: TrendingUp, color: 'var(--lavelle-success)' },
   ]
 
   return (
@@ -73,8 +65,6 @@ export default function AdminDashboard() {
             { href: '/admin/services', label: 'Edit Services & Pricing' },
             { href: '/admin/promotions', label: 'Edit Promotions' },
             { href: '/admin/boutique', label: 'Boutique Brands' },
-            { href: '/admin/members', label: 'View Members' },
-            { href: '/admin/newsletter', label: 'Newsletter Subscribers' },
           ].map(link => (
             <Link key={link.href} to={link.href} style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: 'var(--text-small)', color: 'var(--lavelle-plum-soft)', textDecoration: 'none', padding: '8px 0', borderBottom: '1px solid var(--lavelle-cream)' }}>
               → {link.label}
